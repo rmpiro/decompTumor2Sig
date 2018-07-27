@@ -1,7 +1,7 @@
 Package: decompTumor2Sig
 Type: Package
 Title: Decomposition of individual tumors into mutational signatures
-Depends: R(>= 3.3), ggplot2
+Depends: R(>= 3.5), ggplot2
 Imports: methods, Matrix, quadprog(>= 1.5-5), vcfR, GenomicRanges, stats,
     GenomicFeatures, Biostrings, BiocGenerics, S4Vectors, plyr, utils, graphics,
     BSgenome.Hsapiens.UCSC.hg19, TxDb.Hsapiens.UCSC.hg19.knownGene,
