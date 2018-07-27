@@ -1,0 +1,103 @@
+\name{convertGenomesFromVRanges}
+\alias{convertGenomesFromVRanges}
+\title{
+  convertGenomesFromVRanges
+}
+\description{
+  Converts teh SNVs of a single tumor genome (sample) or a set of
+  genomes from a \code{VRanges} object (package
+  "\code{VariantAnnotation}") and determines the mutation frequencies
+  according to a specific model of mutational signatures (Alexandrov or
+  Shiraishi), such that the resulting format can be used as genomes
+  input for \code{decomposeTumorGenomes}.
+}
+\usage{
+convertGenomesFromVRanges(vranges, numBases=5, type="Shiraishi", trDir=TRUE,
+refGenome=BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19,
+transcriptAnno=TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene,
+verbose=TRUE) 
+}
+\arguments{
+  \item{vranges}{
+    (Mandatory) The \code{VRanges} object which specifies the mutations.
+  }
+  \item{numBases}{
+    (Mandatory) Total number of bases (mutated base and flanking bases)
+    to be used for sequence patterns. Default: 5
+  }
+  \item{type}{
+    (Mandatory) Signature model or type ('\code{Alexandrov}' or
+    '\code{Shiraishi}'). Default: \code{Shiraishi}
+  }
+  \item{trDir}{
+    (Mandatory) Specifies whether the transcription direction is taken
+    into account in the signature model. If so, only mutations within
+    genes can be considered. Default: \code{TRUE}
+  }
+  \item{refGenome}{
+    (Mandatory) The reference genome (\code{BSgenome}) needed to extract
+    sequence patterns. Default: \code{BSgenome} object for hg19.
+  }
+  \item{transcriptAnno}{
+    (Optional) Transcript annotation (\code{TxDb} object) used to
+    determine the transcription direction. This is required only if
+    \code{trDir} is \code{TRUE}. Default: \code{TxDb} object for hg19.
+  }
+  \item{verbose}{
+    (Optional) Print information about reading and processing the
+    mutation data. Default: \code{TRUE}
+  }
+}
+%\details{
+%}
+\value{
+   A list containing the genomes in terms of frequencies of the mutated
+   sequence patterns. This list of genomes can be used for
+   \code{decomposeTumorGenomes}. 
+}
+\references{
+Krueger, Piro (2017) Identification of Mutational Signatures Active in
+Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
+Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
+Italy. PeerJ Preprints 5:e3257v1, 2017.\cr
+http://rmpiro.net/decompTumor2Sig/
+}
+\author{
+  Rosario M. Piro\cr
+  Freie Universitaet Berlin\cr
+  Maintainer: Rosario M. Piro\cr
+  E-Mail: <r.piro@fu-berlin.de> or <rmpiro@gmail.com>
+}
+%\note{
+%}
+
+\seealso{
+  decompTumor2Sig\cr
+  decomposeTumorGenomes\cr
+  loadGenomesFromVCF\cr
+}
+\examples{
+### load the reference genome and the transcript annotation database
+refGenome <- BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19
+transcriptAnno <-
+  TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
+
+### take the breast cancer genomes from Nik-Zainal et al (PMID: 22608084) 
+gfile <- system.file("extdata",
+         "Nik-Zainal_PMID_22608084-VCF-convertedfromMPF.vcf.gz", 
+         package="decompTumor2Sig")
+
+### get the corresponding VRanges object (using the VariantAnnotation
+### package)
+library(VariantAnnotation)
+vr <- readVcfAsVRanges(gfile, genome="hg19")
+
+### convert the VRanges object to the decompTumor2Sig format
+genomes <- convertGenomesFromVRanges(vr, numBases=5, type="Shiraishi",
+         trDir=TRUE, refGenome=refGenome, transcriptAnno=transcriptAnno,
+         verbose=FALSE)
+}
+\keyword{mutational signatures}
+\keyword{mutation signatures}
+\keyword{mutations}
+\keyword{tumor genomes}
