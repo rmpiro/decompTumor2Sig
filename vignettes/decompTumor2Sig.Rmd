@@ -4,7 +4,7 @@ title: "A brief introduction to decompTumor2Sig"
 author:
 - name: "Rosario Michael Piro"
   affiliation: Department of Computer Science and Department of Bioinformatics, Freie Universität Berlin, Germany
-  email: r.piro@fu-berlin.de or rmpiro@gmail.com
+  email: rmpiro@gmail.com or r.piro@fu-berlin.de
 date: "`r Sys.Date()`"
 vignette: >
   %\VignetteIndexEntry{A brief introduction to decompTumor2Sig}
@@ -18,23 +18,44 @@ output:
 library(BiocStyle)
 ```
 
+```{r, echo = FALSE}
+library(knitr)
+```
+
+
 # Introduction
 
-The R package **decompTumor2Sig** has been developed to decompose individual tumor genomes (i.e., the lists of somatic single nucleotide variants identified in individual tumors) according to a set of given mutational signatures---a problem termed signature refitting---using a quadratic-programming approach.
+**[This introduction is for package version: 1.3.1]**
 
-Mutational signatures can be either of the form initially proposed by Alexandrov et al. (Cell Rep. 3:246--259, 2013 and Nature 500:415--421, 2013)---in the following called "Alexandrov signatures"---or of the simplified form proposed by Shiraishi et al. (PLoS Genet. 11:e1005657, 2015)---in the following called "Shiraishi signatures".
+The R package **decompTumor2Sig** has been developed to decompose individual
+tumor genomes (i.e., the lists of somatic single nucleotide variants identified
+in individual tumors) according to a set of given mutational signatures---a
+problem termed signature refitting---using a quadratic-programming approach.
 
-For each of the given mutational signatures, **decompTumor2Sig** determines their contribution to the load of somatic mutations observed in a tumor.
+Mutational signatures can be either of the form initially proposed by Alexandrov
+et al. (Cell Rep. 3:246--259, 2013 and Nature 500:415--421, 2013)---in the
+following called "Alexandrov signatures"---or of the simplified form proposed
+by Shiraishi et al. (PLoS Genet. 11:e1005657, 2015)---in the following called
+"Shiraishi signatures".
 
-*Note*: for all functions provided by **decompTumor2Sig**, please see the inline R help page for further details and explanations.
+For each of the given mutational signatures, **decompTumor2Sig** determines
+their contribution to the load of somatic mutations observed in a tumor.
 
-*Note*: here and in the following, when naming "mutations" we intend single nucleotide variants (SNVs).
+*Note*: for all functions provided by **decompTumor2Sig**, please see the
+inline R help page for further details and explanations.
+
+*Note*: here and in the following, when naming "mutations" we intend single
+nucleotide variants (SNVs).
 
 ## Papers / how to cite
 
-> Krüger S, Piro RM (2018) decompTumor2Sig: Identification of mutational signatures active in individual tumors (*submitted*).
+> Krüger S, Piro RM (2018) decompTumor2Sig: Identification of mutational
+signatures active in individual tumors (*submitted*).
 
-> Krüger S, Piro RM (2017) Identification of mutational signatures active in individual tumors. *PeerJ Preprints* **5**:e3257v1 (Proceedings of the NETTAB 2017 Workshop on Methods, Tools \& Platforms for Personalized Medicine in the Big Data Era, October 16-18, 2017 in Palermo, Italy).
+> Krüger S, Piro RM (2017) Identification of mutational signatures active in
+individual tumors. *PeerJ Preprints* **5**:e3257v1 (Proceedings of the NETTAB
+2017 Workshop on Methods, Tools \& Platforms for Personalized Medicine in the
+Big Data Era, October 16-18, 2017 in Palermo, Italy).
 
 BibTeX:
 ```
@@ -55,26 +76,41 @@ BibTeX:
 );
 ```
 
-# Installation {#sect:installation}
+# Installing and loading the package {#installation}
 
-**decompTumor2Sig** requires several CRAN and Bioconductor R packages to be installed. Dependencies are usually handled automatically, when installing the package using the following commands:
+## Installation
+
+**decompTumor2Sig** requires several CRAN and Bioconductor R packages to be
+installed. Dependencies are usually handled automatically, when installing the
+package using the following commands:
 
 ```
 source("http://bioconductor.org/biocLite.R")
 biocLite("decompTumor2Sig")
 ```
 
-In the unlikely case that a manual installation is required, e.g., if you do not install **decompTumor2Sig** via Bioconductor (which is highly recommended), before installing **decompTumor2Sig** make sure the following packages are installed:
+In the unlikely case that a manual installation is required, e.g., if you do
+not install **decompTumor2Sig** via Bioconductor (which is highly recommended),
+before installing **decompTumor2Sig** make sure the following packages are
+installed:
 
 CRAN packages:
 
-`r CRANpkg("Matrix")`, `r CRANpkg("quadprog")`, `r CRANpkg("vcfR")`, `r CRANpkg("plyr")`, `r CRANpkg("ggplot2")`
+`r CRANpkg("Matrix")`, `r CRANpkg("quadprog")`, `r CRANpkg("vcfR")`,
+`r CRANpkg("plyr")`, `r CRANpkg("ggplot2")`
 
 Bioconductor packages:
 
-`r Biocpkg("GenomicRanges")`, `r Biocpkg("GenomicFeatures")`, `r Biocpkg("Biostrings")`, `r Biocpkg("BiocGenerics")`, `r Biocpkg("S4Vectors")`, `r Biocpkg("BSgenome.Hsapiens.UCSC.hg19")`, `r Biocpkg("TxDb.Hsapiens.UCSC.hg19.knownGene")`, `r Biocpkg("VariantAnnotation")`,  `r Biocpkg("SummarizedExperiment")`
+`r Biocpkg("GenomicRanges")`, `r Biocpkg("GenomicFeatures")`,
+`r Biocpkg("Biostrings")`, `r Biocpkg("BiocGenerics")`,
+`r Biocpkg("S4Vectors")`, `r Biocpkg("BSgenome.Hsapiens.UCSC.hg19")`,
+`r Biocpkg("TxDb.Hsapiens.UCSC.hg19.knownGene")`,
+`r Biocpkg("VariantAnnotation")`,  `r Biocpkg("SummarizedExperiment")`
 
-For some additional functionalities, you may also want to install the R package `r Rpackage("pmsignature")` which is neither part of CRAN nor of Bioconductor and must be downloaded and installed manually (available at: <https://github.com/friend1ws/pmsignature>).
+For some additional functionalities, you may also want to install the R package
+`r Rpackage("pmsignature")` which is neither part of CRAN nor of Bioconductor
+and must be downloaded and installed manually (available at:
+<https://github.com/friend1ws/pmsignature>).
 
 CRAN packages can be installed from R using the following command:
 
@@ -96,64 +132,86 @@ source("http://bioconductor.org/biocLite.R")
 biocLite("BiocUpgrade")
 ```
 
+## Loading the package
 
+After installation, loading the package is simple:
+```{r, results='hide', message=FALSE}
+library(decompTumor2Sig)
+```
 
-# Input data {#sect:input}
+# Input data {#input}
 
 **decompTumor2Sig** works with two kinds of input data:
 
 i) a set of given mutational signatures, and
-ii) a set of somatic mutations (single nucleotide variants) observed in a tumor genome.
+ii) a set of somatic mutations (single nucleotide variants) observed in a tumor
+genome.
 
-Additionally, **decompTumor2Sig** requires the genomic sequence (in form of a `r Rpackage("BSgenome")` object) to determine neighboring nucleotides of the mutated bases. It may also require transcript annotations (in form of a `r Rpackage("TxDb")` object) in case the given mutational signatures take information on the transcription direction into account.
+Additionally, **decompTumor2Sig** requires the genomic sequence (in form of a
+`r Rpackage("BSgenome")` object) to determine neighboring nucleotides of the
+mutated bases. It may also require transcript annotations (in form of a
+`r Rpackage("TxDb")` object) in case the given mutational signatures take
+information on the transcription direction into account.
 
 
-## Mutational signatures {#sect:input_sign}
+## Mutational signatures {#input-sign}
 
-Mutational signatures can be loaded in two different formats: Alexandrov-type signatures and Shiraishi-type signatures.
+Mutational signatures can be read in two different formats: Alexandrov-type
+signatures and Shiraishi-type signatures.
 
-### Alexandrov signatures {#sect:input_sign_alexandrov}
+### Alexandrov signatures {#input-sign-alexandrov}
 
-Alexandrov signatures are specified in the format used at the COSMIC Mutational Signatures website (<http://cancer.sanger.ac.uk/cosmic/signatures> -> Download signatures).
+Alexandrov signatures are specified in the format used at the COSMIC Mutational
+Signatures website (<http://cancer.sanger.ac.uk/cosmic/signatures> -> "Download
+signatures").
 
 Example:
 
 ```
-Substitution Type  Trinucleotide  Somatic Mutation Type  Signature 1     Signature 2     ...
-C>A                ACA            A[C>A]A                0.011098326166  0.000682708227  ...
-C>A                ACC            A[C>A]C                0.009149340734  0.000619107232  ...
-C>A                ACG            A[C>A]G                0.001490070468  0.000099278956  ...
-C>A                ACT            A[C>A]T                0.006233885236  0.000323891363  ...
+Substitution Type  Trinucleotide  Somatic Mutation Type  Signature 1     ...
+C>A                ACA            A[C>A]A                0.011098326166  ...
+C>A                ACC            A[C>A]C                0.009149340734  ...
+C>A                ACG            A[C>A]G                0.001490070468  ...
+C>A                ACT            A[C>A]T                0.006233885236  ...
 ...
-T>G                TTG            T[T>G]G                0.002031076880  0.000206615168  ...
-T>G                TTT            T[T>G]T                0.004030128160  0.000023598204  ...
+T>G                TTG            T[T>G]G                0.002031076880  ...
+T>G                TTT            T[T>G]T                0.004030128160  ...
+```
+
+The standard Alexandrov-type signatures report mutation frequencies for
+nucleotide triplets where the mutated base is at the center. Also, the basic
+Alexandrov signatures do not take transcription direction into account when
+computing mutation frequencies.
+
+
+To read Alexandrov-type signatures, use the command
+**readAlexandrovSignatures**. By default, the command reads the signatures
+directly from COSMIC and stores them in a list object:
+
+```{r, message=FALSE, warning=FALSE}
+signatures <- readAlexandrovSignatures()
+length(signatures)
+signatures[1]
+```
+
+Alternatively, the signatures can be read from a file of the format shown
+above:
+
+```{r, eval=FALSE}
+signatures <- readAlexandrovSignatures(file="<signature_file>")
 ```
 
 
-To load Alexandrov-type signatures, use the command **loadAlexandrovSignatures**. By the default, the command loads the signatures directly from COSMIC:
+### Shiraishi signatures {#input-sign-shiraishi}
 
-```
-signatures <- loadAlexandrovSignatures()
-```
-
-Alternatively, the signatures can be loaded from a file of the format described above:
-
-```
-signatures <- loadAlexandrovSignatures(file="<signature_file>")
-```
-
-
-Please note: by default, Alexandrov signatures report mutation frequencies for nucleotide triplets where the mutated base is at the center. Also, the basic Alexandrov signatures do not take transcription direction into account when computing mutation frequencies.
-
-
-### Shiraishi signatures {#sect:input_sign_shiraishi}
-
-Shiraishi signatures are specified as matrices (without headers and row names; as flat files, one file per signature).
+Shiraishi signatures are specified as matrices (in flat files without headers and row names; one file per signature).
 
 Format (see Shiraishi et al. PLoS Genetics 11(12):e1005657, 2015):
 
 * The first row:
-Frequencies of the six possible base changes C>A, C>G, C>T, T>A, T>C, and T>G. Please note that due to the complementarity of base pairing these six base changes already include A>? and G>?.
+Frequencies of the six possible base changes C>A, C>G, C>T, T>A, T>C, and T>G.
+Please note that due to the complementarity of base pairing these six base
+changes already include A>? and G>?.
 
 * The following *2k* rows (for *k* up- and downstream flanking bases):
 Frequencies of the bases A, C, G, and T, followed by two 0 values.
@@ -162,38 +220,34 @@ Frequencies of the bases A, C, G, and T, followed by two 0 values.
 Frequencies of occurrences on the transcription strand, and on the
 opposite strand, followed by four 0 values.
 
-Example for sequence patterns of 5 bases (mutated base plus two up- and downstream bases) with transcriptional direction:
+Among its examples, the **decompTumor2Sig** package provides a small set of
+four Shiraishi-type signatures in flat files. These signatures were obtained
+from 21 breast cancer genomes (Nik-Zainal et al. Cell 149:979--993, 2012) using
+the R package `r Rpackage("pmsignature")` (Shiraishi et al. PLoS Genet.
+11:e1005657, 2015).
 
-```
-1.8874e-14   0.10974   0.045918   0.11308   0.07429   0.65697
-3.8079e-01   0.12215   0.191456   0.30561   0.00000   0.00000
-1.5311e-01   0.34214   0.179774   0.32497   0.00000   0.00000
-1.2378e-01   0.10243   0.163461   0.61032   0.00000   0.00000
-3.4891e-01   0.15346   0.156687   0.34094   0.00000   0.00000
-5.6435e-01   0.43565   0.000000   0.00000   0.00000   0.00000
-```
+To read these flat files as signatures, you can use the following example:
 
-Among its examples, the **decompTumor2Sig** package provides a small set of four signatures in flat files. These signatures were obtained from 21 breast cancer genomes (Nik-Zainal et al. Cell 149:979--993, 2012) using the R `r Rpackage("pmsignature")` package (Shiraishi et al. PLoS Genet. 11:e1005657, 2015).
-
-To load these flat files as signatures, you can use the following example:
-
-```
-# take the signature flat files provided with decompTumor2Sig
+```{r}
+# take the example signature flat files provided with decompTumor2Sig
 sigfiles <- system.file("extdata",
-         paste0("Nik-Zainal_PMID_22608084-pmsignature-sig",1:4,".tsv"), 
-         package="decompTumor2Sig")
+                 paste0("Nik-Zainal_PMID_22608084-pmsignature-sig",1:4,".tsv"),
+                 package="decompTumor2Sig")
 
-# load the signature flat files
-signatures <- loadShiraishiSignatures(files=sigfiles)
+# read the signature flat files
+signatures <- readShiraishiSignatures(files=sigfiles)
+signatures[1]
 ```
 
-### Get signatures from the package `r Rpackage("pmsignature")` {#sect:input_sign_pmsignature}
+### Get signatures from the package `r Rpackage("pmsignature")` {#input-pmsig}
 
-The third possibility is to convert Shiraishi-type signatures directly from the package that computes them (`r Rpackage("pmsignature")`; Shiraishi et al. PLoS Genet. 11:e1005657, 2015).
+The third possibility is to convert Shiraishi-type signatures directly from
+the package that computes them (`r Rpackage("pmsignature")`; Shiraishi et al.
+PLoS Genet. 11:e1005657, 2015).
 
 Example workflow:
 
-```
+```{r, eval=FALSE}
 library(pmsignature)
 
 # use pmsignature to determine signatures from the set of tumor genomes
@@ -202,72 +256,106 @@ G <- readMPFile("myMutDB.MPF.txt.gz", numBases = 5, trDir = TRUE)
 Param <- getPMSignature(G, K=numsig)
 
 # extract the signatures from the parameters estimated by pmsignature
-signatures <- getSignatureListFromEstimatedParameters(Param)
+signatures <- getSignaturesFromEstParam(Param)
 ```
 
 
-Please note that `r Rpackage("pmsignature")` is neither part of CRAN nor of Bioconductor and must be downloaded and installed manually (available at: <https://github.com/friend1ws/pmsignature>). To load mutational signatures without `r Rpackage("pmsignature")` being installed, see the previous sections.
+Please note that `r Rpackage("pmsignature")` is neither part of CRAN nor of
+Bioconductor and must be downloaded and installed manually (available at:
+<https://github.com/friend1ws/pmsignature>). To load mutational signatures
+without `r Rpackage("pmsignature")` being installed, see the previous sections.
 
 
-### Conversion of Alexandrov signatures to Shiraishi signatures {#sect:conversion_sign}
+### Conversion of Alexandrov signatures to Shiraishi signatures {#sign-Alex2Shi}
 
-An Alexandrov-type signature can be converted into a Shiraishi-type signature (but not *vice versa* due to the loss of information). Consider the following example:
+An Alexandrov-type signature can be converted into a Shiraishi-type signature
+(but not *vice versa* due to the loss of information). Consider the following
+example:
 
-```
-sign_a <- loadAlexandrovSignatures()
-
+```{r, message=FALSE, warning=FALSE}
+sign_a <- readAlexandrovSignatures()
 sign_s <- convertAlexandrov2Shiraishi(sign_a)
+sign_s[1]
 ```
 
-*Note*: since the standard Alexandrov-type signatures regard nucleotide triplets and do not take transcription direction into account, the obtained Shiraishi-type signatures will also be limited to triplets without information about transcription direction.
+*Note*: since the standard Alexandrov-type signatures regard nucleotide
+triplets and do not take transcription direction into account, the obtained
+Shiraishi-type signatures will also be limited to triplets without information
+about transcription direction.
 
-**Important**: Please be aware that signatures are initially not determined in isolation but as a set of signatures derived from a commonly large set of tumor genomes (Alexandrov et al. Cell Rep. 3:246--259, 2013; Alexandrov et al. Nature 500:415--421, 2013; Shiraishi et al. PLoS Genet. 11:e1005657, 2015). Therefore, the biological meaning of converting signatures is not well defined, and the approach should be taken only with caution! As an example for the possible outcome, please see our paper (Krüger and Piro, 2018).
+**Important**: Please be aware that signatures are initially not determined in
+isolation but as a set of signatures derived from a commonly large set of tumor
+genomes (Alexandrov et al. Cell Rep. 3:246--259, 2013; Alexandrov et al. Nature
+500:415--421, 2013; Shiraishi et al. PLoS Genet. 11:e1005657, 2015). Therefore,
+the biological meaning of converting signatures is not well defined, and the
+approach should be taken with caution! As an example for the possible outcome,
+please see our paper (Krüger and Piro, 2018).
 
 
-## Somatic mutations from individual tumors {#sect:input_mut}
+## Somatic mutations from individual tumors {#input-mut}
 
-Information on the somatic mutations found in a tumor can be given in the following formats.
+Information on the somatic mutations found in a tumor can be read from one of
+the following formats and converted to mutation frequencies for
+**decompTumor2Sig**.
 
-### Variant Call Format (VCF) {#sect:input_mut_vcf}
+### Variant Call Format (VCF) {#input-mut-vcf}
 
-The somatic mutations of a tumor genome can be loaded from a VCF file. For detailed information on this format (including an example), see <https://samtools.github.io/hts-specs/VCFv4.2.pdf>.
+The somatic mutations of a tumor genome can be read from a VCF file. For
+detailed information on this format (including an example), see
+<https://samtools.github.io/hts-specs/VCFv4.2.pdf>.
 
-Mutations from multiple tumor genomes can also be loaded from a multi-sample VCF file.
+Mutations from multiple tumor genomes can also be read from a multi-sample VCF
+file.
 
-As an example, the **decompTumor2Sig** package provides the somatic mutations for the set of 21 breast cancer genomes originally published by Nik-Zainal et al (Cell 149:979--993, 2012). The dataset has been converted from MPF (see below) to VCF.
+As an example, the **decompTumor2Sig** package provides the somatic mutations
+for the set of 21 breast cancer genomes originally published by Nik-Zainal et
+al (Cell 149:979--993, 2012). The dataset has been converted from MPF (see
+below) to VCF.
 
 Example workflow:
 
-```
+```{r}
 # load the reference genome and the transcript annotation database
 refGenome <- BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19
-transcriptAnno <- TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
+transcriptAnno <-
+           TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
 
 # take the breast cancer genomes from Nik-Zainal et al (PMID: 22608084) 
 gfile <- system.file("extdata",
-         "Nik-Zainal_PMID_22608084-VCF-convertedfromMPF.vcf.gz", 
-         package="decompTumor2Sig")
+                     "Nik-Zainal_PMID_22608084-VCF-convertedfromMPF.vcf.gz",
+                     package="decompTumor2Sig")
 
-# load the cancer genomes in VCF format
-genomes <- loadGenomesFromVCF(gfile, numBases=5, type="Shiraishi",
-         trDir=TRUE, refGenome=refGenome, transcriptAnno=transcriptAnno, verbose=FALSE)
+# read the cancer genomes in VCF format
+genomes <- readGenomesFromVCF(gfile, numBases=5, type="Shiraishi",
+                              trDir=TRUE, refGenome=refGenome,
+                              transcriptAnno=transcriptAnno, verbose=FALSE)
+length(genomes)
+genomes[1:2]
 ```
 
-When loading somatic mutations of tumor genomes with **loadGenomesFromVCF**, they are preprocessed to determine mutation frequencies according to specific sequence characteristics which can be controlled by the following arguments:
+When reading somatic mutations of tumor genomes with **readGenomesFromVCF**,
+they are preprocessed to determine mutation frequencies according to specific
+sequence characteristics which can be controlled by the following arguments:
 
-* *type*: type of signatures that will be used with the genomes, "Shiraishi" or "Alexandrov"
-* *numBases*: the number of nucleotides/bases of the mutated sequence (where the mutated base is at the center) 
-* *trDir*: whether the transcription direction should be taken into account (default: TRUE)
-* *refGenome*: the reference genome from which to obtain the flanking bases of the mutated base
-* *transcriptAnno*: the transcript annotation database from which to obtain the transcription direction (if needed)
+* *type*: Type of signatures that will be used with the genomes, "Shiraishi" or
+"Alexandrov".
+* *numBases*: The odd number of nucleotides/bases of the mutated sequence
+(where the mutated base is at the center). 
+* *trDir*: Whether the transcription direction should be taken into account
+(default: TRUE). If so, only mutations located within genomic regions for which
+a transcript direction is defined will be considered.
+* *refGenome*: The reference genome from which to obtain the flanking bases of
+the mutated base.
+* *transcriptAnno*: The transcript annotation database from which to obtain the
+transcription direction (if needed, i.e., if *trDir*=TRUE).
 
 
 
-### Mutation Position Format (MPF) {#sect:input_mut_mpf}
+### Mutation Position Format (MPF) {#input-mut-mpf}
 
-Alternatively, somatic mutations can be loaded from an MPF file.
+Alternatively, somatic mutations can be read from an MPF file.
 
-Example:
+Example MPF file:
 
 ```
 patient1   chr1   809687    G   C
@@ -288,65 +376,91 @@ The five columns contain
 
 Hence, with an MPF file, too, multiple tumors can be described.
 
-As an example, the **decompTumor2Sig** package provides the somatic mutations for the set of 21 breast cancer genomes originally published by Nik-Zainal et al (Cell 149:979--993, 2012).
+As an example, the **decompTumor2Sig** package provides the somatic mutations
+for the set of 21 breast cancer genomes originally published by Nik-Zainal et
+al (Cell 149:979--993, 2012).
 
 Example workflow:
 
-```
+```{r}
 # load the reference genome and the transcript annotation database
 refGenome <- BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19
-transcriptAnno <- TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
+transcriptAnno <-
+           TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
 
 # take the breast cancer genomes from Nik-Zainal et al (PMID: 22608084) 
 gfile <- system.file("extdata", "Nik-Zainal_PMID_22608084-MPF.txt.gz", 
-         package="decompTumor2Sig")
+                     package="decompTumor2Sig")
 
-# load the cancer genomes in MPF format
-genomes <- loadGenomesFromMPF(gfile, numBases=5, type="Shiraishi",
-         trDir=TRUE, refGenome=refGenome, transcriptAnno=transcriptAnno, verbose=FALSE)
+# read the cancer genomes in MPF format
+genomes <- readGenomesFromMPF(gfile, numBases=5, type="Shiraishi",
+                              trDir=TRUE, refGenome=refGenome,
+                              transcriptAnno=transcriptAnno, verbose=FALSE)
 ```
 
-Note: the preprocessing of the somatic mutations into mutation frequencies can be controlled with the same function arguments that have been described above for **loadGenomesFromVCF**.
+Note: the preprocessing of the somatic mutations into mutation frequencies can
+be controlled with the same function arguments that have been described above
+for **readGenomesFromVCF**.
 
 
 
-### Get somatic mutations from the package `r Rpackage("pmsignature")` {#sect:input_mut_pmsignature}
+### Get somatic mutations from the package `r Rpackage("pmsignature")` {#mutpm}
 
-The third possibility to get the somatic mutations from one or more tumor genomes is to convert them directly from a tumor data object loaded using the `r Rpackage("pmsignature")` package (Shiraishi et al. PLoS Genet. 11:e1005657, 2015).
+The third possibility to get the somatic mutations from one or more tumor
+genomes is to convert them directly from a tumor data object
+(*MutationFeatureData* object) loaded using the `r Rpackage("pmsignature")`
+package (Shiraishi et al. PLoS Genet. 11:e1005657, 2015).
 
-Example workflow:
+An example of such an object is provided with **decompTumor2Sig**:
 
-```
-# get breast cancer genomes from Nik-Zainal et al (PMID: 22608084) in the format produced by
-# pmsignature (PMID: 26630308)
+```{r, eval=FALSE}
+# get breast cancer genomes from Nik-Zainal et al (PMID: 22608084) 
+# in the format produced by pmsignature (PMID: 26630308)
 pmsigdata <- system.file("extdata", 
-         "Nik-Zainal_PMID_22608084-pmsignature-G.Rdata", 
-         package="decompTumor2Sig")
+                         "Nik-Zainal_PMID_22608084-pmsignature-G.Rdata", 
+                         package="decompTumor2Sig")
 load(pmsigdata)
 
 # extract the genomes from the pmsignature G object
-genomes <- getGenomesFromMutationFeatureData(G, normalize=TRUE)
+genomes <- getGenomesFromMutFeatData(G, normalize=TRUE)
 ```
 
 
-Please note that `r Rpackage("pmsignature")` is neither part of CRAN nor of Bioconductor and must be downloaded and installed manually (available at: <https://github.com/friend1ws/pmsignature>). To load somatic mutations without `r Rpackage("pmsignature")` being installed, see the previous sections.
+Please note that `r Rpackage("pmsignature")` is neither part of CRAN nor of
+Bioconductor and must be downloaded and installed manually (available at:
+<https://github.com/friend1ws/pmsignature>). To read tumor genomes without
+`r Rpackage("pmsignature")` being installed, see the previous sections about
+VCF and MPF and the following section.
 
-**Important**: the argument *normalize*, that can be specified for **getGenomesFromMutationFeatureData**, controls whether the function should simply count the number of occurrences or whether it provides (normalized) fractions/percentages of mutations among the total set. Normalization is the default and is what **should be used** for determining the contribution of individual signatures to the mutational load of a tumor. *normalize*=FALSE should be used only in case you are interest how many somatic mutations of the single signature categories can be found in a tumor; it should not be used for further processing with **decompTumor2Sig**!
+**Important**: the argument *normalize*, that can be specified for
+**getGenomesFromMutFeatData**, controls whether the function should simply
+count the number of occurrences or whether it provides (normalized)
+fractions/percentages of mutations among the total set. Normalization is the
+default and is what **should be used** for determining the contribution of
+individual signatures to the mutational load of a tumor. *normalize*=FALSE
+should be used only in case you are interest how many somatic mutations of the
+single signature categories can be found in a tumor; it should not be used for
+further processing with **decompTumor2Sig**!
 
 
-### Get somatic mutations from a VRanges object {#sect:input_mut_vranges}
+### Get somatic mutations from a VRanges object {#input-mut-vranges}
 
-The Bioconductor package `r Biocpkg("VariantAnnotation")` provides the class **VRanges** which can be used to store mutation information. **decompTumor2Sig** allows to extract single nucleotide variants (SNVs) from such an object and convert them into the tumor genomes' mutation frequencies using the function **convertGenomesFromVRanges**, as in the following example workflow:
+The Bioconductor package `r Biocpkg("VariantAnnotation")` provides the class
+**VRanges** which can be used to store mutation information. **decompTumor2Sig**
+allows to extract single nucleotide variants (SNVs) from such an object and
+convert them into the tumor genomes' mutation frequencies using the function
+**convertGenomesFromVRanges**, as in the following example workflow:
 
-```
+```{r, message=FALSE}
 # load the reference genome and the transcript annotation database
 refGenome <- BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19
-transcriptAnno <- TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
+transcriptAnno <-
+           TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
 
 # take the breast cancer genomes from Nik-Zainal et al (PMID: 22608084) 
 gfile <- system.file("extdata",
-         "Nik-Zainal_PMID_22608084-VCF-convertedfromMPF.vcf.gz", 
-         package="decompTumor2Sig")
+                     "Nik-Zainal_PMID_22608084-VCF-convertedfromMPF.vcf.gz", 
+                     package="decompTumor2Sig")
 
 # get the corresponding VRanges object (using the VariantAnnotation package)
 library(VariantAnnotation)
@@ -354,570 +468,583 @@ vr <- readVcfAsVRanges(gfile, genome="hg19")
 
 # convert the VRanges object to the decompTumor2Sig format
 genomes <- convertGenomesFromVRanges(vr, numBases=5, type="Shiraishi",
-         trDir=TRUE, refGenome=refGenome, transcriptAnno=transcriptAnno, verbose=FALSE)
+                                     trDir=TRUE, refGenome=refGenome,
+                                     transcriptAnno=transcriptAnno,
+                                     verbose=FALSE)
 ```
 
 
-# Workflow {#sect:workflow}
+# Workflow {#workflow}
 
-(*Note*: The following examples are for illustrative purpose only and need not be biologically meaningful.)
+(*Note*: The following examples are for illustrative purpose only and need not
+be biologically meaningful.)
 
-Once both the tumor genome(s) and the given mutational signatures have been loaded (see above), the contribution of the given signatures to the somatic mutations in individual tumors can be determined using the following workflow.
+Once both the tumor genome(s) and the given mutational signatures have been
+read (see above), the contribution of the given signatures to the somatic
+mutations in individual tumors can be determined using the following workflow.
 
-In the following, we assume to have the signatures in a list object named *signatures* and the mutation frequencies of the tumor genome(s) in another list object named *genomes*.
+In the following, we assume to have the signatures in a list object named
+*signatures* and the mutation frequencies of the tumor genome(s) in another
+list object named *genomes*.
 
-Taking, for example, Shiraishi-type signatures (example from Section 3.1.2) and loading the mutation data accordingly (e.g., example from Section 3.2.1), we get:
-
-*signatures*:
-```
-$`Nik-Zainal_PMID_22608084-pmsignature-sig1.tsv`
-           [,1]         [,2]      [,3]      [,4]      [,5]      [,6]
-[1,] 0.05606328 7.038910e-02 0.3933106 0.1310378 0.2079748 0.1412245
-[2,] 0.27758477 2.107542e-01 0.2354323 0.2762287 0.0000000 0.0000000
-[3,] 0.33081021 2.534743e-01 0.2366254 0.1790902 0.0000000 0.0000000
-[4,] 0.21472304 2.665627e-09 0.5523105 0.2329664 0.0000000 0.0000000
-[5,] 0.22640542 2.002424e-01 0.3211338 0.2522184 0.0000000 0.0000000
-[6,] 0.50140066 4.985993e-01 0.0000000 0.0000000 0.0000000 0.0000000
-
-$`Nik-Zainal_PMID_22608084-pmsignature-sig2.tsv`
-             [,1]       [,2]         [,3]         [,4]        [,5]        [,6]
-[1,] 3.918463e-05 0.99844829 8.008569e-07 6.100149e-33 2.50988e-33 0.001511729
-[2,] 1.887881e-01 0.45515661 9.147057e-02 2.645848e-01 0.00000e+00 0.000000000
-[3,] 1.076492e-02 0.01850276 2.897822e-03 9.678345e-01 0.00000e+00 0.000000000
-[4,] 3.904620e-01 0.08405818 1.403961e-02 5.114402e-01 0.00000e+00 0.000000000
-[5,] 3.775239e-01 0.13305720 2.424492e-01 2.469697e-01 0.00000e+00 0.000000000
-[6,] 5.136780e-01 0.48632204 0.000000e+00 0.000000e+00 0.00000e+00 0.000000000
-
-[...]
-```
-
-*genomes*:
-```
-$PD3851a
-        [C>A]     [C>G]     [C>T]     [T>A]    [T>C]      [T>G]
-mut 0.1913161 0.1031208 0.3487110 0.1166893 0.156038 0.08412483
--2  0.2605156 0.2306649 0.1831750 0.3256445 0.000000 0.00000000
--1  0.2862958 0.2388060 0.1791045 0.2957938 0.000000 0.00000000
-1   0.2795115 0.1886024 0.2686567 0.2632293 0.000000 0.00000000
-2   0.2727273 0.2184532 0.1981004 0.3107191 0.000000 0.00000000
-tr  0.4735414 0.5264586 0.0000000 0.0000000 0.000000 0.00000000
-
-$PD3890a
-        [C>A]     [C>G]     [C>T]     [T>A]     [T>C]     [T>G]
-mut 0.1543062 0.2500000 0.2312600 0.1164274 0.1311802 0.1168262
--2  0.3026316 0.2109250 0.1925837 0.2938596 0.0000000 0.0000000
--1  0.2360447 0.2296651 0.1646730 0.3696172 0.0000000 0.0000000
-1   0.2990431 0.2085327 0.1527113 0.3397129 0.0000000 0.0000000
-2   0.2910686 0.1981659 0.1885965 0.3221691 0.0000000 0.0000000
-tr  0.4860447 0.5139553 0.0000000 0.0000000 0.0000000 0.0000000
-
-[...]
-```
-
-**Important note**: it is imperative that the mutation frequencies represented by both *signatures* and *genomes* have been computed with the same characteristics. That is, if the *signatures* refer to sequences of 5 nucleotides/bases (with the mutated base at the center), then also the *genomes* must have been loaded for 5 bases. If the *signatures* have been produced taking the transcription direction into account, then also the *genomes* must have been loaded taking the transcription direction into account, and so on.
+**Important note**: it is imperative that the mutation frequencies represented
+by both *signatures* and *genomes* have been computed with the same
+characteristics. That is, if the *signatures* refer to sequences of 5
+nucleotides/bases (with the mutated base at the center), then also the
+*genomes* must have been read for 5 bases. If the *signatures* have been
+produced taking the transcription direction into account, then also the
+*genomes* must have been read taking the transcription direction into account,
+and so on.
 
 
 ## Visualizing genome characteristics and mutational signatures
 
-(Note: this functionality is not essential for **decompTumor2Sig**, we therefore only wrap the visualization capabilities of the package `r Rpackage("pmsignature")` which is neither part of CRAN nor of Bioconductor and must be downloaded and installed manually from <https://github.com/friend1ws/pmsignature>.)
+(Note: this functionality is not essential for **decompTumor2Sig**, we
+therefore only wrap the visualization capabilities of the package
+`r Rpackage("pmsignature")` which is neither part of CRAN nor of Bioconductor
+and must be downloaded and installed manually from
+<https://github.com/friend1ws/pmsignature>.)
 
-Given that the signatures and the genomes (if loaded appropriately) have the same format and contain the same type of information (fractions/percentages of somatic mutations that have specific features, e.g., specific neighboring bases), both can essentially be visualized in the same way.
+Given that the signatures and the genomes (if read appropriately) have the same
+format and contain the same type of information (fractions/percentages of
+somatic mutations that have specific features, e.g., specific neighboring
+bases), both can essentially be visualized in the same way.
 
-The function **plotMutationDistribution** takes as an input either a single signature or the mutation frequencies of an individual tumor genome (either of Alexandrov- or of Shiraishi-type) and converts them such that they can be plotted using the functionalities provided by the package `r Rpackage("pmsignature")`.
+The function **plotMutationDistribution** takes as an input either a single
+signature or the mutation frequencies of an individual tumor genome (either of
+Alexandrov- or of Shiraishi-type) and converts them such that they can be
+plotted using the functionalities provided by the package
+`r Rpackage("pmsignature")`.
 
-To plot, for example, Alexandrov signature 1 (obtained as described in Section 3.1.1):
+To plot, for example, Alexandrov signature 1 (obtained as described in Section
+3.1.1):
 
-```
-signatures <- loadAlexandrovSignatures()
-
+```{r, eval=FALSE}
+signatures <- readAlexandrovSignatures()
 plotMutationDistribution(signatures[[1]])
 ```
-
 ```{r, echo=FALSE}
-library(knitr)
 include_graphics("example-sign-Alexandrov.png")
 ```
 
-To plot the first of the Shiraishi signatures provided with this package (see Section 3.1.2):
+To plot one of the Shiraishi signatures provided with this package (see Section
+3.1.2):
 
-```
+```{r, eval=FALSE}
 sigfiles <- system.file("extdata",
-         paste0("Nik-Zainal_PMID_22608084-pmsignature-sig",1:4,".tsv"), 
-         package="decompTumor2Sig")
-signatures <- loadShiraishiSignatures(files=sigfiles)
+                 paste0("Nik-Zainal_PMID_22608084-pmsignature-sig",1:4,".tsv"), 
+                 package="decompTumor2Sig")
+signatures <- readShiraishiSignatures(files=sigfiles)
 
 plotMutationDistribution(signatures[[1]])
 ```
-
 ```{r, echo=FALSE}
-library(knitr)
 include_graphics("example-sign-Shiraishi.png")
 ```
 
-For comparison, the following example loads the tumor genomes provided with this package using the Alexandrov model (see Section 3.2.1) and plots the mutation frequencies of the first genome:
+For comparison, the following example reads the tumor genomes provided with this
+package using the Alexandrov model (see Section 3.2.1) and plots the mutation
+frequencies of the first genome:
 
-```
+```{r, eval=FALSE}
 refGenome <- BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19
 gfile <- system.file("extdata",
-         "Nik-Zainal_PMID_22608084-VCF-convertedfromMPF.vcf.gz", 
-         package="decompTumor2Sig")
-genomes <- loadGenomesFromVCF(gfile, numBases=3, type="Alexandrov",
+                     "Nik-Zainal_PMID_22608084-VCF-convertedfromMPF.vcf.gz", 
+                     package="decompTumor2Sig")
+genomes <- readGenomesFromVCF(gfile, numBases=3, type="Alexandrov",
          trDir=FALSE, refGenome=refGenome, verbose=FALSE)
 
 plotMutationDistribution(genomes[[1]])
 ```
-
 ```{r, echo=FALSE}
-library(knitr)
 include_graphics("example-genome-Alexandrov.png")
 ```
 
 
 ## Explained variance as a function of the number of signatures
 
-In many cases already a small subset of the given signatures is sufficient to explain the major fraction of the variance of the mutation frequencies observed in a single tumor genome.
+In many cases already a small subset of the given signatures is sufficient to
+explain the major fraction of the variance of the mutation frequencies observed
+in a single tumor genome.
 
-The explained variance can be determined by comparing the true mutation frequencies $g_i$ of the tumor genome---where $i$ is one of the mutation patterns of the signature model (e.g., triplet mutations for Alexandrov signatures, or base changes or flanking bases for Shiraishi signatures)---to the mutation frequencies $\hat{g}_i$ obtained when recomposing/reconstructing the mutation frequencies of the tumor genome from the mutational signatures and their computed exposures/contributions. (See Section 4.3 for computing the exposures/contributions, and Section 4.4 for reconstructing the mutation frequencies of a tumor.)
+The explained variance can be determined by comparing the true mutation
+frequencies $g_i$ of the tumor genome---where $i$ is one of the mutation
+features of the signature model (e.g., triplet mutations for Alexandrov
+signatures, or base changes or flanking bases for Shiraishi signatures)---to
+the mutation frequencies $\hat{g}_i$ obtained when re-composing/reconstructing
+the mutation frequencies of the tumor genome from the mutational signatures and
+their computed exposures/contributions. (See Section 4.3 for computing the
+exposures/contributions, and Section 4.4 for reconstructing the mutation
+frequencies of a tumor.)
 
 For the Alexandrov model, the explained variance can be estimated as:
 
-$$ \mathrm{evar} = 1 - \frac{\sum_i{(g_i - \hat{g}_i)^2}}{\sum_i({g_i} - \bar{g})^2} $$
+$$ \mathrm{evar}=1-\frac{\sum_i{(g_i-\hat{g}_i)^2}}{\sum_i({g_i}-\bar{g})^2} $$
 
-where the numerator is the residual sum of squares (RSS) between the predicted and true mutation frequencies of the tumor genome, and the denominator can be interpreted as the deviation from a tumor genome with a uniform mutation frequency of 1/96 (which is precisely the average mutation frequency $\bar{g}$).
+where the numerator is the residual sum of squares (RSS) between the predicted
+and true mutation frequencies of the tumor genome, and the denominator can be
+interpreted as the deviation from a tumor genome with a uniform mutation
+frequency of 1/96 for each feature (which is precisely the average mutation
+frequency $\bar{g}$).
 
-For the Shiraishi model, $\bar{g}$ does not describe a tumor genome with uniform mutation frequencies, and hence the explained variance is estimated as:
+For the Shiraishi model, $\bar{g}$ does not describe a tumor genome with
+uniform mutation frequencies, and hence the explained variance is estimated as:
 
-$$ \mathrm{evar} = 1 - \frac{\sum_i{(g_i - \hat{g}_i)^2}}{\sum_i({g_i} - {g}^{*}_i)^2} $$
+$$\mathrm{evar}=1-\frac{\sum_i{(g_i-\hat{g}_i)^2}}{\sum_i({g_i}-{g}^{*}_i)^2}$$
 
-where $g^{*}$ is a uniform tumor model that uses mutation frequencies of 1/6 for the six possible base changes, 1/4 for each of the possible flanking bases, and 1/2 for each of the two possible transcription-strand directions. For more details, please see Krüger and Piro (2018).
+where $g^{*}$ is a uniform tumor model that uses mutation frequencies of 1/6
+for the six possible base changes, 1/4 for each of the possible flanking bases,
+and 1/2 for each of the two possible transcription-strand directions. For more
+details, please see Krüger and Piro (2018).
 
-The function **plotExplainedVariance** allows to visually analyze how many signatures are necessary to explain certain fractions of the variance of a tumor genome's mutational load.
+The function **plotExplainedVariance** allows to visually analyze how many
+signatures are necessary to explain certain fractions of the variance of a
+tumor genome's mutational patterns.
 
-For an increasing number *K* of signatures, the highest variance explained by any possible subset of *K* signatures will be plotted. This can help to evaluate what minimum threshold for the explained variance could be used to decompose tumor genomes with the function **decomposeTumorGenomes** (see below).
+For an increasing number *K* of signatures, the highest variance explained by
+subsets of *K* signatures will be plotted. This can help to evaluate what
+minimum threshold for the explained variance could be used to decompose tumor
+genomes with the function **decomposeTumorGenomes** (see below).
 
 ### Example: input data
 
-As a simple example, load the set of 15 Shiraishi-type signatures (object *signatures*) provided with this package, that we obtained with the package `r Rpackage("pmsignature")` from 435 tumor genomes with at least 100 somatic mutations from ten different tumor entities (data obtained from Alexandrov et al. Nature 500:415-421, 2013; for the analysis, see our papers mentioned in Section 1.1):
+As a simple example, load a set of 15 Shiraishi-type signatures (object
+*signatures*) provided with this package. These signatures were obtained with
+the package `r Rpackage("pmsignature")` from a set of 435 tumor genomes with at
+least 100 somatic mutations from ten different tumor entities (data from
+Alexandrov et al. Nature 500:415-421, 2013; for the analysis, see our papers
+mentioned in Section 1.1):
 
-```
-# take the 15 Shiraishi signatures obtained from 435 tumor genomes from Alexandrov et al.
+```{r}
+# load the 15 Shiraishi signatures obtained from 
+# 435 tumor genomes from Alexandrov et al.
 sfile <- system.file("extdata",
-         "Alexandrov_PMID_23945592_435_tumors-pmsignature-15sig.Rdata", 
-         package="decompTumor2Sig")
+              "Alexandrov_PMID_23945592_435_tumors-pmsignature-15sig.Rdata", 
+              package="decompTumor2Sig")
 load(sfile)
+length(signatures)
+signatures[1]
 ```
 
-This provides an object *signatures* with 15 Shiraishi signatures for mutated subsequences of length 5 (five nucleotides with the mutated base at the center) and taking transcription direction into account.
+This loads an object *signatures* with 15 Shiraishi signatures for mutated
+subsequences of length 5 (five nucleotides with the mutated base at the center)
+and taking transcription direction into account.
 
-Now load the tumor genomes (object *genomes*) provided with this package, as described in Section 3.2.1.
+Now read the tumor genomes (object *genomes*) provided with this package, as
+described in Section 3.2.1:
+```{r}
+# take the breast cancer genomes from Nik-Zainal et al (PMID: 22608084) 
+gfile <- system.file("extdata",
+                     "Nik-Zainal_PMID_22608084-VCF-convertedfromMPF.vcf.gz", 
+                     package="decompTumor2Sig")
+
+# read the cancer genomes in VCF format
+genomes <- readGenomesFromVCF(gfile, numBases=5, type="Shiraishi",
+                              trDir=TRUE, refGenome=refGenome,
+                              transcriptAnno=transcriptAnno, verbose=FALSE)
+```
 
 ### Example: plot the explained variance
 
-The explained variance can be plotted only for a single tumor genome. Plotting the explained variance of the first tumor genome when using increasing subsets of the 15 mutational signatures (see above), for example, can be done with the following command: 
+The explained variance can be plotted only for a single tumor genome. Plotting
+the explained variance of the first tumor genome when using increasing subsets
+of the 15 mutational signatures (see above), for example, can be done with the
+following command: 
 
-```
+```{r, fig.asp=1}
 plotExplainedVariance(genomes[[1]], signatures, minExplainedVariance=0.9,
-                                    minNumSignatures=2, maxNumSignatures=NULL)
-```
-
-```{r, echo=FALSE}
-library(knitr)
-include_graphics("example-expvar-PD3851a-15sig.png")
+                                    minNumSignatures=2, maxNumSignatures=NULL,
+                                    greedySearch=TRUE)
 ```
 
 The function **plotExplainedVariance** takes the following arguments:
 
-* *genome*: the mutation frequencies of a single tumor genome (according to the Alexandrov or Shiraishi model)
-* *signatures*: the set of given signatures (must be of the same model as the genome)
-* *minExplainedVariance* (default is NULL): if specified, the smallest subset of signatures necessary to explain at least this fraction of the variance is highlighted in red (including the list of the signatures in the subset)
-* *minNumSignatures* (default is 2): take at least this minimum number of signatures
-* *maxNumSignatures* (default is NULL, i.e., all): if specified, take at most this maximum number of signatures
+* *genome*: The mutation frequencies of a single tumor genome (according to the
+Alexandrov or Shiraishi model).
+* *signatures*: The set of given signatures (must be of the same model as the
+genome).
+* *minExplainedVariance* (default is NULL): If specified, the smallest subset of
+signatures necessary to explain at least this fraction of the variance is
+highlighted in red (including the list of the signatures in the subset).
+* *minNumSignatures* (default is 2): Take at least this minimum number of
+signatures.
+* *maxNumSignatures* (default is NULL, i.e., all): If specified, take at most
+this maximum number of signatures.
+* *greedySearch* (default is FALSE): If FALSE, the function will evaluate for
+each number of signatures *K* **all** possible subsets of *K* signatures to
+compute the highest explained variance for *K*. This is can take very long if
+the total number of given signatures is too high. If TRUE, first, all possible
+subsets with *K*=*minNumSignatures* are evaluated, taking the subset with the
+highest explained variance, then stepwise one additional signature (highest
+increase of explained variance) is added to the already identified set. This
+approximation is much faster but not guaranteed to plot the maximum explained
+variance for all *K*.
 
-**Note**: the function **plotExplainedVariance** will evaluate for each number of signatures *K* **all** possible subsets of *K* signatures to compute the highest explained variance for *K*. This is can take very long if the total number of given signatures is too high.
 
-
-## Decomposing tumor genomes to determine the contributions of the mutational signatures
+## Decomposing tumor genomes by signature refitting (contribution prediction)
 
 This is the heart of the functionality of **decompTumor2Sig**, its main purpose.
 
-Given a tumor genome and a set of mutational signatures (that represent mutational processes like UV light, smoking, etc; see  Alexandrov and Stratton, Curr Opin Genet Dev 24:52-60, 2014), we would like to estimate how strongly the different signatures (processes) contributed to the overall mutational load observed in the tumor.
+Given a tumor genome and a set of mutational signatures (that represent
+mutational processes like UV light, smoking, etc; see  Alexandrov and Stratton,
+Curr Opin Genet Dev 24:52-60, 2014), we would like to estimate how strongly the
+different signatures (processes) contributed to the overall mutational load
+observed in the tumor.
 
-The result will be a vector of weights/contributions (or "exposures") which indicate the fractions/percentages of somatic mutations which can likely be attributed to the given signatures.
+The result will be a vector of weights/contributions (or "exposures") which
+indicate the fractions or percentages of somatic mutations which can likely be
+attributed to the given signatures.
 
-Lets take, for example, the signature and tumor data used for the example in Section 4.2 (see there).
+Lets take, for instance, the signature and tumor data used for the example in
+Section 4.2 (see there).
 
-To compute the contributions of the 15 given signatures to the first tumor genome, we can run the following command ...
+To compute the contributions of the 15 given signatures to the first tumor
+genome, we can run the following command ...
 
-```
+```{r}
 exposure <- decomposeTumorGenomes(genomes[1], signatures)
 ```
 
 ... and get the following *exposures* (contributions) for the 15 signatures:
 
-```
-> exposure
-$PD3851a
-      sign_1       sign_2       sign_3       sign_4       sign_5       sign_6 
-4.874215e-02 1.237708e-01 5.984978e-02 5.764690e-02 1.426703e-20 1.109195e-01 
-      sign_7       sign_8       sign_9      sign_10      sign_11      sign_12 
-8.766150e-02 5.115825e-02 2.758243e-02 9.180615e-02 3.070582e-02 3.256016e-02 
-     sign_13      sign_14      sign_15 
-3.608152e-02 1.953982e-01 4.611685e-02 
+```{r}
+exposure
 ```
 
 The exposures/contributions for a single tumor genome can also be plotted:
 
-```
+```{r, message=FALSE, warning=FALSE, fig.asp=1}
 plotDecomposedContribution(exposure)
 ```
 
-```{r, echo=FALSE}
-library(knitr)
-include_graphics("example-exposureplot-PD3851a-15sig.png")
-```
+In some cases, multiple tumor genomes need to be decomposed (each one, however,
+individually). In this case, a set of tumor genomes can be passed to
+**decomposeTumorGenomes**:
 
-In some cases, multiple tumor genomes need to be decomposed (each one, however, individually). In this case, a set of tumor genomes can be passed to **decomposeTumorGenomes**:
-
-```
+```{r}
 exposures <- decomposeTumorGenomes(genomes, signatures)
+length(exposures)
+exposures[1:2]
 ```
 
-*exposures*:
-```
-> exposures
-$PD3851a
-      sign_1       sign_2       sign_3       sign_4       sign_5       sign_6 
-4.874215e-02 1.237708e-01 5.984978e-02 5.764690e-02 1.426703e-20 1.109195e-01 
-      sign_7       sign_8       sign_9      sign_10      sign_11      sign_12 
-8.766150e-02 5.115825e-02 2.758243e-02 9.180615e-02 3.070582e-02 3.256016e-02 
-     sign_13      sign_14      sign_15 
-3.608152e-02 1.953982e-01 4.611685e-02 
+### Finding a subset of signatures with a minimum explained variance
 
-$PD3890a
-    sign_1     sign_2     sign_3     sign_4     sign_5     sign_6     sign_7 
-0.01525397 0.02791685 0.07609293 0.07239998 0.00815879 0.17830407 0.04543191 
-    sign_8     sign_9    sign_10    sign_11    sign_12    sign_13    sign_14 
-0.09344739 0.14291157 0.13844086 0.05390118 0.00000000 0.03827808 0.08551768 
-   sign_15 
-0.02394473 
+Instead of decomposing a tumor genome precisely into the given set of signatures
+(15 in the example above), the function **decomposeTumorGenomes** can
+alternatively be used to search for subsets of signatures for which the
+decomposition satisfies a minimum threshold of explained variance (here, we
+show this only for the first tumor):
 
-[...]
-```
-
-### Finding exposures for a subset of signatures with a minimum explained variance
-
-Instead of decomposing a tumor genome precisely into the given set of signatures (15 in the example above), the function **decomposeTumorGenomes** can alternatively be used to search for subsets of signatures for which the decomposition satisfies a minimum threshold of explained variance:
-
-```
-exposures <- decomposeTumorGenomes(genomes, signatures,
+```{r}
+exposures <- decomposeTumorGenomes(genomes[1], signatures,
                                    minExplainedVariance=0.9,
                                    minNumSignatures=2, maxNumSignatures=NULL,
                                    greedySearch=FALSE, verbose=TRUE)
 ```
 
-For each tumor genome, the minimum subset of signatures that explain at least *minExplainedVariance* percent of the variance of the mutation frequencies will be identified (the exposures of all other signatures will be set to NA):
+For each tumor genome, the minimum subset of signatures that explain at least
+*minExplainedVariance* percent of the variance of the mutation frequencies will
+be identified (the exposures of all other signatures will be set to NA):
 
-```
-Decomposing genome 1 (PD3851a) with 2 signatures ...
- with 3 signatures ...
- with 4 signatures ...
- with 5 signatures ...
- with 6 signatures ...
- with 7 signatures ...
- explained variance: 0.903349612580512
- with 3 signatures ...
- with 4 signatures ...
- with 5 signatures ...
- with 6 signatures ...
- with 7 signatures ...
- explained variance: 0.908539373424795
-[...]
-
-> exposures
-$PD3851a
-    sign_1     sign_2     sign_3     sign_4     sign_5     sign_6     sign_7 
-        NA 0.14986576 0.08839117 0.11203026         NA 0.18900885 0.16543502 
-    sign_8     sign_9    sign_10    sign_11    sign_12    sign_13    sign_14 
-        NA         NA 0.09461580         NA         NA         NA 0.20065314 
-   sign_15 
-        NA 
-
-$PD3890a
-   sign_1    sign_2    sign_3    sign_4    sign_5    sign_6    sign_7    sign_8 
-       NA        NA        NA        NA        NA 0.1910117 0.1074078 0.1395364 
-   sign_9   sign_10   sign_11   sign_12   sign_13   sign_14   sign_15 
-0.1604152 0.1696167        NA        NA 0.1231509 0.1088613        NA 
-[...]
+```{r}
+exposures
 ```
 
 
-```
+```{r, fig.asp=1}
 plotDecomposedContribution(exposures[[1]])
 ```
-[If **plotDecomposedContribution** is run with *removeNA=FALSE*, also signatures with an NA value as exposure will be included in the x-axis of the plot. Additionally, the signatures can be passed to the function using the parameter *signatures*; this allows to use the correct signature names for the plot.]
 
-```{r, echo=FALSE}
-library(knitr)
-include_graphics("example-exposureplot-PD3851a-15sig-min09.png")
-```
+[If **plotDecomposedContribution** is run with *removeNA=FALSE*, also signatures
+with an NA value as exposure will be included in the x-axis of the plot.
+Additionally, the signatures can be passed to the function using the parameter
+*signatures*; this allows to use the correct signature names for the plot.]
 
-**Important note**: although a subset of signatures may explain the somatic mutations observed in the tumor genomes reasonably well, they need not necessarily be the signatures with the highest contribution when taking the entire set of signatures.
+**Important note**: although a subset of signatures may explain the somatic
+mutations observed in the tumor genomes reasonably well, they need not
+necessarily be the signatures with the highest contribution when taking the
+entire set of signatures.
 
-**Important note**: if for a tumor genome no (sub)set of signatures is sufficient to explain at least *minExplainedVariance* percent of the variance, no result (NULL) is returned for that tumor.
+**Important note**: if for a tumor genome no (sub)set of signatures is
+sufficient to explain at least *minExplainedVariance* percent of the variance,
+no result (NULL) is returned for that tumor.
 
-The search behavior of **decomposeTumorGenomes** when finding a subset of signatures to explain the somatic mutations of a tumor can be influenced by the following arguments:
+The search behavior of **decomposeTumorGenomes** when finding a subset of
+signatures to explain the somatic mutations of a tumor can be influenced by the
+following arguments:
 
-* *minExplainedVariance* (default is NULL): if not specified, *all* signatures are taken for the decomposition; if specified, the smallest subset of signatures which explains at least *minExplainedVariance* of the variance is taken for the decomposition
-* *minNumSignatures* (default is 2): if a search for a subset of signatures is performed, at least *minNumSignatures* will be taken
-* *maxNumSignatures* (default is NULL, i.e., all): if a search for a subset of signatures is performed, at most *maxNumSignatures* will be taken; if NULL, all given signatures will be taken as the maximum; if *maxNumSignatures* is specified but *minExplainedVariance=NULL* (no search), then exactly the best *maxNumSignatures* will be taken
-* *greedySearch* (default is FALSE): if FALSE, a full search will be performed: for increasing numbers *K* of signatures, *all* possible subsets of *K* signatures will be tested and the subset with the highest explained variance is chosen, increasing *K* until the threshold of *minExplainedVariance* is satisfied; if TRUE, a much faster, greedy search is performed: first, all possible subsets with *K*=*minNumSignatures* are evaluated, taking the subset with the highest explained variance, then stepwise one additional signature (highest increase of explained variance) is added to the already identified set until the threshold of *minExplainedVariance* is satisfied
+* *minExplainedVariance* (default is NULL): If not specified, exactly
+*maxNumSignatures* (see below; default: all) will be taken for decomposing
+each genome; if specified (between 0 and 1), the smallest subset of signatures
+which explains at least *minExplainedVariance* of the variance is taken for
+the decomposition.
+* *minNumSignatures* (default is 2): If a search for a subset of signatures is
+performed, at least *minNumSignatures* will be taken.
+* *maxNumSignatures* (default is NULL, i.e., all): If a search for a subset of
+signatures is performed, at most *maxNumSignatures* will be taken; if NULL, all
+given signatures will be taken as the maximum; if *maxNumSignatures* is
+specified but *minExplainedVariance=NULL* (no search), then exactly the best
+*maxNumSignatures* will be taken.
+* *greedySearch* (default is FALSE): If FALSE, a full search will be performed:
+for increasing numbers *K* of signatures, *all* possible subsets of *K*
+signatures will be tested and the subset with the highest explained variance is
+chosen, increasing *K* until the threshold of *minExplainedVariance* is
+satisfied; if TRUE, a much faster, greedy search is performed: first, all
+possible subsets with *K*=*minNumSignatures* are evaluated, taking the subset
+with the highest explained variance. Then, stepwise one additional signature at
+a time (highest increase of explained variance) is added to the already
+identified set until the threshold of *minExplainedVariance* is satisfied.
 
-Performing, for example, a greedy search for the example above is much faster:
+Performing, for example, a greedy search for the example above is much faster
+(shown only for the first tumor):
 
-```
-exposures <- decomposeTumorGenomes(genomes, signatures,
+```{r, fig.asp=1}
+exposures <- decomposeTumorGenomes(genomes[1], signatures,
                                    minExplainedVariance=0.95,
                                    minNumSignatures=2, maxNumSignatures=NULL,
                                    greedySearch=TRUE, verbose=TRUE)
-```
 
-```
-Decomposing genome 1 (PD3851a) with 2 signatures ...
- adding signature 3 ...
- adding signature 4 ...
- adding signature 5 ...
- adding signature 6 ...
- adding signature 7 ...
- adding signature 8 ...
- adding signature 9 ...
- adding signature 10 ...
- explained variance: 0.959544941532486
-Decomposing genome 2 (PD3890a) with 2 signatures ...
- adding signature 3 ...
- adding signature 4 ...
- adding signature 5 ...
- adding signature 6 ...
- adding signature 7 ...
- adding signature 8 ...
- adding signature 9 ...
- adding signature 10 ...
- adding signature 11 ...
- explained variance: 0.962228749687402
-[...]
+exposures
 
-> exposures
-$PD3851a
-    sign_1     sign_2     sign_3     sign_4     sign_5     sign_6     sign_7 
-0.04423271 0.17855158 0.05436733 0.07616399         NA 0.12658971 0.17677283 
-    sign_8     sign_9    sign_10    sign_11    sign_12    sign_13    sign_14 
-0.03854308 0.03481150 0.07507863         NA         NA         NA 0.19488865 
-   sign_15 
-        NA 
-
-$PD3890a
-    sign_1     sign_2     sign_3     sign_4     sign_5     sign_6     sign_7 
-        NA 0.01956464 0.05925686 0.08682446         NA 0.18705075 0.07223231 
-    sign_8     sign_9    sign_10    sign_11    sign_12    sign_13    sign_14 
-0.10630698 0.14095155 0.14069602 0.05832093         NA 0.04276313 0.08603236 
-   sign_15 
-        NA 
-
-[...]
-```
-
-```
 plotDecomposedContribution(exposures[[1]])
 ```
-```{r, echo=FALSE}
-library(knitr)
-include_graphics("example-exposureplot-PD3851a-15sig-min095-greedy.png")
-```
 
-**Important note**: of course, a greedy search which starts from the best combination of *minNumSignatures* need not yield the same result as a full search because the latter finds the overall best subset while the greedy search can get stuck in a local optimum depending on the starting point of the search. The precise behavior depends on different factors, including for example the similarity between mutational signatures and the minimum required explained variance (lower thresholds can easily be satisfied by very different combinations of signatures). We recommend to test different settings (minimum numbers of signatures, thresholds for explained variance, etc) and learn about the behavior to ensure a meaningful biological interpretation of the results.
+**Important note**: of course, a greedy search which starts from the best
+combination of *minNumSignatures* need not yield the same result as a full
+search because the latter finds the overall best subset while the greedy search
+can get stuck in a local optimum depending on the starting point of the search.
+The precise behavior depends on different factors, including for example the
+similarity between mutational signatures and the minimum required explained
+variance (lower thresholds can easily be satisfied by very different
+combinations of signatures). We recommend to test different settings (minimum
+numbers of signatures, thresholds for explained variance, etc) and learn about
+the behavior to ensure a meaningful biological interpretation of the results.
 
 
 ### Computing the explained variance
 
-Given the mutation frequencies of one or more tumor genomes (*genomes*), a set of mutational signatures (*signatures*) and their computed exposures/contributions to the given tumor (*exposures*), the following command allows to compute---for each individual tumor---the variance of the mutation frequency data that the exposures explain.
+Given the mutation frequencies of one or more tumor genomes (*genomes*),
+a set of mutational signatures (*signatures*) and their computed
+exposures/contributions to the given tumor (*exposures*), the following command
+allows to compute---for each individual tumor---the variance of the mutation
+frequency data that the exposures explain.
 
-The following is an example taking the full set of tumors and signatures from Section 4.2.1:
+The following is an example taking the full set of tumors and signatures from
+Section 4.2.1:
+```{r, echo=FALSE}
+# take the 15 Shiraishi signatures obtained from
+# 435 tumor genomes from Alexandrov et al.
+sfile <- system.file("extdata",
+              "Alexandrov_PMID_23945592_435_tumors-pmsignature-15sig.Rdata", 
+              package="decompTumor2Sig")
+load(sfile)
 
+gfile <- system.file("extdata",
+              "Nik-Zainal_PMID_22608084-VCF-convertedfromMPF.vcf.gz", 
+              package="decompTumor2Sig")
+
+# read the cancer genomes in VCF format
+genomes <- readGenomesFromVCF(gfile, numBases=5, type="Shiraishi",
+                              trDir=TRUE, refGenome=refGenome,
+                              transcriptAnno=transcriptAnno, verbose=FALSE)
 ```
-exposures <- decomposeTumorGenomes(genomes, signatures)
 
+```{r}
+exposures <- decomposeTumorGenomes(genomes, signatures)
 computeExplainedVariance(exposures, signatures, genomes)
 ```
 
-Example output:
-```
-  PD3851a   PD3890a   PD3904a   PD3905a   PD3945a   PD4005a   PD4006a   PD4085a 
-0.9796806 0.9693211 0.9913913 0.9695197 0.9861931 0.9956940 0.8988394 0.9430757 
-  PD4086a   PD4088a   PD4103a   PD4107a   PD4109a   PD4115a   PD4116a   PD4120a 
-0.9912875 0.9693047 0.9843990 0.9910398 0.9931142 0.9607950 0.9937769 0.9995375 
-  PD4192a   PD4194a   PD4198a   PD4199a   PD4248a 
-0.9764347 0.9678732 0.9866895 0.9987643 0.9841221 
-```
-
-**Note**: for computing the variance explained for a single tumor by a set of signatures, the corresponding number of exposure values must be the same as the number of signatures. Undefined exposure values (NA), which can be present if a search for a subset of signatures has been performed as described above, will be set to zero such that the corresponding signature does not contribute. For genomes for which the *minExplainedVariance* could not be reached, and whose exposure vectors are NULL, the explained variance will be set to NA.
+**Note**: for computing the variance explained for a single tumor by a set of
+signatures, the corresponding number of exposure values must be the same as the
+number of signatures. Undefined exposure values (NA), which can be present if a
+search for a subset of signatures has been performed as described above, will
+be set to zero such that the corresponding signature does not contribute. For
+genomes for which the *minExplainedVariance* could not be reached, and whose
+exposure vectors are NULL, the explained variance will be set to NA.
 
 
-## Recomposing/reconstructing tumor genomes from exposures and signatures
+## Re-composing/reconstructing tumor genomes from exposures and signatures
 
-Estimating the explained variance of the decomposition of a tumor genome (see Sections 4.2 and 4.3.2) and assessing its quality requires the mutation frequencies $\hat{g}_i$ of the tumor genome to be reconstructed, or predicted, from the mutational signatures $S_j$ and their exposures/contributions (or weights) $w_j$:
+Estimating the explained variance of the decomposition of a tumor genome (see
+Sections 4.2 and 4.3.2) and assessing its quality requires the mutation
+frequencies $\hat{g}_i$ of the tumor genome to be reconstructed, or predicted,
+from the mutational signatures $S_j$ and their exposures/contributions (or
+weights) $w_j$:
 
 $$ \hat{g}_i = \sum_j{w_j * (S_j)_i} $$
 
-This can be easily achieved using the function **composeGenomesFromExposures**. The following is an example taking the tumor genomes from Section 3.2, the signatures from Section 4.2.1, and the exposures as computed in Section 4.3:
+This can be easily achieved using the function **composeGenomesFromExposures**.
+The following is an example taking the tumor genomes from Section 3.2, the
+signatures from Section 4.2.1, and the exposures as computed in Section 4.3:
+```{r, echo=FALSE}
+gfile <- system.file("extdata",
+              "Nik-Zainal_PMID_22608084-VCF-convertedfromMPF.vcf.gz", 
+              package="decompTumor2Sig")
 
+# read the cancer genomes in VCF format
+genomes <- readGenomesFromVCF(gfile, numBases=5, type="Shiraishi",
+                              trDir=TRUE, refGenome=refGenome,
+                              transcriptAnno=transcriptAnno, verbose=FALSE)
+
+sfile <- system.file("extdata",
+              "Alexandrov_PMID_23945592_435_tumors-pmsignature-15sig.Rdata", 
+              package="decompTumor2Sig")
+load(sfile)
+
+exposures <- decomposeTumorGenomes(genomes, signatures)
 ```
+
+```{r}
 genomes_predicted <- composeGenomesFromExposures(exposures, signatures)
+genomes_predicted[1:2]
 ```
 
-Example output:
-```
-> genomes_predicted
-[[1]]
-          [,1]      [,2]      [,3]      [,4]      [,5]       [,6]
-[1,] 0.1871191 0.1003964 0.3534400 0.1183363 0.1637962 0.07691213
-[2,] 0.2789142 0.2232669 0.1935118 0.3043071 0.0000000 0.00000000
-[3,] 0.2759081 0.2481861 0.1757908 0.3001150 0.0000000 0.00000000
-[4,] 0.2757096 0.1900909 0.2655066 0.2686929 0.0000000 0.00000000
-[5,] 0.2825315 0.2121257 0.2028239 0.3025190 0.0000000 0.00000000
-[6,] 0.4704991 0.5295009 0.0000000 0.0000000 0.0000000 0.00000000
+Once genomes have been reconstructed, the function
+**evaluateDecompositionQuality** allows to compare the reconstructed genome
+mutation features to the originally observed features in order to assess the
+quality of the decomposition. The function is applied to an individual tumor
+genome, and can either return numerical quality measurements, or provide a
+quality plot which includes said measurements.
 
-[...]
-```
+Numerical measurements to compare the reconstructed/predicted and the original
+tumor mutation patterns are:
 
-Once genomes have been reconstructed, the function **evaluateDecompositionQuality** allows to compare the reconstructed genome mutation features to the originally observed features in order to assess the quality of the decomposition. The function is applied to an individual tumor genome, and can either return numerical quality measurements, or provide a quality plot which includes said measurements.
-
-Numerical measurements to compare the reconstructed/predicted and the original tumor mutation patterns are:
-
-* *explainedVariance*: the explained variance (see Section 4.2)
-* *pearsonCorr*: the Pearson correlation coefficient (PCC) between the predicted/reconstructed and the original mutation frequencies of the tumor genome. Although the PCC does usually not consider the amplitudes of two input data vectors---only their linear relationship---here, a high PCC also entails small absolute differences in the mutation frequencies because the frequencies in both the predicted and the original data sum up to 1, such that a high correlation automatically means very similar values.
+* *explainedVariance*: The explained variance (see Section 4.2).
+* *pearsonCorr*: The Pearson correlation coefficient (PCC) between the
+predicted/reconstructed and the original mutation frequencies of the tumor
+genome. Although the PCC does usually not consider the amplitudes of two input
+data vectors---only their linear relationship---here, a high PCC also entails
+small absolute differences in the mutation frequencies because the frequencies
+in both the predicted and the original data sum up to 1 (i.e., they are
+normalized at the same level), such that a high correlation automatically means
+very similar values.
 
 Example for obtaining numerical measurements:
 
-```
-evaluateDecompositionQuality(exposures[[1]], signatures, genomes[[1]], plot=FALSE)
-```
-
-Output:
-
-```
-$explainedVariance
-[1] 0.9796806
-
-$pearsonCorr
-[1] 0.9989003
+```{r}
+evaluateDecompositionQuality(exposures[[1]], signatures,
+                             genomes[[1]], plot=FALSE)
 ```
 
-Example for obtaining a quality plot which compares the reconstructed and the original data:
+Example for obtaining a quality plot which compares the reconstructed and the
+original data:
 
-```
-evaluateDecompositionQuality(exposures[[1]], signatures, genomes[[1]], plot=TRUE)
-```
-```{r, echo=FALSE}
-library(knitr)
-include_graphics("example-qualityplot-PD3851a-15sig.png")
+```{r, fig.asp=1}
+evaluateDecompositionQuality(exposures[[1]], signatures,
+                             genomes[[1]], plot=TRUE)
 ```
 
 
 ## Mapping and comparing sets of signatures
 
-In some cases it may be of interest to compare or find a mapping between two sets of signatures, e.g., if they have been inferred from different datasets. For this purpose, **decompTumor2Sig** provides a set of additional functions.
+In some cases it may be of interest to compare or find a mapping between two
+sets of signatures, e.g., if they have been inferred from different datasets.
+For this purpose, **decompTumor2Sig** provides a set of additional functions.
 
 ### Comparison of signatures of the same format
 
-Let's first load two distinct sets of Shiraishi signatures of the same format (5 bases, with transcript-strand direction):
+Let's first read two distinct sets of Shiraishi signatures of the same format
+(5 bases, with transcript-strand direction):
 
-```
-# get 4 Shiraishi signatures from 21 breast cancers from Nik-Zainal et al (PMID: 22608084)
+```{r}
+# get 4 Shiraishi signatures from 21 breast cancers from
+# Nik-Zainal et al (PMID: 22608084)
 sigfiles <- system.file("extdata",
-         paste0("Nik-Zainal_PMID_22608084-pmsignature-sig",1:4,".tsv"), 
-         package="decompTumor2Sig")
-sign_s4 <- loadShiraishiSignatures(files=sigfiles)
+                 paste0("Nik-Zainal_PMID_22608084-pmsignature-sig",1:4,".tsv"), 
+                 package="decompTumor2Sig")
+sign_s4 <- readShiraishiSignatures(files=sigfiles)
 
 
-# get 15 Shiraishi signatures obtained from 435 tumor genomes from Alexandrov et al.
+# get 15 Shiraishi signatures obtained from
+# 435 tumor genomes from Alexandrov et al.
 sfile <- system.file("extdata",
-         "Alexandrov_PMID_23945592_435_tumors-pmsignature-15sig.Rdata", 
-         package="decompTumor2Sig")
+              "Alexandrov_PMID_23945592_435_tumors-pmsignature-15sig.Rdata", 
+              package="decompTumor2Sig")
 load(sfile)
 sign_s15 <- signatures
 ```
 
-Since these signatures have the same format, we can directly compare them. Using the function **determineSignatureDistances**, we can compute the distances of one target signature to all signatures from a set:
+Since these signatures have the same format, we can directly compare them.
+Using the function **determineSignatureDistances**, we can compute the
+distances of one given signature to all target signatures from a set:
 
-```
-determineSignatureDistances(sign_s4[[1]], sign_s15, method="frobenius")
-```
-Output:
-```
-   sign_1    sign_2    sign_3    sign_4    sign_5    sign_6    sign_7    sign_8 
-0.7585028 1.1070702 1.1324959 0.7741531 1.2625974 0.9338330 0.6743049 1.0077730 
-   sign_9   sign_10   sign_11   sign_12   sign_13   sign_14   sign_15 
-1.5575345 1.2758753 1.1879876 1.2602450 1.0191394 0.6792248 1.0914233 
+```{r}
+determineSignatureDistances(fromSignature=sign_s4[[1]], toSignatures=sign_s15,
+                            method="frobenius")
 ```
 
-Apart from the Frobenius distance, which is suitable to compare matrices and hence Shiraishi signatures, other distance metrics can be used: the "rss" (residual sum of squares = squared error) or any distance measure available for the function *dist* of the package `r Rpackage("stats")`.
+Apart from the Frobenius distance (*method*="frobenius"), which is suitable to
+compare matrices and hence Shiraishi signatures, other distance metrics can be
+used: the "rss" (residual sum of squares = squared error) or any distance
+measure available for the function *dist* of the package `r Rpackage("stats")`.
 
-If not the distances of one signature to an entire signature set is needed, but instead a mapping from one signature set to another, **mapSignatureSets** can be used.
+If not the distances of one signature to an entire signature set is needed, but
+instead a mapping from one signature set to another, **mapSignatureSets** can
+be used.
 
-```
-mapSignatureSets(fromSignatures=sign_s4, toSignatures=sign_s15, method="frobenius", unique=FALSE)
-```
-Output:
-```
-Nik-Zainal_PMID_22608084-pmsignature-sig1.tsv 
-                                     "sign_7" 
-Nik-Zainal_PMID_22608084-pmsignature-sig2.tsv 
-                                     "sign_9" 
-Nik-Zainal_PMID_22608084-pmsignature-sig3.tsv 
-                                     "sign_6" 
-Nik-Zainal_PMID_22608084-pmsignature-sig4.tsv 
-                                    "sign_12" 
+```{r}
+mapSignatureSets(fromSignatures=sign_s4, toSignatures=sign_s15,
+                 method="frobenius", unique=FALSE)
 ```
 
-Like for **determineSignatureDistances**, with the function **mapSignatureSets** a mapping can be built based on different distance metrics. Additionally, the user can specify whether the mapping should be unique (one-to-one mapping), or not.
+Like for **determineSignatureDistances**, with the function **mapSignatureSets**
+a mapping can be built based on different distance metrics. Additionally, the
+user can specify whether the mapping should be unique (one-to-one mapping), or
+not.
 
-If *unique=FALSE* then for each signature of *fromSignatures* the best match (minimum distance) from *toSignatures* is selected. The selected signatures need not be unique, i.e., one signature of *toSignatures* may be the best match for multiple signatures of *fromSignatures*.
+If *unique*=FALSE then for each signature of *fromSignatures* the best match
+(minimum distance) of *toSignatures* is selected. The selected signatures
+need not be unique, i.e., one signature of *toSignatures* may be the best match
+for multiple signatures of *fromSignatures*.
 
-If *unique=TRUE*, i.e., if a unique (one-to-one) mapping is required, an iterative procedure is performed: in each step, the best matching pair from *fromSignatures* and *toSignatures* is mapped and then removed from the list of signatures that remain to be mapped, such that they cannot be selected again. In this case, of course, *fromSignatures* must not contain more signatures than *toSignatures*.
+If *unique*=TRUE, i.e., if a unique (one-to-one) mapping is required, an
+iterative procedure is performed: in each step, the best matching pair from
+*fromSignatures* and *toSignatures* is mapped and then removed from the list of
+signatures that remain to be mapped, such that they cannot be selected again.
+In this case, of course, *fromSignatures* must not contain more signatures than
+*toSignatures*.
 
 
 ### Comparison of signatures of different types or formats
 
-Sometimes it may also be useful to compare different types or formats of signatures. For example, since Alexandrov signatures are comparably well studied, it might be interesting to determine which Alexandrov signature is closest to a Shiraishi signature of interest.
+Sometimes it may also be useful to compare different types or formats of
+signatures. For example, since Alexandrov signatures are comparably well
+studied, it might be interesting to determine which Alexandrov signature is
+closest to a Shiraishi signature of interest.
 
-Since only signatures of the same format can be directly compared or mapped (see above), **decompTumor2Sig** provides two functions that transform signatures, such that two signatures, or two sets of signatures, can be converted to the same format.
+Since only signatures of the same format can be directly compared or mapped
+(see above), **decompTumor2Sig** provides two functions that transform
+signatures, such that two signatures, or two sets of signatures, can be
+converted to the same format.
 
-One of these functions, **convertAlexandrov2Shiraishi**, has already been presented in Section 3.1.4 (see there for details). We can convert Alexandrov signatures to Shiraishi-type signatures with 3 bases (without transcription-strand direction):
+One of these functions, **convertAlexandrov2Shiraishi**, has already been
+presented in Section 3.1.4 (see there for details). We can convert Alexandrov
+signatures to Shiraishi-type signatures with 3 bases (without
+transcription-strand direction):
 
-```
-sign_a <- loadAlexandrovSignatures()
-
+```{r, message=FALSE, warning=FALSE}
+sign_a <- readAlexandrovSignatures()
 sign_a2s <- convertAlexandrov2Shiraishi(sign_a)
 ```
 
-*Note*: Of course, there is some information loss here (better: a loss of specificity), as we discuss in our paper (Krüger and Piro, 2018).
+*Note*: Of course, there is some information loss here (better: a loss of
+specificity), as we discuss in our paper (Krüger and Piro, 2018).
 
-Additionally, the function **downgradeShiraishiSignatures** can be used to reduce the number of flanking bases and/or discard the information on transcription-strand direction from one or more Shiraishi signatures:
+Additionally, the function **downgradeShiraishiSignatures** can be used to
+reduce the number of flanking bases and/or discard the information on
+transcription-strand direction from one or more Shiraishi signatures:
 
-```
-sign_sdown <- downgradeShiraishiSignatures(sign_s15, numBases=3, removeTrDir=TRUE)
+```{r}
+sign_sdown <- downgradeShiraishiSignatures(sign_s15, numBases=3,
+                                           removeTrDir=TRUE)
+sign_s15[1]
+sign_sdown[1]
 ```
 
-Having obtained two signature sets of the same format (sequence triplets, but no transcription-strand direction), we can now map one set to the other:
+Having obtained two signature sets of the same format (sequence triplets, but
+no transcription-strand direction), we can now map one set to the other:
 
-```
-mapSignatureSets(fromSignatures=sign_sdown, toSignatures=sign_a2s, method="frobenius", unique=TRUE)
-```
-Output:
-```
-        sign_1         sign_2         sign_3         sign_4         sign_5 
-"Signature.22"  "Signature.4" "Signature.10"  "Signature.5" "Signature.15" 
-        sign_6         sign_7         sign_8         sign_9        sign_10 
- "Signature.8" "Signature.26" "Signature.28" "Signature.13" "Signature.30" 
-       sign_11        sign_12        sign_13        sign_14        sign_15 
-"Signature.24"  "Signature.2" "Signature.18"  "Signature.1" "Signature.12" 
+```{r}
+mapSignatureSets(fromSignatures=sign_sdown, toSignatures=sign_a2s,
+                 method="frobenius", unique=TRUE)
 ```
