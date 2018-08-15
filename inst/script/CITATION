@@ -1,0 +1,41 @@
+citHeader("To cite package 'decompTumor2Sig' in publications use:")
+
+
+citEntry(entry="Article",
+         title = "decompTumor2Sig: Identification of mutational signatures active in individual tumors",
+         author = personList(as.person('Sandra Kr\"uger'),
+                             as.person('Rosario M. Piro')),
+         year = 2018,
+         journal = "(unpublished)",
+
+         textVersion = "Krueger S, Piro RM (2018) decompTumor2Sig: Decompose individual tumors to mutational signatures. (unpublished)"
+         )
+
+citEntry(entry="Article",
+         title = "Identification of mutational signatures active in individual tumors",
+         author = personList(as.person('Sandra Kr\"uger'),
+                             as.person('Rosario M. Piro')),
+         journal = "PeerJ Preprints",
+         volume = "5",
+         number = "e3257v1",
+         year = 2017,
+         #note = "(Proceedings of the NETTAB 2017 Workshop on Methods, Tools & Platforms for Personalized Medicine in the Big Data Era, October 16-18, 2017 in Palermo, Italy)",
+
+         textVersion = "Krueger S, Piro RM (2017) Identification of mutational signatures active in individual tumors. PeerJ Preprints 5:e3257v1 (Proceedings of the NETTAB 2017 Workshop on Methods, Tools & Platforms for Personalized Medicine in the Big Data Era, October 16-18, 2017 in Palermo, Italy)."
+         )
+
+
+year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date, perl = TRUE)
+vers <- paste("R package version", meta$Version)
+
+citEntry(entry="Manual",
+         title = "decompTumor2Sig: Decompose individual tumors to mutational signatures",
+         author = personList(as.person('Sandra Kr\"uger'),
+                             as.person('Rosario M. Piro')),
+         year = year,
+         note = vers,
+
+         textVersion =
+         paste("Piro RM, Krueger S (",year,"). decompTumor2Sig: Decomposition of individual tumors into mutational signatures. ",
+               vers, ".", sep="")
+         )
