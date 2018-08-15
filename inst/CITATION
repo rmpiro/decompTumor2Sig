@@ -36,6 +36,6 @@ citEntry(entry="Manual",
          note = vers,
 
          textVersion =
-         paste("Krueger S, Piro RM (",year,"). decompTumor2Sig: Decomposition of individual tumors into mutational signatures. ",
+         paste("Piro RM, Krueger S (",year,"). decompTumor2Sig: Decomposition of individual tumors into mutational signatures. ",
                vers, ".", sep="")
          )

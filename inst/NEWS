@@ -1,3 +1,19 @@
 Changes in version 1.3.0 (2018-07-26)
 + Submitted to Bioconductor
 
+Changes in version 1.3.1 (2018-08-15)
++ Updated DESCRIPTION file
+  o replaced Author and Maintainer by Authors@R
+  o added URL for BugReports
++ Changed from manual NAMESPACE and *Rd files to a creation by roxygen2
++ Changed function names for reading data from "load..." to "read..."
++ Shortened the longest function names
+  o getGenomesFromMutationFeatureData -> getGenomesFromMutFeatData
+  o getSignatureListFromEstimatedParameters -> getSignaturesFromEstParam
++ Used robust sequence creation with seq, seq_len, seq_along instead of 1:N etc
++ Used native class checking such as is.numeric() instead of class()==...
++ Implemented wrapper functions for external classes which do not provide
+  the necessary accessor functions
++ Replaced instances of sapply() and unlist(lapply()) by vapply()
++ Updated vignette and made most code chunks runnable
++ Added greedy search option to plotExplainedVariance (significant speed-up)
