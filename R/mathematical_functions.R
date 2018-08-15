@@ -1,0 +1,57 @@
+
+
+###################################
+# internal mathematical functions #
+###################################
+
+#' computeFrobeniusNorm (internal function)
+#'
+#' Compute the Frobenius norm of a numeric matrix (if this matrix is the 
+#' difference between two matrices, then this corresponds to the Frobenius 
+#' distance between these two matrices).
+#'
+#' @usage computeFrobeniusNorm(A)
+#' @param A The numeric matrix.
+#' @return The Frobenius norm.
+#' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
+#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
+#' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
+#' Krueger, Piro (2017) Identification of Mutational Signatures Active in
+#' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
+#' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
+#' Italy. PeerJ Preprints 5:e3257v1, 2017.
+#' @keywords internal
+computeFrobeniusNorm <- function(A) { # compute the Frobenius norm of matrix A
+    A <- as.matrix(A) # in case A was a data.frame
+
+    trace <- sum(diag(A %*% t(A)))      # need the conjugate transpose here, 
+                                        # but for real-valued matrices this is 
+                                        # equivalent to the transpose!
+
+    return(sqrt(trace))
+}
+
+
+#' computeRSS (internal function)
+#'
+#' Compute the residual sum of squares (RSS), i.e., the sum of squared errors.
+#'
+#' @usage computeRSS(x, y)
+#' @param x The first numeric object (e.g., matrix).
+#' @param y The second numeric object (of the same type as \code{x}).
+#' @return The RSS.
+#' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
+#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
+#' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
+#' Krueger, Piro (2017) Identification of Mutational Signatures Active in
+#' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
+#' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
+#' Italy. PeerJ Preprints 5:e3257v1, 2017.
+#' @keywords internal
+computeRSS <- function(x, y) {
+    if (length(x) != length(y)) {
+        stop("In computeRSS: x and y need to have the same length!")
+    }
+
+    return(sum((x-y)^2))
+}
