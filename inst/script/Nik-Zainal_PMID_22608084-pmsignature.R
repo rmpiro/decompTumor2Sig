@@ -43,7 +43,7 @@ save(G, Param, file="Nik-Zainal_PMID_22608084-pmsignature-Param.Rdata")
 
 
 # convert the signatures to the decompTumor2Sig format
-signatures <- getSignatureListFromEstimatedParameters(Param)
+signatures <- getSignaturesFromEstParam(Param)
 
 
 # save the signatures in individual TSV flat files
@@ -56,7 +56,7 @@ for (ii in seq_along(signatures)) {
 # (signatures will then be named by the file name)
 sigfiles <- dir(pattern="Nik-Zainal_PMID_22608084-pmsignature-sig")
 
-signatures <- loadShiraishiSignatures(files=sigfiles)
+signatures <- readShiraishiSignatures(files=sigfiles)
 
 # save them again as Rdata object
 save(signatures, file="Nik-Zainal_PMID_22608084-pmsignature-sigall.Rdata")

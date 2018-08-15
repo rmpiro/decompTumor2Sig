@@ -35,7 +35,7 @@ Param <- getPMSignature(G, K=NUMSIG)
 
 
 # convert the signatures to the decompTumor2Sig format
-signatures <- getSignatureListFromEstimatedParameters(Param)
+signatures <- getSignaturesFromEstParam(Param)
 
 save(signatures, file="Alexandrov_PMID_23945592_435_tumors-pmsignature-15sig.Rdata")
 

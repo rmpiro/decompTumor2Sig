@@ -9,18 +9,18 @@ refGenome <- BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19
 gfile <- "inst/extdata/Nik-Zainal_PMID_22608084-MPF.txt.gz"
 
 
-# load according to Alexandrov model (3 bases, no transcription direction)
-genomes <- loadGenomesFromMPF(gfile, numBases=3, type="Alexandrov",
+# read according to Alexandrov model (3 bases, no transcription direction)
+genomes <- readGenomesFromMPF(gfile, numBases=3, type="Alexandrov",
                               trDir=FALSE, refGenome=refGenome,
                               verbose=FALSE)
 
 save(genomes, file="Nik-Zainal_PMID_22608084-genomes-Alexandrov_3bases.Rdata")
 
-# load accoring to Shiraishi model (5 bases, transcript direction)
+# read accoring to Shiraishi model (5 bases, transcript direction)
 transcriptAnno <-
     TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
 
-genomes <- loadGenomesFromMPF(gfile, numBases=5, type="Shiraishi",
+genomes <- readGenomesFromMPF(gfile, numBases=5, type="Shiraishi",
                               trDir=TRUE, refGenome=refGenome,
                               transcriptAnno=transcriptAnno, verbose=FALSE)
 
