@@ -48,12 +48,9 @@
 downgradeShiraishiSignatures <- function(signatures, numBases=NULL,
                                          removeTrDir=FALSE) {
 
-    if (!is.list(signatures)) {
-        stop("Parameter 'signatures' must be a list of signature objects!")
-    }
-    if (!is.data.frame(signatures[[1]]) & !is.matrix(signatures[[1]])) {
-        
-        stop("Signatures must be data.frames or matrices!")
+    if (!isShiraishiSet(signatures)) {
+        stop(paste("Parameter 'signatures' must be a set (list) of Shiraishi",
+                   "signatures!"))
     }
 
     if (is.null(removeTrDir)) {

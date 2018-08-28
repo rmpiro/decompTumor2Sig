@@ -56,7 +56,7 @@ plotDecomposedContribution <- function(decomposition, signatures=NULL,
     Exposures <- NULL
     # end of dummy stuff
     
-    if (is.list(decomposition)) {
+    if (isExposureSet(decomposition)) {
         if (length(decomposition) > 1) {
             warning(paste("object 'decomposition' passed to",
                           "plotDecomposedContribution is a list with multiple",
@@ -67,6 +67,14 @@ plotDecomposedContribution <- function(decomposition, signatures=NULL,
         decomposition <- decomposition[[1]]
     }
 
+    if (!is.probability.vector(decomposition)) {
+        stop("'decomposition' must be a single exposure vector!")
+    }
+
+    if (!is.null(signatures) & !isSignatureSet(signatures)) {
+        stop("'signatures', if specified, must be a set (list) of signatures!")
+    }
+    
     # determine signature names
 
     if (!is.null(names(decomposition))) {

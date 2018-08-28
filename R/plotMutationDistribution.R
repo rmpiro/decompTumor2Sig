@@ -55,7 +55,7 @@ plotMutationDistribution <- function(mutData) {
                    "package pmsignature to be installed."))
     }
 
-    if (is.list(mutData)) {
+    if (isSignatureSet(mutData)) {
         if (length(mutData) > 1) {
             warning(paste("object 'mutData' passed to plotMutationDistribution",
                           "is a list with multiple elements. Taking only the",
@@ -63,6 +63,10 @@ plotMutationDistribution <- function(mutData) {
         }
         
         mutData <- mutData[[1]]  # take first object from list
+    }
+
+    if (!is.probability.object(mutData)) {
+        stop("'mutData' must be a single genome or signature!")
     }
     
     # build an "EstimatedParameters" object for visualization with pmsignature

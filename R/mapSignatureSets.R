@@ -90,27 +90,16 @@
 mapSignatureSets <- function(fromSignatures, toSignatures,
                              method="euclidean", unique=FALSE) {
     
-    if (!is.list(fromSignatures)) {
-        stop("Parameter 'fromSignatures' must be a list of signature objects!")
-    }
-    if (!is.data.frame(fromSignatures[[1]]) & !is.matrix(fromSignatures[[1]])
-        & !(is.vector(fromSignatures[[1]]) & is.numeric(fromSignatures[[1]]))) {
-        
-        stop("fromSignatures must be data.frames, matrices or numeric vectors!")
+    if (!isSignatureSet(fromSignatures)) {
+        stop("Parameter 'fromSignatures' must be a set (list) of signatures!")
     }
 
-    if (!is.list(toSignatures)) {
-        stop("Parameter 'toSignatures' must be a list of signature objects!")
-    }
-    if (!is.data.frame(toSignatures[[1]]) & !is.matrix(toSignatures[[1]])
-        & !(is.vector(toSignatures[[1]]) & is.numeric(toSignatures[[1]]))) {
-        
-        stop("toSignatures must be data.frames, matrices or numeric vectors!")
+    if (!isSignatureSet(toSignatures)) {
+        stop("Parameter 'toSignatures' must be a set (list) of signatures!")
     }
 
     # from and to must be of the same format
-    if (class(fromSignatures[[1]]) != class(toSignatures[[1]])
-        || length(fromSignatures[[1]]) != length(toSignatures[[1]])) {
+    if (!sameSignatureFormat(fromSignatures, toSignatures)) {
         stop(paste("fromSignatures and toSignatures must be of the same",
                    "type and format!"))
     }
@@ -151,35 +140,48 @@ mapSignatureSets <- function(fromSignatures, toSignatures,
         # from->to pair (shortest distance), then remove both to find the
         # next best ...
         mapping <- c()
-        fromNames <- fromSigNames
+
+        names(fromSignatures) <- fromSigNames
         
         while (length(fromSignatures) > 0) {
+
+            if (length(fromSignatures) == 1 &&
+                length(toSignatures) == 1) {
+
+                # the remaining signatures are 1 for each set; this mapping
+                # is clear ...
+                fromS <- names(fromSignatures)
+                toS <- names(toSignatures)
+
+                # keep mapping
+                names(toS) <- fromS
+                mapping <- c(mapping, toS)
+
+                # no need to continue
+                break
+            }
+
+            # there are either multiple "from" or multiple "to" signatures
+            # need to continue to find the minimum distance
+            
             distsMatrix <- vapply(fromSignatures, function(from) {
                 d <- determineSignatureDistances(from, toSignatures,
                                                  method=method)
-                #sort(d)[1] # sort by distance, take first
-                           # keep name of signature
-                           # return distance
             }, FUN.VALUE=numeric(length(toSignatures)) )
 
-            dists <- apply(distsMatrix, 2, min)
-            names(dists) <- apply(distsMatrix, 2, function(x) {
-                names(toSignatures)[which(x==min(x))]
-            } )
-            
-            # get from and to signatures names
-            choice <- which(dists == min(dists))
-            fromS <- fromNames[choice]
-            toS <- names(choice)
+            # find minimum distance
+            thisMin <- which(distsMatrix==min(distsMatrix), arr.ind=TRUE)
 
-            # keep the mapping
+            fromS <- colnames(distsMatrix)[thisMin[1,"col"]]
+            toS <- rownames(distsMatrix)[thisMin[1,"row"]]
+
+            # keep mapping
+            names(toS) <- fromS
             mapping <- c(mapping, toS)
-            names(mapping)[length(mapping)] <- fromS
 
             # remove the two signatures from the respective sets
-            fromNames <- fromNames[-choice]
-            fromSignatures[choice] <- NULL
-            toSignatures[toS] <- NULL
+            fromSignatures[thisMin[1,"col"]] <- NULL
+            toSignatures[thisMin[1,"row"]] <- NULL
         }
 
         # reorder mapping according to fromSignature input

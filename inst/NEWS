@@ -17,3 +17,12 @@ Changes in version 1.3.1 (2018-08-15)
 + Replaced instances of sapply() and unlist(lapply()) by vapply()
 + Updated vignette and made most code chunks runnable
 + Added greedy search option to plotExplainedVariance (significant speed-up)
+
+Changes in version 1.3.2 (2018-08-29)
++ Fixed a minor bug in mapSignatureSets() that occurred when the two signature
+  sets had the same size.
++ Added functions to verify the format of signatures, genomes and exposures:
+  o isAlexandrovSet(), isShiraishiSet(), isSignatureSet()
+  o sameSignatureFormat()
+  o isExposureSet()
++ Moved description of deprecated BiocInstaller in vignette to BiocManager.

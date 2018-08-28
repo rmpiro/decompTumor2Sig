@@ -55,13 +55,17 @@
 #' @export composeGenomesFromExposures
 composeGenomesFromExposures <- function(exposures, signatures) {
 
-    if (is.numeric(exposures)) {
+    if (is.probability.vector(exposures)) {
         # this is only one genome, use a list nonetheless for later iteration
         exposures <- list(exposures)
     }
 
-    if (!is.list(signatures)) {
-        stop("Parameter signatures must be a list object.")
+    if (!isExposureSet(exposures)) {
+        stop("Parameter exposures must be a list of probability vectors.")
+    }
+    
+    if (!isSignatureSet(signatures)) {
+        stop("Parameter signatures must be a set (list) of signatures.")
     }
 
     predGenomes <- list()

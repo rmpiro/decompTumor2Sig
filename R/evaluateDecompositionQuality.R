@@ -65,20 +65,22 @@
 #' @export evaluateDecompositionQuality
 evaluateDecompositionQuality <- function(exposure, signatures, genome,
                                          plot=FALSE) {
-    if (is.list(genome)) {
+    if (!is.probability.object(genome)) {
         # must be a single genome
-        stop(paste("genome must be an the mutation frequencies of an",
+        stop(paste("'genome' must be an the mutation frequencies of an",
                    "individual genome (in Alexandrov or Shiraishi format)."))
     }
-    if (!is.numeric(exposure)) {
-        stop("exposure must be the exposure vector of a single decomposition.")
+    
+    if (!is.probability.vector(exposure)) {
+        stop(paste("'exposure' must be the exposure vector of a single",
+                   "decomposition."))
     }
-    if (!is.list(signatures)) {
-        stop("signatures must be a list object.")
+    if (!isSignatureSet(signatures)) {
+        stop("'signatures' must be a set (list) of signatures.")
     }
 
     # check the genome format; same as signature format?
-    if (length(genome) != length(as.vector(as.matrix(signatures[[1]])))) {
+    if (!sameSignatureFormat(list(genome), signatures)) {
         stop("Formats of genome and signatures must match!")
     }
     

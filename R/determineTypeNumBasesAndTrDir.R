@@ -29,7 +29,7 @@ determineTypeNumBasesAndTrDir <- function(mutData) {
     haveNumBases <- NULL
     haveType <- NULL
     
-    if(is.matrix(mutData) && ncol(mutData) == 6) {
+    if(isShiraishiSet(list(mutData))) {
         # Shiraishi-type
 
         # number of bases of sequence pattern and transcription dir.
@@ -43,7 +43,7 @@ determineTypeNumBasesAndTrDir <- function(mutData) {
     
         haveType <- "Shiraishi"
         
-    } else if (is.numeric(mutData)) {
+    } else if (isAlexandrovSet(list(mutData))) {
         # Alexandrov-type
  
         if ( ( (log10(length(mutData)/6)/log10(4)) %% 1 ) == 0 ) {

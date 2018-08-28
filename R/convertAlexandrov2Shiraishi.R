@@ -36,9 +36,14 @@
 #' @export convertAlexandrov2Shiraishi
 convertAlexandrov2Shiraishi <- function(signatures) {
 
-    if (!is.list(signatures)) {
+    if (is.probability.vector(signatures)) {
         # if the user specified a single signature, make it a list
         signatures <- list(signatures)
+    }
+
+    if (!isAlexandrovSet(signatures)) {
+        stop(paste("Parameter signatures must be a set (list) of Alexandrov",
+                   "signatures."))
     }
 
     shSignatures <- lapply(signatures, convAlx2Shi)

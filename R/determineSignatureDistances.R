@@ -71,13 +71,8 @@
 determineSignatureDistances <- function(fromSignature, toSignatures,
                                         method="euclidean") {
 
-    if (!is.list(toSignatures)) {
+    if (!isSignatureSet(toSignatures)) {
         stop("Parameter 'toSignatures' must be a list of signature objects!")
-    }
-    if (!is.data.frame(toSignatures[[1]]) & !is.matrix(toSignatures[[1]])
-        & !(is.vector(toSignatures[[1]]) & is.numeric(toSignatures[[1]]))) {
-        
-        stop("toSignatures must be data.frames, matrices or numeric vectors!")
     }
     
     # is the toSignatures are unnamed, name them by enumerating them
@@ -85,15 +80,20 @@ determineSignatureDistances <- function(fromSignature, toSignatures,
         names(toSignatures) <- paste0("sign_",seq_along(toSignatures))
     }
 
-    if (!is.data.frame(fromSignature) & !is.matrix(fromSignature)
-        & !(is.vector(fromSignature) & is.numeric(fromSignature))) {
+    if (!is.probability.object(fromSignature)) {
         
-        stop("FromSignature must be a data.frame, matrix or numeric vector!")
+        stop(paste("'fromSignature' must be a single Alexandrov signature",
+                   "(data.frame or matrix) or Shiraishi signature (vector)!"))
     }
 
+    if (!sameSignatureFormat(list(fromSignature), toSignatures)) {
+        stop("fromSignature and toSignatures must be of the same format.")
+    }
+
+    
     # allow Frobenius distance only for data.frame or matrix
     if (method == "frobenius" &
-        !(is.data.frame(fromSignature) || is.matrix(fromSignature)) ) {
+        !(isShiraishiSet(list(fromSignature))) ) {
 
         stop(paste("Frobenius distance can be used only for Shiraishi",
                    "signatures (matrix or data.frame)!"))

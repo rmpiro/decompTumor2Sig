@@ -172,13 +172,8 @@ decomposeTumorGenomes <- function(genomes, signatures,
     # if not minimum explained variance is requested.
 
     
-    if (!is.list(signatures)) {
-        stop("Parameter 'signatures' must be a list of signature objects!")
-    }
-    if (!is.data.frame(signatures[[1]]) & !is.matrix(signatures[[1]])
-        & !(is.vector(signatures[[1]]) & is.numeric(signatures[[1]]))) {
-
-        stop("Signatures must be data.frames, matrices or numeric vectors!")
+    if (!isSignatureSet(signatures)) {
+        stop("Parameter 'signatures' must be a set (list) of signatures.")
     }
 
     # if maximum number of signatures is not defined, set it to the total
@@ -220,16 +215,28 @@ decomposeTumorGenomes <- function(genomes, signatures,
                    "maximum contribution of signatures (default: 0.1)!"))
     }
 
-    if (!is.list(genomes)) { # a single genome, make it a list of one genome
+
+
+    if (is.probability.object(genomes)) {
+        # this is only one genome, use a list nonetheless for later iteration
         genomes <- list(genomes)
-        #name(genomes) = "tumor_genome"
     }
 
+    if (!isSignatureSet(genomes)) { # same type of object as signatures
+        stop("Parameter 'genomes' must be a set (list) of genomes.")
+    }
+    
     if (is.null(names(genomes))) { # numbering of genomes if they are not named!
                                    # (we need the names for the results)
         names(genomes) <- paste0("genome_", as.character(seq_along(genomes)))
     }
 
+
+    if (!sameSignatureFormat(signatures, genomes)) {
+        stop("Signatures and genomes must be of the same format.")
+    }
+
+    
     # initialize an empty list with all elements set to NULL
     decompositions  <- vector("list", length(genomes))  
     
@@ -240,20 +247,8 @@ decomposeTumorGenomes <- function(genomes, signatures,
             cat(paste0("Decomposing genome ",g," (",names(genomes)[g],")"))
         }
         
-        if (!is.data.frame(genomes[[g]]) & !is.matrix(genomes[[g]])
-            & !(is.vector(genomes[[g]]) & is.numeric(genomes[[g]]))) {
-            
-            stop("genomes must be data.frames, matrices or numeric vectors!")
-        }
-        
         counts <- genomes[[g]]
-
-        # first, check its format
-        if (length(counts) != length(as.vector(as.matrix(signatures[[1]])))) {
-            stop("Formats of genomes and signatures must match!")
-        }
-
-        
+       
         # iterating for all possible numbers of signatures from
         # minNumSignatures to maxNumSignatures
         decompTmpList <- list()

@@ -6,9 +6,9 @@
 
 ### wrapper functions for reading slot data ###
 
-#' getTrDir (internal function)
+#' haveTrDir (internal function)
 #'
-#' `getTrDir()` extracts the content of the \code{transcriptionDirection} slot
+#' `haveTrDir()` extracts the content of the \code{transcriptionDirection} slot
 #' (logical value) from a \code{pmsignature::MutationFeatureData} object.
 #' 
 #' @param x Object from which to get the slot data.
@@ -22,7 +22,7 @@
 #' Italy. PeerJ Preprints 5:e3257v1, 2017.
 #' @importFrom methods slot .hasSlot 
 #' @keywords internal
-getTrDir <- function(x) {
+haveTrDir <- function(x) {
     stopifnot(.hasSlot(x, "transcriptionDirection"))
     slot(x, "transcriptionDirection")
 }

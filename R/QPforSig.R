@@ -45,8 +45,8 @@
 QPforSig <- function(counts, signatures, constrainToMaxContribution=FALSE,
                      tolerance=0.1) {
 
-    if (!is.list(signatures)) {
-        stop("Signatures must be a list for function QPforSig")
+    if (!isSignatureSet(signatures)) {
+        stop("Signatures must be a set (list) for function QPforSig")
     }
 
     if (constrainToMaxContribution && (tolerance < 0 ||  tolerance > 1)) {
@@ -55,14 +55,14 @@ QPforSig <- function(counts, signatures, constrainToMaxContribution=FALSE,
     }
 
     # if necessary, convert signatures from matrices to vectors
-    if (is.matrix(signatures[[1]]) || is.data.frame(signatures[[1]])) {
+    if (isShiraishiSet(signatures)) {
         
         signatures <-
             lapply(signatures, function(x){as.vector(t(as.matrix(x)))})
     }
 
     # if necessary, convert counts from matrix to vector
-    if(is.matrix(counts) || is.data.frame(counts)) {
+    if(isShiraishiSet(list(counts))) {
         counts <- as.vector(t(as.matrix(counts)))
     }
 

@@ -79,16 +79,11 @@ plotExplainedVariance <- function(genome, signatures,
     #        signatures = a list of signatures (matrices or vectors)
     #        [need to have the same format]
 
-    if (!is.list(signatures)) {
-        stop("Parameter 'signatures' must be a list of signature objects!")
-    }
-    if (!is.data.frame(signatures[[1]]) & !is.matrix(signatures[[1]])
-        & !(is.vector(signatures[[1]]) & is.numeric(signatures[[1]]))) {
-        
-        stop("Signatures must be data.frames, matrices or numeric vectors!")
+    if (!isSignatureSet(signatures)) {
+        stop("Parameter 'signatures' must be a set (list) of signatures!")
     }
 
-    if (is.list(genome)) { # it's a list of genomes
+    if (isSignatureSet(genome)) { # it's a list of genomes
         if (length(genome) == 1) {  # accept if only one!
             genome <- genome[[1]]
         } else { # more than one genome
@@ -97,15 +92,13 @@ plotExplainedVariance <- function(genome, signatures,
         }
     }
 
-
-    if (!is.data.frame(genome) & !is.matrix(genome)
-        & !(is.vector(genome) & is.numeric(genome))) {
-        stop("genome must be a data.frame, matrix or numeric vector!")
+    if (!is.probability.object(genome)) {
+        stop("'genome' must be a genome in Alexandrov or Shiraishi format!")
     }
 
 
     # check the genome format; same as signature format?
-    if (length(genome) != length(as.vector(as.matrix(signatures[[1]])))) {
+    if (!sameSignatureFormat(list(genome), signatures)) {
         stop("Formats of genome and signatures must match!")
     }
 

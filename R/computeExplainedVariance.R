@@ -51,17 +51,31 @@
 #' 
 #' @export computeExplainedVariance
 computeExplainedVariance <- function(exposures, signatures, genomes) {
-    if ((is.vector(genomes) & is.numeric(genomes))
-        || is.matrix(genomes) || is.data.frame(genomes)) {
+
+    if (is.probability.object(genomes)) {
         # this is only one genome, use a list nonetheless for later iteration
         genomes <- list(genomes)
     }
-     if (is.numeric(exposures)) {
+
+    if (!isSignatureSet(genomes)) { # same type of object as signatures
+        stop("Parameter genomes must be a set (list) of genomes.")
+    }
+    
+    if (is.probability.vector(exposures)) {
         # same as for genomes
         exposures <- list(exposures)
     }
-    if (!is.list(signatures)) {
-        stop("Parameter signatures must be a list object.")
+
+    if (!isExposureSet(exposures)) {
+        stop("Parameter exposures must be a list of probability vectors.")
+    }
+
+    if (!isSignatureSet(signatures)) {
+        stop("Parameter signatures must be a set (list) of signatures.")
+    }
+
+    if (!sameSignatureFormat(signatures, genomes)) {
+        stop("Signatures and genomes must be of the same format.")
     }
 
     # check that we have as many exposure estimates as genomes
@@ -120,11 +134,11 @@ computeExplainedVariance <- function(exposures, signatures, genomes) {
         #   ...
         #   1/2  1/2   0    0    0    0 ]   <- 50% for each transcription dir.
 
-        if (is.vector(genomes[[g]]) & is.numeric(genomes[[g]])) {
+        if (isAlexandrovSet(genomes[g])) {
 
             tss <- sum( (genomes[[g]] - mean(genomes[[g]]))^2 )
 
-        } else if (is.matrix(genomes[[g]]) || is.data.frame(genomes[[g]])) {
+        } else if (isShiraishiSet(genomes[g])) {
 
             unvargenome <- genomes[[g]]
             unvargenome[1,] <- rep(1/6, 6)

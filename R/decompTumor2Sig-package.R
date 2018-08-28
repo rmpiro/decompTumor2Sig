@@ -12,8 +12,8 @@
 #' \tabular{ll}{
 #' Package: \tab decompTumor2Sig\cr
 #' Type: \tab Package\cr
-#' Version: \tab 1.3.1\cr
-#' Date: \tab 2018-08-15\cr
+#' Version: \tab 1.3.2\cr
+#' Date: \tab 2018-08-29\cr
 #' License: \tab GPL (>=2)\cr
 #' }
 #' 
@@ -65,6 +65,23 @@
 #'                         \tab returned by function \code{getPMSignature}\cr
 #'                         \tab of the \code{pmsignature} package.\cr
 #'
+#' isAlexandrovSet():      \tab checks whether the input list is\cr
+#'                         \tab compatible with the Alexandrov format\cr
+#'                         \tab (probability vectors).\cr
+#'
+#' isExposureSet():        \tab checks whether the input list is\cr
+#'                         \tab compatible with exposure output obtained\cr
+#'                         \tab from \code{decomposeTumorGenomes}.\cr
+#' 
+#' isShiraishiSet():       \tab checks whether the input list is\cr
+#'                         \tab compatible with the Shiraishi format\cr
+#'                         \tab (matrices or data.frames of\cr
+#'                         \tab probabilities).\cr
+#' 
+#' isSignatureSet():       \tab checks whether the input list is\cr
+#'                         \tab compatible with either the Alexandrov\cr
+#'                         \tab or Shiraishi format.\cr
+#' 
 #' mapSignatureSets():     \tab find a mapping from one signature\cr
 #'                         \tab set to another.\cr
 #'
@@ -94,6 +111,9 @@
 #' readShiraishiSignatures():\tab read Shiraishi signatures from\cr
 #'                         \tab flat files.\cr
 #'
+#' sameSignatureFormat():  \tab checks whether two input lists are sets\cr
+#'                         \tab of signatures of the same format.\cr
+#' 
 #' }
 #' 
 #' @name decompTumor2Sig-package

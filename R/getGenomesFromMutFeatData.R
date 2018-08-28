@@ -64,9 +64,9 @@ getGenomesFromMutFeatData <- function(mutFeatData, normalize=TRUE) {
                    "(as produced by pmsignature's readMPFile)"))
     }
     
-    # if the user set trDir = TRUE, we need flankinBasesNum+1 rows,
+    # if the user has set trDir = TRUE, we need flankinBasesNum+1 rows,
     # otherwise only the flankingBasesNum
-    if (getTrDir(mutFeatData)==TRUE) {
+    if (haveTrDir(mutFeatData)) {
         rows <- as.numeric(getNumFlankingBases(mutFeatData)+1)
     } else {
         rows <- as.numeric(getNumFlankingBases(mutFeatData)) 
