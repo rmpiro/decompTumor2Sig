@@ -6,9 +6,10 @@ citEntry(entry="Article",
          author = personList(as.person('Sandra Kr\"uger'),
                              as.person('Rosario M. Piro')),
          year = 2018,
-         journal = "(unpublished)",
+         journal = "BMC Bioinformatics",
+         note = "(accepted for publication)",
 
-         textVersion = "Krueger S, Piro RM (2018) decompTumor2Sig: Decompose individual tumors to mutational signatures. (unpublished)"
+         textVersion = "Krueger S, Piro RM (2018) decompTumor2Sig: Decompose individual tumors to mutational signatures. BMC Bioinformatics (accepted for publication)."
          )
 
 citEntry(entry="Article",

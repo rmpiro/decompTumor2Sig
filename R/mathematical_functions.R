@@ -16,6 +16,9 @@
 #' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
 #' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
+#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics (accepted for
+#' publication).\cr
 #' Krueger, Piro (2017) Identification of Mutational Signatures Active in
 #' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
 #' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
@@ -43,6 +46,9 @@ computeFrobeniusNorm <- function(A) { # compute the Frobenius norm of matrix A
 #' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
 #' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
+#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics (accepted for
+#' publication).\cr
 #' Krueger, Piro (2017) Identification of Mutational Signatures Active in
 #' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
 #' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
@@ -54,4 +60,51 @@ computeRSS <- function(x, y) {
     }
 
     return(sum((x-y)^2))
+}
+
+
+#' roundIntegerSum (internal function)
+#'
+#' update a numeric vector such that it's composed of integers and its sum
+#' reaches a desired total. Positive or negative discrepancies are distributed
+#' proportionally between the summands.
+#'
+#' @usage roundIntegerSum(vec, targetSum)
+#' @param vec Vector of integers.
+#' @param targetSum The target sum to be reached.
+#' @return The updated vector with the desired total sum.
+#' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
+#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
+#' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
+#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics (accepted for
+#' publication).\cr
+#' Krueger, Piro (2017) Identification of Mutational Signatures Active in
+#' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
+#' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
+#' Italy. PeerJ Preprints 5:e3257v1, 2017.
+#' @keywords internal
+roundIntegerSum <- function(vec, targetSum) {
+    stopifnot(is.numeric(vec) || is.integer(vec))
+    stopifnot(is.numeric(targetSum) || is.integer(targetSum))
+
+    # first get an approximation
+    vec <- round(targetSum * (vec / sum(vec)))
+    
+    # modification order: highest first, etc.
+    modOrder <- order(vec, decreasing=TRUE)
+
+    # See if we still have some discrepancy
+    diff <- targetSum - sum(vec)    # pos: need to add; neg: need to subtract
+
+    # The difference should be between -1 and 1, not beyond this range
+    if (diff == -1) {
+        vec[modOrder[length(vec)]] <- vec[modOrder[length(vec)]] - 1
+    } else if (diff == 1) {
+        vec[modOrder[1]] <- vec[modOrder[1]] + 1
+    } else {
+        stopifnot(!diff)
+    }
+
+    vec
 }

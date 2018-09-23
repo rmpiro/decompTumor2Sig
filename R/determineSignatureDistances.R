@@ -36,12 +36,15 @@
 #' sum of squares (squared error); or any distance measure available for
 #' the function \code{dist} of the \code{stats} package.
 #' Default: \code{"euclidean"}.
-#' @return A signature-named ve ctor containing all distances. This vector has
+#' @return A signature-named vector containing all distances. This vector has
 #' the same order as the target signature list, so it is not sorted according
 #' to distance.
 #' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
 #' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
+#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics (accepted for
+#' publication).\cr
 #' Krueger, Piro (2017) Identification of Mutational Signatures Active in
 #' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
 #' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,

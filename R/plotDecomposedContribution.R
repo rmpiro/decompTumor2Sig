@@ -11,7 +11,8 @@
 #' @param signatures (Optional) A list object containing the signatures used
 #' to compute the decomposition. If specified, the signature labels used in
 #' the plot will be taken from the element names of the list; otherwise
-#' signatures will be named from sign_1 to sign_N.
+#' signature names will be taken from the exposure object (decomposition) or
+#' named from sign_1 to sign_N.
 #' @param removeNA (Optional) If \code{TRUE} (default), signatures with
 #' an NA as exposure will not be included on the x-axis of the the plot.
 #' Exposures can be NA if they have been determined with a greedy search.
@@ -20,6 +21,9 @@
 #' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
 #' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
+#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics (accepted for
+#' publication).\cr
 #' Krueger, Piro (2017) Identification of Mutational Signatures Active in
 #' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
 #' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
@@ -77,16 +81,16 @@ plotDecomposedContribution <- function(decomposition, signatures=NULL,
     
     # determine signature names
 
-    if (!is.null(names(decomposition))) {
+    if (!is.null(signatures) && !is.null(names(signatures))) {
         
-        # first guess: directly from the exposure vector
-        sigNames <- names(decomposition)
-        
-    } else if (!is.null(signatures) && !is.null(names(signatures))) {
-        
-        # second guess: from passed signatures
+        # first choice: explicitly specified signatures
         sigNames <- names(signatures)
         
+    } else if (!is.null(names(decomposition))) {
+        
+        # second guess: directly from the exposure vector
+        sigNames <- names(decomposition)
+      
     } else {
         
         # last solution: just number them
@@ -106,6 +110,8 @@ plotDecomposedContribution <- function(decomposition, signatures=NULL,
         # ignore NAs; might be due to a greedy search
         sigNames <- sigNames[!is.na(decomposition)]
         decomposition <- decomposition[!is.na(decomposition)]
+    } else {
+        decomposition[is.na(decomposition)] <- 0
     }
     
     # construct data frame for exposures

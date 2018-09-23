@@ -29,6 +29,9 @@
 #' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
 #' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
+#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics (accepted for
+#' publication).\cr
 #' Krueger, Piro (2017) Identification of Mutational Signatures Active in
 #' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
 #' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
@@ -79,19 +82,19 @@ buildGenomesFromMutationData <- function(snvs, numBases, type, trDir,
         refMT <- "M"
     } # else empty, no clear mitochondrion found
 
-    #second: VCF file
-    vcfMT <- ""
+    #second: mutation file
+    fileMT <- ""
     if (length(grep("MT", unique(snvs[,"CHROM"]))) == 1) { # having MT
-        vcfMT <- "MT"
+        fileMT <- "MT"
     } else if (length(grep("M", unique(snvs[,"CHROM"]))) == 1) {
-        vcfMT <- "M"
+        fileMT <- "M"
     } # else empty, no clear mitochondrion found
 
-    # third: check and adjust VCF data, if necessary
-    if (vcfMT != "" && vcfMT != refMT) {
+    # third: check and adjust mutation data, if necessary
+    if (fileMT != "" && fileMT != refMT) {
         if (refMT != "") {
             # invert
-            snvs[,"CHROM"] <- gsub(vcfMT, refMT, snvs[,"CHROM"])
+            snvs[,"CHROM"] <- gsub(fileMT, refMT, snvs[,"CHROM"])
         }
     }
 
@@ -104,21 +107,60 @@ buildGenomesFromMutationData <- function(snvs, numBases, type, trDir,
                   "and adjusting if necessary.\n"))
     }
 
-    if (!all(unique(snvs[,"CHROM"]) %in%
-             GenomicRanges::seqnames(refGenome))) {
-        
-        # some problem, first try adding "chr"
-        if(all(paste("chr",unique(snvs[,"CHROM"]),sep="") %in%
-               GenomicRanges::seqnames(refGenome))) {
-            # add "chr"
-            snvs[,"CHROM"] <- paste("chr",snvs[,"CHROM"], sep="")
+    setF = unique(snvs[,"CHROM"])
+    setR = GenomicRanges::seqnames(refGenome)
 
-        } else if (all(gsub("^chr", "", snvs[,"CHROM"]) %in%
-                       GenomicRanges::seqnames(refGenome))) {
-            # try removing "chr"
-            snvs[,"CHROM"] <- gsub("^chr", "", snvs[,"CHROM"])
+    # check what "chr"-prefix we have in the ref. genome: chr? Chr? CHR? none?
+    refPrefix <- unique(substr(grep("^chr", setR,
+                                    ignore.case=TRUE, value=TRUE), 1, 3))
+    if (!length(refPrefix)) {
+        refPrefix <- ""
+    }
+    
+    # check what "chr"-prefix we have in the mut. file: chr? Chr? CHR? none?
+    filePrefix <- unique(substr(grep("^chr", setF,
+                                    ignore.case=TRUE, value=TRUE), 1, 3))
+    if (!length(filePrefix)) {
+        filePrefix <- ""
+    }
+
+    if (refPrefix != filePrefix) {
+        # not the same "chr"-prefix
+        if (verbose) {
+            cat(paste0("Having prefix for chromosome names: '", filePrefix,
+                       "'; requiring prefix for reference genome: '",
+                       refPrefix,"' ... replacing.\n"))
         }
         
+        # first, remove whatever different prefix we have in the mutation file
+        if (filePrefix != "") {
+            snvs[,"CHROM"] <- gsub(paste0("^",filePrefix), "", snvs[,"CHROM"])
+        }
+
+        # then, add whatever prefix we need for the reference genome
+        if (refPrefix != "") {
+            snvs[,"CHROM"] <- paste(refPrefix,snvs[,"CHROM"], sep="")
+        }
+    }
+
+    # now check, which chromosomes we don't find in the reference
+    # genome and exclude them
+    setF = unique(snvs[,"CHROM"])
+    # setR has in any case remained the same
+
+    excludeSeq <- setF[!(setF %in% setR)]
+
+    if (length(excludeSeq)) {
+        cat(paste("Warning: cannot find the following chromosomes in the",
+                  "reference genome (will be ignored):\n"))
+        cat(excludeSeq)
+        cat("\n")
+
+        snvs <- snvs[!(snvs[,"CHROM"] %in% excludeSeq),]
+    }
+
+    if (verbose) {
+        cat(paste("Processing a total of", nrow(snvs), "mutations.\n"))
     }
 
     
@@ -145,8 +187,8 @@ buildGenomesFromMutationData <- function(snvs, numBases, type, trDir,
                   substr(as.character(seqs), (numBases%/%2)+1, (numBases%/%2)+1)
               )
        ) {
-        stop(paste("Reference (REF) bases in VCF do not match the specified",
-                   "reference genome!"))
+        stop(paste("Reference (REF) bases in mutation data do not match the",
+                   "specified reference genome!"))
     }
 
     
@@ -225,7 +267,7 @@ buildGenomesFromMutationData <- function(snvs, numBases, type, trDir,
     #
 
     sigModel <- NULL
-    if (type == "Alexandrov") {
+    if (type == "Alexandrov" || type == "full") {
         sigModel <- rep(0, 4^(numBases-1)*6*(1+as.numeric(trDir)))
 
         names(sigModel) <-
@@ -235,14 +277,7 @@ buildGenomesFromMutationData <- function(snvs, numBases, type, trDir,
     } else { # Shiraishi (table)
         sigModel <- matrix(0, ncol=6, nrow=(numBases+as.numeric(trDir)))
 
-        colnames(sigModel) <- c("[C>A]","[C>G]","[C>T]","[T>A]","[T>C]","[T>G]")
-
-        rnames <- c("mut", seq(-(numBases%/%2),-1), seq_len(numBases%/%2))
-        if(trDir) {
-            rnames <- c(rnames, "tr")
-        }
-
-        rownames(sigModel) <- rnames
+        sigModel <- setNames4ShiraishiTable(sigModel)
 
         # we need additional mapping to the colnames from single flanking
         # bases and transcription directions
