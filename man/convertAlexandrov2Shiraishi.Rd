@@ -16,13 +16,15 @@ A list of Shiraishi signatures that can be used for
 }
 \description{
 `convertAlexandrov2Shiraishi()` converts a set Alexandrov signatures to the
-Shiraishi model of signatures, summing the respective frequencies of base
-changes, and upstream and downstream flanking bases. The resulting
-Shiraishi signatures don't provide information on the transcription strand,
-as this is not part of the Alexandrov signatures. [Attention: this
-conversion entails a loss of specificity and the applicability of Shiraishi
-signatures derived from Alexandrov signatures has not been extensively
-explored!]
+Shiraishi model, summing the respective frequencies of base
+changes, and upstream and downstream flanking bases. In most cases, the
+resulting Shiraishi signatures don't provide information on the
+transcription strand, as this is not part of the standard Alexandrov
+signatures. While the conversion is mainly thought for signatures, it
+actually works also for mutation frequency data from genomes which have
+the same format. [Attention: this conversion entails a loss of specificity
+and the applicability of Shiraishi signatures derived from Alexandrov
+signatures has not been extensively explored!]
 }
 \examples{
 
@@ -35,6 +37,9 @@ signShiraishi <- convertAlexandrov2Shiraishi(signAlexandrov)
 }
 \references{
 \url{http://rmpiro.net/decompTumor2Sig/}\cr
+Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
+signatures active in individual tumors. BMC Bioinformatics (accepted for
+publication).\cr
 Krueger, Piro (2017) Identification of Mutational Signatures Active in
 Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
 Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,

@@ -18,18 +18,21 @@ if you are interested in full integer counts, but do not pass unnormalized
 counts to \code{decomposeTumorGenomes}!}
 }
 \value{
-A list of (normalized) mutation counts, one object per genome. The
-format is the same table used by the corresponding Shiraishi signatures.
+A list of mutation frequencies (or mutation counts if not
+normalized), one object per genome. The format is either according to the
+Shiraishi or the Alexandrov model, depending on how the mutation data was
+loaded with \code{pmsignature}.
 }
 \description{
 `getGenomesFromMutFeatData()` takes a \code{MutationFeatureData} object
 (mutation count data) as read by the '\code{pmsignature}' package (e.g.,
-by \code{pmsignature::readMPFile}) and extracts the mutation counts of the
-genomes therein. For passing the genomes to \code{decomposeTumorGenomes},
-the mutation counts must be normalized to mutation frequencies, which is
-done by default. [IMPORTANT: set \code{normalize} to \code{FALSE} only if
-you are interested in full integer counts, but do not pass unnormalized
-counts to \code{decomposeTumorGenomes}!]
+by \code{pmsignature::readMPFile}, version 0.3.0) and extracts the mutation
+counts of the genomes therein. For passing the genomes to
+\code{decomposeTumorGenomes}, the mutation counts must be normalized to
+mutation frequencies, which is done by default. [IMPORTANT: set
+\code{normalize} to \code{FALSE} only if you are interested in full
+integer counts, but do not pass unnormalized counts to
+\code{decomposeTumorGenomes}!]
 }
 \examples{
 
@@ -42,13 +45,14 @@ pmsigdata <- system.file("extdata",
 load(pmsigdata)
 
 ### extract the genomes from the pmsignature G object
-\donttest{
 genomes <- getGenomesFromMutFeatData(G, normalize=TRUE)
-}
 
 }
 \references{
 \url{http://rmpiro.net/decompTumor2Sig/}\cr
+Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
+signatures active in individual tumors. BMC Bioinformatics (accepted for
+publication).\cr
 Krueger, Piro (2017) Identification of Mutational Signatures Active in
 Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
 Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
@@ -58,6 +62,7 @@ Italy. PeerJ Preprints 5:e3257v1, 2017.
 \code{\link{decompTumor2Sig}}
 }
 \author{
-Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
-M. Piro\cr E-Mail: <rmpiro@gmail.com> or <r.piro@fu-berlin.de>
+Rosario M. Piro and Sandra Krueger\cr Freie Universitaet Berlin\cr
+Maintainer: Rosario M. Piro\cr E-Mail: <rmpiro@gmail.com> or
+<r.piro@fu-berlin.de>
 }

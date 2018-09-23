@@ -52,6 +52,9 @@ best subset (highest explained variance). This function is used by
 }
 \references{
 \url{http://rmpiro.net/decompTumor2Sig/}\cr
+Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
+signatures active in individual tumors. BMC Bioinformatics (accepted for
+publication).\cr
 Krueger, Piro (2017) Identification of Mutational Signatures Active in
 Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
 Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,

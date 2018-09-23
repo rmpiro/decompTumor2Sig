@@ -28,8 +28,8 @@ the specified fraction of the variance of the genome's mutation patterns.
 E.g., if \code{minExplainedVariance}=0.99 the smallest subset of
 signatures that explains at least 99\% of the variance is taken.
 Please note: depending on the number of signatures, this may take quite
-a while because for each number K of signatures, all possible subsets
-composed of K signatures will be tested to identify the subset that
+a while because by default for each number K of signatures, all possible
+subsets composed of K signatures will be tested to identify the subset that
 explains the highest part of the variance. If not enough variance is
 explained, K will be incremented by one. Notes: 1) to speed up the search,
 the parameters \code{minNumSignatures}, \code{maxNumSignatures} and
@@ -98,13 +98,14 @@ corresponding exposure vector will be set to \code{NULL}.
 \description{
 `decomposeTumorGenomes()` is the core function of this package. It
 decomposes tumor genomes into a given set of mutational signatures by
-computing their contributions (exposures) to the mutational load. The
-function takes a set of mutational signatures and the mutation features
-of one or more tumor genomes and computes weights, i.e., contributions for
-each of the signatures in each individual genome. Alternatively, the
-function can determine for each genome only a subset of signatures whose
-contributions are sufficient to exceed a user-given minimum threshold for
-the explained variance of the genome's mutation patterns.
+computing their contributions (exposures) to the mutational load via
+quadratic programming. The function takes a set of mutational signatures
+and the mutation features of one or more tumor genomes and computes
+weights, i.e., contributions for each of the signatures in each
+individual genome. Alternatively, the function can determine for each
+genome only a subset of signatures whose contributions are sufficient
+to exceed a user-given minimum threshold for the explained variance
+of the genome's mutation patterns.
 }
 \examples{
 
@@ -129,6 +130,9 @@ exposures <- decomposeTumorGenomes(genomes, signatures, verbose=FALSE)
 }
 \references{
 \url{http://rmpiro.net/decompTumor2Sig/}\cr
+Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
+signatures active in individual tumors. BMC Bioinformatics (accepted for
+publication).\cr
 Krueger, Piro (2017) Identification of Mutational Signatures Active in
 Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
 Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,

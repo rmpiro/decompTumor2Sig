@@ -13,15 +13,15 @@ as those produced by the de novo signature construction method
 }
 \value{
 A list of Shiraishi signatures, one object per signature. Please
-see \code{readShiraishiSignatures}, the \code{pmsignature} package, or the
-\code{decompTumor2Sig} vignette for more information on the format of
-Shiraishi signatures.
+see \code{readShiraishiSignatures} or the \code{decompTumor2Sig} vignette
+for more information on the format of Shiraishi signatures.
 }
 \description{
 `getSignaturesFromEstParam()` takes an \code{EstimatedParameters} object
 (signatures data) as computed by the '\code{pmsignature}' package (by
-\code{pmsignature::getPMSignature}) and extracts the signature information.
-The signatures can then be passed to \code{decomposeTumorGenomes}.
+\code{pmsignature::getPMSignature}; version 0.3.0) and extracts the
+signature information. The signatures can then be passed to
+\code{decomposeTumorGenomes}.
 }
 \examples{
 
@@ -34,13 +34,14 @@ pmsigdata <- system.file("extdata",
 load(pmsigdata)
 
 ### extract the signatures from the pmsignature Param object
-\donttest{
 signatures <- getSignaturesFromEstParam(Param)
-}
 
 }
 \references{
 \url{http://rmpiro.net/decompTumor2Sig/}\cr
+Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
+signatures active in individual tumors. BMC Bioinformatics (accepted for
+publication).\cr
 Krueger, Piro (2017) Identification of Mutational Signatures Active in
 Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
 Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
@@ -51,6 +52,7 @@ Italy. PeerJ Preprints 5:e3257v1, 2017.
 \code{\link{readShiraishiSignatures}}
 }
 \author{
-Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
-M. Piro\cr E-Mail: <rmpiro@gmail.com> or <r.piro@fu-berlin.de>
+Rosario M. Piro and Sandra Krueger\cr Freie Universitaet Berlin\cr
+Maintainer: Rosario M. Piro\cr E-Mail: <rmpiro@gmail.com> or
+<r.piro@fu-berlin.de>
 }

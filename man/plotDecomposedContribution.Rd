@@ -14,7 +14,8 @@ obtained for a single tumor genome.}
 \item{signatures}{(Optional) A list object containing the signatures used
 to compute the decomposition. If specified, the signature labels used in
 the plot will be taken from the element names of the list; otherwise
-signatures will be named from sign_1 to sign_N.}
+signature names will be taken from the exposure object (decomposition) or
+named from sign_1 to sign_N.}
 
 \item{removeNA}{(Optional) If \code{TRUE} (default), signatures with
 an NA as exposure will not be included on the x-axis of the the plot.
@@ -50,6 +51,9 @@ plotDecomposedContribution(exposures[[1]], signatures=NULL)
 }
 \references{
 \url{http://rmpiro.net/decompTumor2Sig/}\cr
+Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
+signatures active in individual tumors. BMC Bioinformatics (accepted for
+publication).\cr
 Krueger, Piro (2017) Identification of Mutational Signatures Active in
 Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
 Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,

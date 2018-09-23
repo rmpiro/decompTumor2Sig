@@ -47,8 +47,8 @@ of the number of signatures.
 `plotExplainedVariance()` plots the explained variance of a single tumor
 genome's mutation patterns as a function of the number of signatures
 (increasing subsets of signatures) used for decomposition. For each
-number K of signatures, the highest variance explained by any possible
-subset of K signatures will be plotted (full or greedy search, see below).
+number K of signatures, the highest variance explained by possible
+subsets of K signatures will be plotted (full or greedy search, see below).
 This can help to evaluate what minimum threshold for the explained variance
 can be used to decompose tumor genomes with the function
 \code{decomposeTumorGenomes}.
@@ -77,6 +77,9 @@ plotExplainedVariance(genomes[[1]], signatures,
 }
 \references{
 \url{http://rmpiro.net/decompTumor2Sig/}\cr
+Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
+signatures active in individual tumors. BMC Bioinformatics (accepted for
+publication).\cr
 Krueger, Piro (2017) Identification of Mutational Signatures Active in
 Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
 Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,

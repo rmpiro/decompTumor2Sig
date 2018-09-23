@@ -4,12 +4,22 @@
 \alias{plotMutationDistribution}
 \title{Plot mutation frequency data of a mutational signature or tumor genome.}
 \usage{
-plotMutationDistribution(mutData)
+plotMutationDistribution(mutData, colors = NULL, strip = NULL)
 }
 \arguments{
 \item{mutData}{(Mandatory) The signature or genome mutation frequency data
 to be plotted. This can either be a matrix (Shiraishi model) or a
 numeric vector (Alexandrov model).}
+
+\item{colors}{Vector of colors to be used for the base change data. For
+Alexandrov-type data, this vector must contain six elements (one per base
+change). For Shiraishi-type data, this vector must contain four elements
+(one per base). If \code{NULL} (default), for Alexandrov-type data, the
+colors are set to those used by the COSMIC website; for Shiraishi-type
+data, the consensus base colors for sequence logos will be used.}
+
+\item{strip}{Background color for strip labels; used only for
+Alexandrov-type data. If \code{NULL} (default), "papayawhip" will be used.}
 }
 \value{
 Returns (or draws) a plot according to the Alexandrov or Shiraishi
@@ -18,9 +28,7 @@ model of mutational signatures.
 \description{
 `plotMutationDistribution()` plots a single signature or the mutation
 frequency data for a single genome. This works for signatures or genome
-data of both the Shiraishi and the Alexandrov type. [IMPORTANT: The
-function requires the '\code{pmsignature}' package to be installed
-(Shiraishi et al. PLoS Genet 11(12):e1005657, 2015).]
+data of both the Shiraishi and the Alexandrov type.
 }
 \examples{
 
@@ -32,9 +40,7 @@ function requires the '\code{pmsignature}' package to be installed
 signatures <- readAlexandrovSignatures()
 
 ### plot the first Alexandrov signature
-\donttest{
 plotMutationDistribution(signatures[[1]])
-}
 
 ### read four Shiraishi signatures for breast cancer genomes from 
 ### Nik-Zainal et al (PMID: 22608084) from flat files
@@ -44,13 +50,14 @@ sigfiles <- system.file("extdata",
 signatures <- readShiraishiSignatures(sigfiles)
 
 ### plot the first Shiraishi signature
-\donttest{
 plotMutationDistribution(signatures[[1]])
-}
 
 }
 \references{
 \url{http://rmpiro.net/decompTumor2Sig/}\cr
+Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
+signatures active in individual tumors. BMC Bioinformatics (accepted for
+publication).\cr
 Krueger, Piro (2017) Identification of Mutational Signatures Active in
 Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
 Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
