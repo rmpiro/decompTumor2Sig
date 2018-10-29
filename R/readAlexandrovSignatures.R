@@ -23,7 +23,7 @@
 #' readAlexandrovSignatures(file)
 #' @param file (Mandatory) Can be a file name or an URL for download.
 #' Default (COSMIC):
-#' "http://cancer.sanger.ac.uk/cancergenome/assets/signatures_probabilities.txt"
+#' "https://cancer.sanger.ac.uk/cancergenome/assets/signatures_probabilities.txt"
 #' @return A list of Alexandrov signatures that can be used for
 #' \code{decomposeTumorGenomes}. 
 #' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
@@ -46,7 +46,7 @@
 #' @importFrom utils read.table
 #' @export readAlexandrovSignatures
 readAlexandrovSignatures <-
-    function(file=paste0("http://cancer.sanger.ac.uk/cancergenome/assets/",
+    function(file=paste0("https://cancer.sanger.ac.uk/cancergenome/assets/",
                  "signatures_probabilities.txt")) {
 
     # read a set of Alexandrov signatures from a tab-separated flat file in the

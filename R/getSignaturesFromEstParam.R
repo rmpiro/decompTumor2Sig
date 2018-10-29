@@ -69,8 +69,10 @@ getSignaturesFromEstParam <- function(Param) {
         if (getSigType(Param) == "independent") {
             # Shiraishi
             if (is.vector(sigList[[length(sigList)]])) {
-                # this can happen when numBases=1 and trDir=FALSE; would be vector, we need table!
-                sigList[[length(sigList)]] <- matrix(sigList[[length(sigList)]], nrow=1)
+                # this can happen when numBases=1 and trDir=FALSE;
+                # would be vector, we need table!
+                sigList[[length(sigList)]] <- matrix(sigList[[length(sigList)]],
+                                                     nrow=1)
             }
             
             sigList[[length(sigList)]] <-

@@ -98,7 +98,7 @@ composeGenomesFromExposures <- function(exposures, signatures) {
                        "number of signatures."))
         }
 
-        # multiply exposures with the corresponding signatures and sum the results
+        # multiply exposures with the corresponding signatures and sum results
         for (ii in seq_along(exp)) {
 
             if (ii==1) {

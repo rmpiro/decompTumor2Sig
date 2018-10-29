@@ -179,7 +179,8 @@ plotShiraishiModel <- function(mutData, numBases, trDir, colors = NULL) {
               plot.caption = element_text(hjust=0.5, size=rel(1.2)))
 
     if (trDir) {
-        trPlot <- ggplot(data=data.frame(x=factor(c("+", "-"), levels=c("+", "-")),
+        trPlot <- ggplot(data=data.frame(x=factor(c("+", "-"),
+                                                  levels=c("+", "-")),
                              probability=mutData[nrow(mutData), seq_len(2)]),
                   aes_string(x="x", y="probability")) +
                   geom_bar(stat="identity", fill=trColors) +

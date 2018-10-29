@@ -16,11 +16,19 @@
 #' #[2,] "2"  "992" "G" "A" "GT:PL:GQ:AD:DP" "0/1:123,0,33:33:1,3:4" "0/0:..."
 #' 
 #' @usage buildGenomesFromMutationData(snvs, numBases, type, trDir,
-#' refGenome, transcriptAnno, verbose)
+#' uniqueTrDir=TRUE, refGenome, transcriptAnno, verbose)
 #' @param snvs SNV matrix (see description above).
 #' @param numBases Number of bases for the sequence pattern (odd integer).
 #' @param type Type of signature to be used ("Alexandrov", "Shiraishi").
 #' @param trDir Logical: use transcription-strand information?
+#' @param uniqueTrDir Logical; used only if trDir is also \code{TRUE}: if
+#' \code{uniqueTrDir} is \code{TRUE} (default), then only mutations with only
+#' one defined transcription strand will be used, mutations for which both 
+#' strands are valid are ignored. If \code{FALSE}, these mutations are accepted 
+#' and one of the two transcription strands will be arbitrarily taken (the  
+#' first one encountered in the databse specified for \code{transcriptAnno}). 
+#' The latter was the behavior until version 1.3.5 of \code{decompTumor2Sig} 
+#' and is also the behavior of \code{pmsignature}.
 #' @param refGenome Reference genome (\code{BSgenome} object).
 #' @param transcriptAnno Transcription information (\code{TxDb} object).
 #' @param verbose Logical. Print additional information?
@@ -45,6 +53,7 @@
 #' @importFrom plyr alply
 #' @keywords internal
 buildGenomesFromMutationData <- function(snvs, numBases, type, trDir,
+                                         uniqueTrDir = TRUE,
                                          refGenome, transcriptAnno, verbose) {
 
     if (type == "independent") {
@@ -210,13 +219,31 @@ buildGenomesFromMutationData <- function(snvs, numBases, type, trDir,
                                     )
                        )
         trStrUnique <- unique(trStr[trStr[,2] != "*",],MARGIN=1)
-        trStrUnique <- trStrUnique[!duplicated(trStrUnique[,1]),]
 
+        if (!uniqueTrDir) {
+            ## the following was the approach also used by pmsignature:
+            ## for mutations in regions with transcripts in both directions,
+            ## use the direction of the first transcript encountered in the
+            ## transcript database; we did this also until version 1.3.5
+            ## we now exclude these mutations! See below.
+            trStrUnique <- trStrUnique[!duplicated(trStrUnique[,1]),]
+
+        } else {
+            ## uniqueTrDir == TRUE (default)
+
+            # exclude cases where both transcription directions are valid
+            # (e.g., ambiguous due to overlapping transcripts)
+            trStrUnique <-
+                trStrUnique[!(trStrUnique[,1] %in%
+                              trStrUnique[duplicated(trStrUnique[,1])]),]
+        }
+        
         trPlus <- as.integer(trStrUnique[trStrUnique[,2]=="+",1])
         trMinus <- as.integer(trStrUnique[trStrUnique[,2]=="-",1])
 
         strands[trPlus] <- "+"
         strands[trMinus] <- "-"
+
     }
 
 
@@ -254,7 +281,7 @@ buildGenomesFromMutationData <- function(snvs, numBases, type, trDir,
 
     # now, we have everything we need; start counting occurrences ...
 
-    # get location of genotype info in the sample specifications ("GT" in format)
+    # get location of genotype info in sample specifications ("GT" in format)
     # [assume it's the same for all variants ...]
 
     gtIndex <- as.numeric(which(unlist(strsplit(snvs[1,"FORMAT"], ":",

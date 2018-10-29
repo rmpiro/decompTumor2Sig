@@ -11,7 +11,7 @@ Changes in version 1.3.1 (2018-08-15)
   o getGenomesFromMutationFeatureData -> getGenomesFromMutFeatData
   o getSignatureListFromEstimatedParameters -> getSignaturesFromEstParam
 + Used robust sequence creation with seq, seq_len, seq_along instead of 1:N etc
-+ Used native class checking such as is.numeric() instead of class()==...
++ Consistent use of native class checking such as is.numeric()
 + Implemented wrapper functions for external classes which do not provide
   the necessary accessor functions
 + Replaced instances of sapply() and unlist(lapply()) by vapply()
@@ -38,3 +38,15 @@ Changes in version 1.3.3 (2018-09-24)
     e.g., due to different names of decoy sequences.
   o Minor problems with unlikely signatures composed of only the mutated base
     (no flanking bases)
+
+Changes in version 1.3.6 (2018-10-29)
++ When transcription direction is taken into account: exclude mutations in
+  regions with overlapping genes of opposing transcription directions by
+  default! Previous versions of decompTumor2Sig took the approach of
+  pmsignature, using the transcription direction of the first gene encountered
+  in the transcript database (which is rather arbitrary); excluding these
+  mutations appears more appropriate. The old approach can still be used with
+  an additional function parameter.
++ Removed pmsignature from the suggested packages (not allowed in Bioconductor)
++ Reduced the number of tumor genome examples in extdata for faster processing
+  and smaller package size (six out of 21 tumors from PMID:22608084)

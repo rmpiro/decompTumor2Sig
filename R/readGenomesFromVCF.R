@@ -6,6 +6,7 @@
 #' mutational signatures (Alexandrov or Shiraishi).
 #'
 #' @usage readGenomesFromVCF(file, numBases=5, type="Shiraishi", trDir=TRUE,
+#' enforceUniqueTrDir=TRUE,
 #' refGenome=BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19,
 #' transcriptAnno=
 #' TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene,
@@ -20,6 +21,19 @@
 #' taken into account in the signature model. If so, only mutations within
 #' genomic regions with a defined transcription direction can be considered.
 #' Default: \code{TRUE}
+#' @param enforceUniqueTrDir (Optional) Used only if \code{trDir} is
+#' \code{TRUE}. If \code{enforceUniqueTrDir} is TRUE (default), then mutations
+#' which map to a region with multiple overlapping genes with opposing
+#' transcription directions will be excluded from the analysis. If \code{FALSE},
+#' the transcript direction encountered first in the transcript database (see
+#' \code{transcriptAnno}) is assigned to the mutation. The latter was the
+#' behavior until version 1.3.5 of \code{decompTumor2Sig} and is also the
+#' behavior of \code{pmsignature}. However, it is preferable to exclude
+#' these mutations from the count (default) because from mutation data alone
+#' it cannot be inferred which of the two genes has the higher transcriptional
+#' activity which might potentially be linked to the occurrence of the mutation.
+#' (If you are unsure, use the default setting; this option exists mostly for
+#' backward compatibility with older versions.)
 #' @param refGenome (Mandatory) The reference genome (\code{BSgenome}) needed
 #' to extract sequence patterns. Default: \code{BSgenome} object for hg19.
 #' @param transcriptAnno (Optional) Transcript annotation (\code{TxDb} object)
@@ -56,8 +70,8 @@
 #'          "Nik-Zainal_PMID_22608084-VCF-convertedfromMPF.vcf.gz", 
 #'          package="decompTumor2Sig")
 #' genomes <- readGenomesFromVCF(gfile, numBases=5, type="Shiraishi",
-#'          trDir=TRUE, refGenome=refGenome, transcriptAnno=transcriptAnno,
-#'          verbose=FALSE)
+#'          trDir=TRUE, enforceUniqueTrDir=TRUE, refGenome=refGenome,
+#'          transcriptAnno=transcriptAnno, verbose=FALSE)
 #' 
 #' @importFrom vcfR read.vcfR extract.gt getFIX
 #' @importFrom BSgenome.Hsapiens.UCSC.hg19 BSgenome.Hsapiens.UCSC.hg19
@@ -65,6 +79,7 @@
 #' TxDb.Hsapiens.UCSC.hg19.knownGene
 #' @export readGenomesFromVCF
 readGenomesFromVCF <- function(file, numBases=5, type="Shiraishi", trDir=TRUE,
+    enforceUniqueTrDir=TRUE,
     refGenome=BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19,
     transcriptAnno=
         TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene,
@@ -118,6 +133,7 @@ readGenomesFromVCF <- function(file, numBases=5, type="Shiraishi", trDir=TRUE,
 
     genomes <- buildGenomesFromMutationData(snvs=snvs, numBases=numBases,
                                             type=type, trDir=trDir,
+                                            uniqueTrDir=enforceUniqueTrDir,
                                             refGenome=refGenome,
                                             transcriptAnno=transcriptAnno,
                                             verbose=verbose)

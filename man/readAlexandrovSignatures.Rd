@@ -9,7 +9,7 @@ readAlexandrovSignatures(file)
 \arguments{
 \item{file}{(Mandatory) Can be a file name or an URL for download.
 Default (COSMIC):
-"http://cancer.sanger.ac.uk/cancergenome/assets/signatures_probabilities.txt"}
+"https://cancer.sanger.ac.uk/cancergenome/assets/signatures_probabilities.txt"}
 }
 \value{
 A list of Alexandrov signatures that can be used for

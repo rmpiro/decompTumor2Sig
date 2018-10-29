@@ -5,7 +5,7 @@
 \title{Convert genomes from a \code{VRanges} object}
 \usage{
 convertGenomesFromVRanges(vranges, numBases=5, type="Shiraishi",
-trDir=TRUE,
+trDir=TRUE, enforceUniqueTrDir=TRUE, 
 refGenome=BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19,
 transcriptAnno=
 TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene,
@@ -25,6 +25,20 @@ flanking bases) to be used for sequence patterns. Must be odd. Default: 5}
 taken into account in the signature model. If so, only mutations within
 genomic regions with a defined transcription direction can be considered.
 Default: \code{TRUE}}
+
+\item{enforceUniqueTrDir}{(Optional) Used only if \code{trDir} is
+\code{TRUE}. If \code{enforceUniqueTrDir} is TRUE (default), then mutations
+which map to a region with multiple overlapping genes with opposing
+transcription directions will be excluded from the analysis. If \code{FALSE},
+the transcript direction encountered first in the transcript database (see
+\code{transcriptAnno}) is assigned to the mutation. The latter was the
+behavior until version 1.3.5 of \code{decompTumor2Sig} and is also the
+behavior of \code{pmsignature}. However, it is preferable to exclude
+these mutations from the count (default) because from mutation data alone
+it cannot be inferred which of the two genes has the higher transcriptional
+activity which might potentially be linked to the occurrence of the mutation.
+(If you are unsure, use the default setting; this option exists mostly for
+backward compatibility with older versions.)}
 
 \item{refGenome}{(Mandatory) The reference genome (\code{BSgenome}) needed
 to extract sequence patterns. Default: \code{BSgenome} object for hg19.}
@@ -68,8 +82,8 @@ vr <- readVcfAsVRanges(gfile, genome="hg19")
 
 ### convert the VRanges object to the decompTumor2Sig format
 genomes <- convertGenomesFromVRanges(vr, numBases=5, type="Shiraishi",
-         trDir=TRUE, refGenome=refGenome, transcriptAnno=transcriptAnno,
-         verbose=FALSE)
+         trDir=TRUE, enforceUniqueTrDir=TRUE, refGenome=refGenome, 
+         transcriptAnno=transcriptAnno, verbose=FALSE)
 
 }
 \references{

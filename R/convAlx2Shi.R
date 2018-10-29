@@ -32,11 +32,13 @@ convAlx2Shi <- function(x) {
 
     basesAdj <- (sigprop$numBases-1)/2
 
-    strLen <- 5 + 2*basesAdj + as.numeric(haveTrDir)   # examples: "A[T>G]C" or "AA[T>G]AC+" 
+    strLen <- 5 + 2*basesAdj + as.numeric(haveTrDir)   # examples: "A[T>G]C"
+                                                       # or "AA[T>G]AC+" 
 
     if (is.null(names(x))) {
         # plain vector; need to name it according to Alexandrov model
-        names(x) <- buildSortedAlexandrovSignaturePatternList(sigprop$numBases, haveTrDir)
+        names(x) <- buildSortedAlexandrovSignaturePatternList(sigprop$numBases,
+                                                              haveTrDir)
     }
     
     # first row: base change frequencies

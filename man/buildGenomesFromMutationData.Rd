@@ -5,7 +5,7 @@
 \title{buildGenomesFromMutationData (internal function)}
 \usage{
 buildGenomesFromMutationData(snvs, numBases, type, trDir,
-refGenome, transcriptAnno, verbose)
+uniqueTrDir=TRUE, refGenome, transcriptAnno, verbose)
 }
 \arguments{
 \item{snvs}{SNV matrix (see description above).}
@@ -15,6 +15,15 @@ refGenome, transcriptAnno, verbose)
 \item{type}{Type of signature to be used ("Alexandrov", "Shiraishi").}
 
 \item{trDir}{Logical: use transcription-strand information?}
+
+\item{uniqueTrDir}{Logical; used only if trDir is also \code{TRUE}: if
+\code{uniqueTrDir} is \code{TRUE} (default), then only mutations with only
+one defined transcription strand will be used, mutations for which both 
+strands are valid are ignored. If \code{FALSE}, these mutations are accepted 
+and one of the two transcription strands will be arbitrarily taken (the  
+first one encountered in the databse specified for \code{transcriptAnno}). 
+The latter was the behavior until version 1.3.5 of \code{decompTumor2Sig} 
+and is also the behavior of \code{pmsignature}.}
 
 \item{refGenome}{Reference genome (\code{BSgenome} object).}
 
