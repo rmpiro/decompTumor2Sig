@@ -39,7 +39,7 @@ Changes in version 1.3.3 (2018-09-24)
   o Minor problems with unlikely signatures composed of only the mutated base
     (no flanking bases)
 
-Changes in version 1.3.6 (2018-10-29)
+Changes in version 1.99.0 (2018-11-10)
 + When transcription direction is taken into account: exclude mutations in
   regions with overlapping genes of opposing transcription directions by
   default! Previous versions of decompTumor2Sig took the approach of
