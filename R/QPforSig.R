@@ -125,7 +125,8 @@ QPforSig <- function(counts, signatures, constrainToMaxContribution=FALSE,
     resQP$solution[resQP$solution<0]=0  # there can be some values below 0
                                         # which should actually be 0 (very 
                                         # close to 0 in any case, e.g., -10^-15)
-
+    resQP$solution[resQP$solution>1]=1  # same for values beyond 1
+    
     return(resQP$solution)
 }
 

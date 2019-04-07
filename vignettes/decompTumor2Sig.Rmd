@@ -24,8 +24,6 @@ library(knitr)
 
 # Introduction
 
-**[This introduction is for package version: 1.99.0]**
-
 The R package **decompTumor2Sig** has been developed to decompose individual
 tumor genomes (i.e., the lists of somatic single nucleotide variants identified
 in individual tumors) according to a set of given mutational signatures---a

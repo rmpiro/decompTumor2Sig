@@ -443,7 +443,13 @@ buildGenomesFromMutationData <- function(snvs, numBases, type, trDir,
     }) # genomes <- apply over samples ...
 
     names(genomes) <- sampleCols
-
+    
+    # finally, exclude all genomes without mutations
+    if(verbose) {
+        cat("Cleaning genome list; removing genomes without mutations.\n")
+    }
+    genomes <- genomes[unlist(lapply(genomes, function(x){ all(!is.nan(x)) }))]
+    
     return(genomes)
     
 }

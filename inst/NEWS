@@ -50,3 +50,16 @@ Changes in version 1.99.0 (2018-11-10)
 + Removed pmsignature from the suggested packages (not allowed in Bioconductor)
 + Reduced the number of tumor genome examples in extdata for faster processing
   and smaller package size (six out of 21 tumors from PMID:22608084)
+
+Changes in version 1.99.1 (2019-04-07)
++ Changed the procedure which converts lists of individual mutations from MPF
+  files into tumor mutation profiles to reduce the memory footprint and
+  allow for larger sets of tumors to be read from file.
++ When genomes are read from files: remove genomes without SNVs (no mutation
+  frequencies)
++ Recognize indels for which either the REF or ALT base is specified as "-"
++ Fix bugs:
+  o Error when quadprog returned a mutation frequency of minimally larger
+    than 1 (which is theoretically impossible but can probably happen due
+    to the rounding of floating point numbers)
+

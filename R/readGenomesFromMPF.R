@@ -79,6 +79,7 @@
 #' 
 #' @importFrom plyr aaply
 #' @importFrom utils read.table
+#' @importFrom data.table as.data.table
 #' @importFrom BSgenome.Hsapiens.UCSC.hg19 BSgenome.Hsapiens.UCSC.hg19
 #' @importFrom TxDb.Hsapiens.UCSC.hg19.knownGene
 #' TxDb.Hsapiens.UCSC.hg19.knownGene
@@ -94,54 +95,102 @@ readGenomesFromMPF <- function(file, numBases=5, type="Shiraishi", trDir=TRUE,
     if(verbose) {
         cat("Reading mutations and patient/sample IDs from MPF file:\n")
     }
+
     mpf <- as.matrix(read.table(file, header=FALSE, row.names=NULL, sep="\t"))
     colnames(mpf) <- c("SAMPLE", "CHROM", "POS", "REF", "ALT")
 
-    smpIndex <- which(colnames(mpf) == "SAMPLE")
-    chrIndex <- which(colnames(mpf) == "CHROM")
-    posIndex <- which(colnames(mpf) == "POS")
-    refIndex <- which(colnames(mpf) == "REF")
-    altIndex <- which(colnames(mpf) == "ALT")
-
     # remove all spaces (some files contain them, e.g., in the POS field ...
+    # (this is faster for a table than a data.table, so we do it first)
     mpf <- gsub(" ", "", mpf)
     
-    # get only SNVs (one REF base and one ALT base)
-    snvRows <- (nchar(mpf[,refIndex]) == 1) & (nchar(mpf[,altIndex]) == 1)
-    mpf <- mpf[snvRows,]
+    # data.table objects can be modified much more efficiently
+    mpf <- as.data.table(mpf)
 
-    
+    # get only SNVs (one REF base and one ALT base)
+    # (indels can be specified as, e.g. deletion, "AG > A" or as "G > -")
+    snvRows <- (nchar(mpf$REF) == 1) & (nchar(mpf$ALT) == 1) &
+        (mpf$REF != "-") & (mpf$ALT != "-")
+    mpf <- mpf[snvRows]
+
     # we need to map mutations to samples, so that we can create
     # VCF-like, dummy genotype information
 
-    if(verbose) {
-        cat(paste("Collapsing variant information by mapping multiple",
-                  "samples to unique variants.\n"))
-    }
-    
-    sampleIDlist <- sort(unique(mpf[,smpIndex]))
+    sampleIDlist <- sort(unique(mpf$SAMPLE))
 
-    snvs <- plyr::aaply(mpf, 1, function(x) {
-        gtVec <- c("GT", rep(NA, length(sampleIDlist)))
-        names(gtVec) <- c("FORMAT", sampleIDlist)
-        gtVec[x[smpIndex]] <- "1/1"
-        
-        c(x[c(chrIndex,posIndex,refIndex,altIndex)], gtVec)
-    })
 
-    
+    ## add genotype information
+    #mpf$FORMAT <- rep("GT", nrow(mpf))
+    #
+    ## construct genotype information for individual samples
+    #for (sid in sampleIDlist) {
+    #    gt <- rep(NA, nrow(mpf))
+    #    gt[mpf$SAMPLE == sid] <- "1/1"
+    #
+    #    mpf[,sid] <- gt
+    #}
+    #
+    ## now remove the sample ID (we have it in the genotype information)
+    #mpf$SAMPLE = NULL
+    #
     ## we have now (example):
-    #> snvs[1:10,]
-    #X1  CHROM  POS      REF ALT FORMAT PD3851a PD3890a PD3904a PD3905a PD3945a
-    #  1 "chr1" "809687" "G" "C" "GT"   "1/1"   NA      NA      NA      NA     
-    #  2 "chr1" "819245" "G" "T" "GT"   "1/1"   NA      NA      NA      NA     
+    ##> mpf[1:10,]
+    ##X1  CHROM  POS      REF ALT FORMAT PD3851a PD3890a PD3904a PD3905a 
+    ##  1 "chr1" "809687" "G" "C" "GT"   "1/1"   NA      NA      NA      
+    ##  2 "chr1" "819245" "G" "T" "GT"   "1/1"   NA      NA      NA 
+    #
+    #genomes <- buildGenomesFromMutationData(snvs=as.matrix(mpf),
+    #                                        numBases=numBases,
+    #                                        type=type, trDir=trDir,
+    #                                        uniqueTrDir=enforceUniqueTrDir,
+    #                                        refGenome=refGenome,
+    #                                        transcriptAnno=transcriptAnno,
+    #                                        verbose=verbose)
 
-    genomes <- buildGenomesFromMutationData(snvs=snvs, numBases=numBases,
-                                            type=type, trDir=trDir,
-                                            uniqueTrDir=enforceUniqueTrDir,
-                                            refGenome=refGenome,
-                                            transcriptAnno=transcriptAnno,
-                                            verbose=verbose)
+    maxN <- 20        # don't process more than 20 genomes at once,
+                      # otherwise the memory consumption explodes
+    
+    if (verbose & (length(sampleIDlist) > maxN)) {
+        cat(paste0("Too many tumors genomes; processing in batches ",
+                   "(max ",maxN,") to limit memory usage!\n"))
+    }
+
+    genomes <- list()
+        
+    while(length(sampleIDlist)) {
+
+        if (length(sampleIDlist) < maxN) {
+            # remainder is smaller than batch size
+            maxN <- length(sampleIDlist)
+        }
+
+        # get subset of mutations for this sample
+        mpfS <- mpf[mpf$SAMPLE %in% sampleIDlist[seq(maxN)],]
+        mpfS$FORMAT <- rep("GT", nrow(mpfS))
+
+        for (sid in sampleIDlist[seq(maxN)]) {
+            gt <- rep(NA, nrow(mpfS))
+            gt[mpfS$SAMPLE == sid] <- "1/1"
+
+            mpfS[,sid] <- gt
+        }
+
+        mpfS$SAMPLE = NULL
+
+        genomes <-
+            c(genomes, 
+              buildGenomesFromMutationData(snvs=as.matrix(mpfS),
+                                           numBases=numBases,
+                                           type=type, trDir=trDir,
+                                           uniqueTrDir=enforceUniqueTrDir,
+                                           refGenome=refGenome,
+                                           transcriptAnno=transcriptAnno,
+                                           verbose=verbose)
+              )
+
+        # remove this batch of samples from the list
+        sampleIDlist <- sampleIDlist[-seq(maxN)]
+
+    } # end while
 
     if(verbose) {
         cat("Done reading genomes.\n")

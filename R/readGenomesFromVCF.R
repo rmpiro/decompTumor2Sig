@@ -92,8 +92,10 @@ readGenomesFromVCF <- function(file, numBases=5, type="Shiraishi", trDir=TRUE,
     vcf <- read.vcfR(file, verbose=verbose, checkFile=TRUE, convertNA=TRUE)
 
     # get only SNVs (one REF base and one ALT base)
+    # (indels can be specified as, e.g. deletion, "AG > A" or as "G > -")
     snvRows <-
-        (nchar(getFIX(vcf)[,"REF"]) == 1) & (nchar(getFIX(vcf)[,"ALT"]) == 1)
+        (nchar(getFIX(vcf)[,"REF"]) == 1) & (nchar(getFIX(vcf)[,"ALT"]) == 1) &
+            (getFIX(vcf)[,"REF"] != "-") & (getFIX(vcf)[,"ALT"] != "-")
 
     # basic variant information (chr, pos, ref, alt)
     snvs <- getFIX(vcf)[snvRows, c("CHROM","POS","REF","ALT")]
@@ -105,7 +107,7 @@ readGenomesFromVCF <- function(file, numBases=5, type="Shiraishi", trDir=TRUE,
     # if this was only one sample: have a vector, need keep sample name
     gtypes <- as.matrix(gtypes)
     colnames(gtypes) <- colnames(extract.gt(vcf))
-    
+ 
     # genotype information
     if (!is.null(gtypes)) {
         # if we do have genotype information, add it!
