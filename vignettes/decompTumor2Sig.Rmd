@@ -178,11 +178,15 @@ signatures and Shiraishi-type signatures.
 
 ### Alexandrov signatures {#input-sign-alexandrov}
 
-Alexandrov signatures are specified in the format used at the COSMIC Mutational
-Signatures website (<http://cancer.sanger.ac.uk/cosmic/signatures> -> "Download
-signatures").
+Alexandrov signatures are specified either in the format used at the
+COSMIC Mutational Signatures website for signatures version 2 (March 2015,
+see <http://cancer.sanger.ac.uk/cosmic/signatures_v2> -> "Download signatures"),
+or in the format used for signatures version 3 (May 2019; see
+<https://cancer.sanger.ac.uk/cosmic/signatures/SBS/> and
+<https://www.synapse.org/#!Synapse:syn12009743>). For version 3, only Single
+Base Substitution (SBS) signatures can be used.
 
-Example:
+Example for version 2:
 
 ```
 Substitution Type  Trinucleotide  Somatic Mutation Type  Signature 1     ...
@@ -195,6 +199,22 @@ T>G                TTG            T[T>G]G                0.002031076880  ...
 T>G                TTT            T[T>G]T                0.004030128160  ...
 ```
 
+Example for version 3:
+
+```
+Type,SubType,SBS1,SBS2,SBS3,SBS4,SBS5,SBS6, ...
+C>A,ACA,8.86E-04,5.80E-07,2.08E-02,4.22E-02,1.20E-02,4.25E-04, ...
+C>A,ACC,2.28E-03,1.48E-04,1.65E-02,3.33E-02,9.44E-03,5.24E-04, ...
+C>A,ACG,1.77E-04,5.23E-05,1.75E-03,1.56E-02,1.85E-03,5.20E-05, ...
+C>A,ACT,1.28E-03,9.78E-05,1.22E-02,2.95E-02,6.61E-03,1.80E-04, ...
+...
+T>G,TTG,5.83E-04,9.54E-05,8.05E-03,2.32E-03,6.94E-03,3.24E-04, ...
+T>G,TTT,2.23E-16,2.23E-16,1.05E-02,5.68E-04,1.35E-02,1.01E-03, ...
+```
+
+(Apart from the change of tab- to comma-separator, the main difference is
+the lack of the redundant 3rd annotation column in version 3.)
+
 The standard Alexandrov-type signatures report mutation frequencies for
 nucleotide triplets where the mutated base is at the center. Also, the basic
 Alexandrov signatures do not take transcription direction into account when
@@ -202,8 +222,8 @@ computing mutation frequencies.
 
 
 To read Alexandrov-type signatures, use the command
-**readAlexandrovSignatures()**. By default, the command reads the signatures
-directly from COSMIC and stores them in a list object:
+**readAlexandrovSignatures()**. By default, the command reads the version 2 (!)
+signatures directly from COSMIC and stores them in a list object:
 
 ```{r, message=FALSE, warning=FALSE}
 signatures <- readAlexandrovSignatures()

@@ -63,3 +63,7 @@ Changes in version 1.99.1 (2019-04-07)
     than 1 (which is theoretically impossible but can probably happen due
     to the rounding of floating point numbers)
 
+Changes in version 2.1.0 (2019-08-18)
++ adapted readAlexandrovSignatures to read the file format used by the
+  COSMIC mutational signatures version 3 (May 2019; Single Base Substitution/SBS
+  signatures only)

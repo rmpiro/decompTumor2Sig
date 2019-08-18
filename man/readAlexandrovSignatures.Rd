@@ -18,11 +18,18 @@ A list of Alexandrov signatures that can be used for
 \description{
 `readAlexandrovSignatures()` reads a set of Alexandrov-type signatures
 (COSMIC format) from a flat file or URL. Signatures must be specified in the
-tab-separated format used by the COSMIC website; see details below or\cr
-\url{http://cancer.sanger.ac.uk/cosmic/signatures} -> "Download signatures".
+tab-separated format used by the COSMIC website for signatures version 2
+(March 2015) or the comma-separated format used for signatures version 3
+(May 2019); see details below or\cr
+\url{http://cancer.sanger.ac.uk/cosmic/signatures_v2} ->
+"Download signatures" for version 2, or\cr
+\url{https://cancer.sanger.ac.uk/cosmic/signatures/SBS/} and
+\url{https://www.synapse.org/#!Synapse:syn12009743} for version 3.
 }
 \details{
-COSMIC format for Alexandrov signatures:
+For version 3, only Single Base Substitution (SBS) signatures can be used.
+
+COSMIC format for Alexandrov signatures, version 2:
 
 \tabular{llllll}{
 Subst. \tab Trinucleotide \tab Mutation Type \tab Signature 1 \tab
@@ -34,6 +41,19 @@ C>A \tab ACT \tab A[C>A]T \tab 0.0062338852 \tab 0.0003238914 \tab...\cr
 [...]\cr
 T>G \tab TTG \tab T[T>G]G \tab 0.0020310769 \tab 0.0002066152 \tab...\cr
 T>G \tab TTT \tab T[T>G]T \tab 0.0040301281 \tab 0.0000235982 \tab...\cr
+}
+
+COSMIC/Synapse format for Alexandrov signatures, version 3:
+
+\tabular{llllll}{
+Type,SubType,SBS1,SBS2,SBS3,SBS4,SBS5,SBS6, ...\cr
+C>A,ACA,8.86E-04,5.80E-07,2.08E-02,4.22E-02,1.20E-02,4.25E-04, ...\cr
+C>A,ACC,2.28E-03,1.48E-04,1.65E-02,3.33E-02,9.44E-03,5.24E-04, ...\cr
+C>A,ACG,1.77E-04,5.23E-05,1.75E-03,1.56E-02,1.85E-03,5.20E-05, ...\cr
+C>A,ACT,1.28E-03,9.78E-05,1.22E-02,2.95E-02,6.61E-03,1.80E-04, ...\cr
+[...]\cr
+T>G,TTG,5.83E-04,9.54E-05,8.05E-03,2.32E-03,6.94E-03,3.24E-04, ...\cr
+T>G,TTT,2.23E-16,2.23E-16,1.05E-02,5.68E-04,1.35E-02,1.01E-03, ...\cr
 }
 }
 \examples{
