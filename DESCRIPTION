@@ -8,7 +8,7 @@ Imports: methods, Matrix, quadprog(>= 1.5-5), vcfR, GenomicRanges, stats,
     BSgenome.Hsapiens.UCSC.hg19, TxDb.Hsapiens.UCSC.hg19.knownGene,
     VariantAnnotation, SummarizedExperiment, ggseqlogo, gridExtra, data.table
 Suggests: knitr, rmarkdown, BiocStyle
-Version: 2.3.0
+Version: 2.4.0
 Date: 2019-08-18
 Encoding: UTF-8
 Authors@R: c(
