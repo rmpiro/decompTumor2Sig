@@ -33,16 +33,13 @@
 #' is \code{FALSE}, the tolerance value is ignored. Default: 0.1.
 #' @return The decomposition in form of an exposure vector (same order as
 #' \code{signatures}).
-#' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
-#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
+#' @author Rosario M. Piro, Politecnico di Milano\cr
+#' Sandra Krueger, Freie Universitaet Berlin\cr Maintainer: Rosario
+#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <rosariomichael.piro@@polimi.it>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
-#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
-#' signatures active in individual tumors. BMC Bioinformatics (accepted for
-#' publication).\cr
-#' Krueger, Piro (2017) Identification of Mutational Signatures Active in
-#' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
-#' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
-#' Italy. PeerJ Preprints 5:e3257v1, 2017.
+#' Krueger, Piro (2019) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics
+#' 20(Suppl 4):152.\cr
 #' @importFrom Matrix nearPD
 #' @keywords internal
 QPforSig <- function(counts, signatures, constrainToMaxContribution=FALSE,

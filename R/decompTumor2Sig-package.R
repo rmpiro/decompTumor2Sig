@@ -12,8 +12,8 @@
 #' \tabular{ll}{
 #' Package: \tab decompTumor2Sig\cr
 #' Type: \tab Package\cr
-#' Version: \tab 2.1.0\cr
-#' Date: \tab 2019-08-18\cr
+#' Version: \tab 2.4.1\cr
+#' Date: \tab 2020-07-27\cr
 #' License: \tab GPL (>=2)\cr
 #' }
 #' 
@@ -119,16 +119,12 @@
 #' @name decompTumor2Sig-package
 #' @aliases decompTumor2Sig-package decompTumor2Sig
 #' @docType package
-#' @author Rosario M. Piro [aut, cre], Sandra Krueger [ctb]\cr
-#' Freie Universitaet Berlin\cr
+#' @author Rosario M. Piro, Politecnico di Milano [aut, cre]\cr
+#' Sandra Krueger, Freie Universitaet Berlin [ctb]\cr
 #' Maintainer: Rosario M. Piro\cr
-#' E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
+#' E-Mail: <rmpiro@@gmail.com> or <rosariomichael.piro@@polimi.it>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
-#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
-#' signatures active in individual tumors. BMC Bioinformatics (accepted for
-#' publication).\cr
-#' Krueger, Piro (2017) Identification of Mutational Signatures Active in
-#' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
-#' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
-#' Italy. PeerJ Preprints 5:e3257v1, 2017.
+#' Krueger, Piro (2019) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics 
+#' 20(Suppl 4):152.\cr
 NULL

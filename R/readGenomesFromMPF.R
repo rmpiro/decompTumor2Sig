@@ -49,16 +49,12 @@
 #' @return A list containing the genomes in terms of frequencies of the mutated
 #' sequence patterns. This list of genomes can be used for
 #' \code{decomposeTumorGenomes}. 
-#' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
-#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
+#' @author Rosario M. Piro\cr Politecnico di Milano\cr Maintainer: Rosario
+#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <rosariomichael.piro@@polimi.it>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
-#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
-#' signatures active in individual tumors. BMC Bioinformatics (accepted for
-#' publication).\cr
-#' Krueger, Piro (2017) Identification of Mutational Signatures Active in
-#' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
-#' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
-#' Italy. PeerJ Preprints 5:e3257v1, 2017.
+#' Krueger, Piro (2019) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics
+#' 20(Suppl 4):152.\cr
 #' @seealso \code{\link{decompTumor2Sig}}\cr
 #' \code{\link{decomposeTumorGenomes}}\cr
 #' \code{\link{readGenomesFromVCF}}\cr
@@ -109,7 +105,8 @@ readGenomesFromMPF <- function(file, numBases=5, type="Shiraishi", trDir=TRUE,
     # get only SNVs (one REF base and one ALT base)
     # (indels can be specified as, e.g. deletion, "AG > A" or as "G > -")
     snvRows <- (nchar(mpf$REF) == 1) & (nchar(mpf$ALT) == 1) &
-        (mpf$REF != "-") & (mpf$ALT != "-")
+        (mpf$REF != "-") & (mpf$ALT != "-") &
+        (mpf$REF != "N") & (mpf$ALT != "N")
     mpf <- mpf[snvRows]
 
     # we need to map mutations to samples, so that we can create
@@ -192,7 +189,7 @@ readGenomesFromMPF <- function(file, numBases=5, type="Shiraishi", trDir=TRUE,
 
     } # end while
 
-    if(verbose) {
+    if(verbose && length(genomes) > 0) {
         cat("Done reading genomes.\n")
     }
 

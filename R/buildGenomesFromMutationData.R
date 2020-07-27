@@ -34,18 +34,15 @@
 #' @param verbose Logical. Print additional information?
 #' @return A list of genomes: each genome is represented by the observed
 #' frequencies of mutation patterns according to the selected signature type.
-#' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
-#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
+#' @author Rosario M. Piro\cr Politecnico di Milano\cr Maintainer: Rosario
+#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <rosariomichael.piro@@polimi.it>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
-#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
-#' signatures active in individual tumors. BMC Bioinformatics (accepted for
-#' publication).\cr
-#' Krueger, Piro (2017) Identification of Mutational Signatures Active in
-#' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
-#' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
-#' Italy. PeerJ Preprints 5:e3257v1, 2017.
-#' @importFrom GenomicRanges seqnames makeGRangesFromDataFrame resize
+#' Krueger, Piro (2019) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics
+#' 20(Suppl 4):152.\cr
+#' @importFrom GenomicRanges seqnames seqinfo makeGRangesFromDataFrame resize
 #' findOverlaps
+#' @importFrom GenomeInfoDb seqlengths
 #' @importFrom Biostrings getSeq reverseComplement
 #' @importFrom GenomicFeatures transcripts
 #' @importFrom S4Vectors queryHits subjectHits
@@ -72,7 +69,7 @@ buildGenomesFromMutationData <- function(snvs, numBases, type, trDir,
         stop("The parameter 'numBases' must be positive and odd!")
     }
 
-    
+
     # check for MT versus M for mitochondrion
     # first: ref. genome
     if(verbose) {
@@ -116,8 +113,8 @@ buildGenomesFromMutationData <- function(snvs, numBases, type, trDir,
                   "and adjusting if necessary.\n"))
     }
 
-    setF = unique(snvs[,"CHROM"])
-    setR = GenomicRanges::seqnames(refGenome)
+    setF <- unique(snvs[,"CHROM"])
+    setR <- GenomicRanges::seqnames(refGenome)
 
     # check what "chr"-prefix we have in the ref. genome: chr? Chr? CHR? none?
     refPrefix <- unique(substr(grep("^chr", setR,
@@ -172,6 +169,31 @@ buildGenomesFromMutationData <- function(snvs, numBases, type, trDir,
         cat(paste("Processing a total of", nrow(snvs), "mutations.\n"))
     }
 
+    # If we didn't find any mutation
+    if (!nrow(snvs)) {
+        stop("No single nucleotide variants found!")
+    }
+
+
+    # If using trancription direction:
+    # check that the reference genome and transcript annotation match!
+    if (trDir) {
+        setT <- GenomicRanges::seqnames(GenomicRanges::seqinfo(transcriptAnno))
+        setRT <- setR[setR %in% setT]
+
+        if (!all(GenomeInfoDb::seqlengths(refGenome)[setRT] ==
+                 GenomeInfoDb::seqlengths(transcriptAnno)[setRT]
+                 )
+            ) {
+            stop(paste("Inconsistent reference sequence lengths indicate",
+                       "mismatch between reference genome (refGenome) and",
+                       "annotation (transcriptAnno)!")
+                 )
+        }
+    }
+    
+
+
     
     # get sequences from the reference genome
     if (verbose) {
@@ -179,25 +201,49 @@ buildGenomesFromMutationData <- function(snvs, numBases, type, trDir,
                   "from the reference genome.\n"))
     }
     
-    gr <- GenomicRanges::makeGRangesFromDataFrame(
-                      data.frame(chr = snvs[,"CHROM"], 
-                                 start = as.numeric(snvs[,"POS"]), 
-                                 end = as.numeric(snvs[,"POS"])),
-                      ignore.strand = TRUE)
-    seqs <- Biostrings::getSeq(refGenome, GenomicRanges::resize(gr, numBases,
-                                                                fix = "center"))
-
+    gr <- tryCatch(GenomicRanges::makeGRangesFromDataFrame(
+                             data.frame(chr = snvs[,"CHROM"], 
+                                        start = as.numeric(snvs[,"POS"]), 
+                                        end = as.numeric(snvs[,"POS"])),
+                             ignore.strand = TRUE),
+                   error=function(e) {
+                       stop(paste0(e, "Cannot build valid GRanges object from ",
+                                  "mutation data; correct chromosome and ",
+                                  "position information?"))
+                   })
+    seqs <- tryCatch(Biostrings::getSeq(refGenome,
+                                        GenomicRanges::resize(gr, numBases,
+                                                              fix = "center")),
+                     error=function(e) {
+                         stop(paste0(e, "Cannot extract genomic sequences for ",
+                                    "mutation data; incorrect reference ",
+                                    "genome?"))
+                     })
 
     # verify that the obtained center base is the REF base specified in the
     # mutation data (i.e., check that this is the correct reference genome 
     # for the mutation data)
 
-    if( ! all( snvs[,"REF"] ==
-                  substr(as.character(seqs), (numBases%/%2)+1, (numBases%/%2)+1)
-              )
-       ) {
-        stop(paste("Reference (REF) bases in mutation data do not match the",
-                   "specified reference genome!"))
+    refExpected <- substr(as.character(seqs),
+                            (numBases%/%2)+1, (numBases%/%2)+1)
+
+    if( ! all( snvs[,"REF"] == refExpected ) ) {
+
+        errIdx <- which(snvs[,"REF"] != refExpected)
+        numErrors <- length(errIdx)
+        
+        numTop <- min(numErrors, 5)  # display maximum top 5
+        errIdx <- errIdx[seq(numTop)]
+        refExpected <- refExpected[errIdx]
+
+        cat(paste0("Reference (REF) bases of ", numErrors, " mutation(s) do ",
+                   "not match the specified reference genome!\n",
+                   "First problematic entries:\n"))
+        print.table(snvs[errIdx,])
+        stop(paste("Expected REF bases are:",
+                   paste(refExpected, collapse=","),
+                   "...; incorrect reference genome?")
+             )
     }
 
     
@@ -235,7 +281,8 @@ buildGenomesFromMutationData <- function(snvs, numBases, type, trDir,
             # (e.g., ambiguous due to overlapping transcripts)
             trStrUnique <-
                 trStrUnique[!(trStrUnique[,1] %in%
-                              trStrUnique[duplicated(trStrUnique[,1])]),]
+                              #trStrUnique[duplicated(trStrUnique[,1])]),]
+                              trStrUnique[duplicated(trStrUnique[,1]),1]),]
         }
         
         trPlus <- as.integer(trStrUnique[trStrUnique[,2]=="+",1])
