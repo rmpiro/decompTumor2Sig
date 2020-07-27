@@ -13,16 +13,12 @@
 #' 
 #' @param x Object from which to get the slot data.
 #' @return Slot data.
-#' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
-#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
+#' @author Rosario M. Piro\cr Politecnico di Milano\cr Maintainer: Rosario
+#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <rosariomichael.piro@@polimi.it>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
-#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
-#' signatures active in individual tumors. BMC Bioinformatics (accepted for
-#' publication).\cr
-#' Krueger, Piro (2017) Identification of Mutational Signatures Active in
-#' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
-#' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
-#' Italy. PeerJ Preprints 5:e3257v1, 2017.
+#' Krueger, Piro (2019) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics
+#' 20(Suppl 4):152.\cr
 #' @importFrom methods slot .hasSlot 
 #' @keywords internal
 haveTrDir <- function(x) {
@@ -38,16 +34,12 @@ haveTrDir <- function(x) {
 #' 
 #' @param x Object from which to get the slot data.
 #' @return Slot data.
-#' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
-#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
+#' @author Rosario M. Piro\cr Politecnico di Milano\cr Maintainer: Rosario
+#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <rosariomichael.piro@@polimi.it>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
-#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
-#' signatures active in individual tumors. BMC Bioinformatics (accepted for
-#' publication).\cr
-#' Krueger, Piro (2017) Identification of Mutational Signatures Active in
-#' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
-#' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
-#' Italy. PeerJ Preprints 5:e3257v1, 2017.
+#' Krueger, Piro (2019) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics
+#' 20(Suppl 4):152.\cr
 #' @importFrom methods slot .hasSlot 
 #' @keywords internal
 getNumFlankingBases <- function(x) {
@@ -62,16 +54,12 @@ getNumFlankingBases <- function(x) {
 #' 
 #' @param x Object from which to get the slot data.
 #' @return Slot data.
-#' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
-#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
+#' @author Rosario M. Piro\cr Politecnico di Milano\cr Maintainer: Rosario
+#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <rosariomichael.piro@@polimi.it>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
-#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
-#' signatures active in individual tumors. BMC Bioinformatics (accepted for
-#' publication).\cr
-#' Krueger, Piro (2017) Identification of Mutational Signatures Active in
-#' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
-#' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
-#' Italy. PeerJ Preprints 5:e3257v1, 2017.
+#' Krueger, Piro (2019) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics
+#' 20(Suppl 4):152.\cr
 #' @importFrom methods slot .hasSlot 
 #' @keywords internal
 getCountData <- function(x) {
@@ -86,16 +74,12 @@ getCountData <- function(x) {
 #' 
 #' @param x Object from which to get the slot data.
 #' @return Slot data.
-#' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
-#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
+#' @author Rosario M. Piro\cr Politecnico di Milano\cr Maintainer: Rosario
+#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <rosariomichael.piro@@polimi.it>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
-#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
-#' signatures active in individual tumors. BMC Bioinformatics (accepted for
-#' publication).\cr
-#' Krueger, Piro (2017) Identification of Mutational Signatures Active in
-#' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
-#' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
-#' Italy. PeerJ Preprints 5:e3257v1, 2017.
+#' Krueger, Piro (2019) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics
+#' 20(Suppl 4):152.\cr
 #' @importFrom methods slot .hasSlot 
 #' @keywords internal
 getFeatVectList <- function(x) {
@@ -110,16 +94,12 @@ getFeatVectList <- function(x) {
 #' 
 #' @param x Object from which to get the slot data.
 #' @return Slot data.
-#' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
-#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
+#' @author Rosario M. Piro\cr Politecnico di Milano\cr Maintainer: Rosario
+#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <rosariomichael.piro@@polimi.it>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
-#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
-#' signatures active in individual tumors. BMC Bioinformatics (accepted for
-#' publication).\cr
-#' Krueger, Piro (2017) Identification of Mutational Signatures Active in
-#' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
-#' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
-#' Italy. PeerJ Preprints 5:e3257v1, 2017.
+#' Krueger, Piro (2019) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics
+#' 20(Suppl 4):152.\cr
 #' @importFrom methods slot .hasSlot 
 #' @keywords internal
 getSampleList <- function(x) {
@@ -134,16 +114,12 @@ getSampleList <- function(x) {
 #' 
 #' @param x Object from which to get the slot data.
 #' @return Slot data.
-#' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
-#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
+#' @author Rosario M. Piro\cr Politecnico di Milano\cr Maintainer: Rosario
+#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <rosariomichael.piro@@polimi.it>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
-#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
-#' signatures active in individual tumors. BMC Bioinformatics (accepted for
-#' publication).\cr
-#' Krueger, Piro (2017) Identification of Mutational Signatures Active in
-#' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
-#' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
-#' Italy. PeerJ Preprints 5:e3257v1, 2017.
+#' Krueger, Piro (2019) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics
+#' 20(Suppl 4):152.\cr
 #' @importFrom methods slot .hasSlot 
 #' @keywords internal
 getNumSignatures <- function(x) {
@@ -158,16 +134,12 @@ getNumSignatures <- function(x) {
 #' 
 #' @param x Object from which to get the slot data.
 #' @return Slot data.
-#' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
-#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
+#' @author Rosario M. Piro\cr Politecnico di Milano\cr Maintainer: Rosario
+#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <rosariomichael.piro@@polimi.it>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
-#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
-#' signatures active in individual tumors. BMC Bioinformatics (accepted for
-#' publication).\cr
-#' Krueger, Piro (2017) Identification of Mutational Signatures Active in
-#' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
-#' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
-#' Italy. PeerJ Preprints 5:e3257v1, 2017.
+#' Krueger, Piro (2019) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics
+#' 20(Suppl 4):152.\cr
 #' @importFrom methods slot .hasSlot 
 #' @keywords internal
 isBackGround <- function(x) {
@@ -183,16 +155,12 @@ isBackGround <- function(x) {
 #' 
 #' @param x Object from which to get the slot data.
 #' @return Slot data.
-#' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
-#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
+#' @author Rosario M. Piro\cr Politecnico di Milano\cr Maintainer: Rosario
+#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <rosariomichael.piro@@polimi.it>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
-#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
-#' signatures active in individual tumors. BMC Bioinformatics (accepted for
-#' publication).\cr
-#' Krueger, Piro (2017) Identification of Mutational Signatures Active in
-#' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
-#' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
-#' Italy. PeerJ Preprints 5:e3257v1, 2017.
+#' Krueger, Piro (2019) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics
+#' 20(Suppl 4):152.\cr
 #' @importFrom methods slot .hasSlot 
 #' @keywords internal
 getSigType <- function(x) {
@@ -208,16 +176,12 @@ getSigType <- function(x) {
 #' 
 #' @param x Object from which to get the slot data.
 #' @return Slot data.
-#' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
-#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
+#' @author Rosario M. Piro\cr Politecnico di Milano\cr Maintainer: Rosario
+#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <rosariomichael.piro@@polimi.it>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
-#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
-#' signatures active in individual tumors. BMC Bioinformatics (accepted for
-#' publication).\cr
-#' Krueger, Piro (2017) Identification of Mutational Signatures Active in
-#' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
-#' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
-#' Italy. PeerJ Preprints 5:e3257v1, 2017.
+#' Krueger, Piro (2019) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics
+#' 20(Suppl 4):152.\cr
 #' @importFrom methods slot .hasSlot 
 #' @keywords internal
 getSigFeatDist <- function(x) {
@@ -235,16 +199,12 @@ getSigFeatDist <- function(x) {
 #' @param x Object from which to get the signature.
 #' @param signum Number (1..N) of the signature to be extracted.
 #' @return Signature.
-#' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
-#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
+#' @author Rosario M. Piro\cr Politecnico di Milano\cr Maintainer: Rosario
+#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <rosariomichael.piro@@polimi.it>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
-#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
-#' signatures active in individual tumors. BMC Bioinformatics (accepted for
-#' publication).\cr
-#' Krueger, Piro (2017) Identification of Mutational Signatures Active in
-#' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
-#' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
-#' Italy. PeerJ Preprints 5:e3257v1, 2017.
+#' Krueger, Piro (2019) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics
+#' 20(Suppl 4):152.\cr
 #' @importFrom methods slot .hasSlot 
 #' @keywords internal
 getSigFromEstParam <- function(x, signum) {
@@ -263,16 +223,12 @@ getSigFromEstParam <- function(x, signum) {
 #' 
 #' @param x Object for which to verify compatibility.
 #' @return Logical value (true or false).
-#' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
-#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
+#' @author Rosario M. Piro\cr Politecnico di Milano\cr Maintainer: Rosario
+#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <rosariomichael.piro@@polimi.it>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
-#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
-#' signatures active in individual tumors. BMC Bioinformatics (accepted for
-#' publication).\cr
-#' Krueger, Piro (2017) Identification of Mutational Signatures Active in
-#' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
-#' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
-#' Italy. PeerJ Preprints 5:e3257v1, 2017.
+#' Krueger, Piro (2019) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics
+#' 20(Suppl 4):152.\cr
 #' @importFrom methods slot .hasSlot 
 #' @keywords internal
 isMutFeatDataObject <- function(x) {
@@ -370,16 +326,12 @@ isMutFeatDataObject <- function(x) {
 #' 
 #' @param x Object for which to verify compatibility.
 #' @return Logical value (true or false).
-#' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
-#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
+#' @author Rosario M. Piro\cr Politecnico di Milano\cr Maintainer: Rosario
+#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <rosariomichael.piro@@polimi.it>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
-#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
-#' signatures active in individual tumors. BMC Bioinformatics (accepted for
-#' publication).\cr
-#' Krueger, Piro (2017) Identification of Mutational Signatures Active in
-#' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
-#' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
-#' Italy. PeerJ Preprints 5:e3257v1, 2017.
+#' Krueger, Piro (2019) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics
+#' 20(Suppl 4):152.\cr
 #' @importFrom methods slot .hasSlot 
 #' @keywords internal
 isEstParamObject <- function(x) {
@@ -464,16 +416,12 @@ isEstParamObject <- function(x) {
 #' @param x Object of which to change slot data.
 #' @param value Value to be written to the slot.
 #' @return The modified object \code{x}.
-#' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
-#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
+#' @author Rosario M. Piro\cr Politecnico di Milano\cr Maintainer: Rosario
+#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <rosariomichael.piro@@polimi.it>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
-#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
-#' signatures active in individual tumors. BMC Bioinformatics (accepted for
-#' publication).\cr
-#' Krueger, Piro (2017) Identification of Mutational Signatures Active in
-#' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
-#' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
-#' Italy. PeerJ Preprints 5:e3257v1, 2017.
+#' Krueger, Piro (2019) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics
+#' 20(Suppl 4):152.\cr
 #' @importFrom methods .hasSlot 
 #' @keywords internal
 setTrDir <- function(x, value) {
@@ -492,16 +440,12 @@ setTrDir <- function(x, value) {
 #' @param x Object of which to change slot data.
 #' @param value Value to be written to the slot.
 #' @return The modified object \code{x}.
-#' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
-#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
+#' @author Rosario M. Piro\cr Politecnico di Milano\cr Maintainer: Rosario
+#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <rosariomichael.piro@@polimi.it>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
-#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
-#' signatures active in individual tumors. BMC Bioinformatics (accepted for
-#' publication).\cr
-#' Krueger, Piro (2017) Identification of Mutational Signatures Active in
-#' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
-#' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
-#' Italy. PeerJ Preprints 5:e3257v1, 2017.
+#' Krueger, Piro (2019) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics
+#' 20(Suppl 4):152.\cr
 #' @importFrom methods .hasSlot 
 #' @keywords internal
 setNumFlankingBases <- function(x, value) {
@@ -520,16 +464,12 @@ setNumFlankingBases <- function(x, value) {
 #' @param x Object of which to change slot data.
 #' @param value Value to be written to the slot.
 #' @return The modified object \code{x}.
-#' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
-#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
+#' @author Rosario M. Piro\cr Politecnico di Milano\cr Maintainer: Rosario
+#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <rosariomichael.piro@@polimi.it>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
-#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
-#' signatures active in individual tumors. BMC Bioinformatics (accepted for
-#' publication).\cr
-#' Krueger, Piro (2017) Identification of Mutational Signatures Active in
-#' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
-#' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
-#' Italy. PeerJ Preprints 5:e3257v1, 2017.
+#' Krueger, Piro (2019) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics
+#' 20(Suppl 4):152.\cr
 #' @importFrom methods .hasSlot 
 #' @keywords internal
 setSigType <- function(x, value) {
@@ -548,16 +488,12 @@ setSigType <- function(x, value) {
 #' @param x Object of which to change slot data.
 #' @param value Value to be written to the slot.
 #' @return The modified object \code{x}.
-#' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
-#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
+#' @author Rosario M. Piro\cr Politecnico di Milano\cr Maintainer: Rosario
+#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <rosariomichael.piro@@polimi.it>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
-#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
-#' signatures active in individual tumors. BMC Bioinformatics (accepted for
-#' publication).\cr
-#' Krueger, Piro (2017) Identification of Mutational Signatures Active in
-#' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
-#' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
-#' Italy. PeerJ Preprints 5:e3257v1, 2017.
+#' Krueger, Piro (2019) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics
+#' 20(Suppl 4):152.\cr
 #' @importFrom methods .hasSlot 
 #' @keywords internal
 setSigFeatDist <- function(x, value) {

@@ -67,3 +67,12 @@ Changes in version 2.1.0 (2019-08-18)
 + adapted readAlexandrovSignatures to read the file format used by the
   COSMIC mutational signatures version 3 (May 2019; Single Base Substitution/SBS
   signatures only)
+
+Changes in version 2.4.1 (2020-07-27)
++ Removed dependency of package CRAN vcfR (archived on 2020-07-05), using
+  functions of Bioconductor package VariantAnnotation instead
++ Improved the mutation filtering so that multiallelic SNVs aren't excluded
+  when loading tumor genomes from a VCF file
++ Updated citation and affiliation information
++ Added consistency check for reference genome and genome annotation
++ Improved error messages

@@ -2,8 +2,9 @@
 title: "A brief introduction to decompTumor2Sig"
 author:
 - name: "Rosario Michael Piro"
-  affiliation: Dep. of Computer Science, Freie Universität Berlin, Germany
-  email: rmpiro@gmail.com or r.piro@fu-berlin.de
+  affiliation: Dipartimento di Elettronica, Informazione e Bioingegneria (DEIB),
+               Politecnico di Milano, Italy
+  email: rmpiro@gmail.com or rosariomichael.piro@polimi.it
 date: "`r Sys.Date()`"
 vignette: >
   %\VignetteIndexEntry{A brief introduction to decompTumor2Sig}
@@ -38,17 +39,34 @@ by Shiraishi et al. (PLoS Genet. 11:e1005657, 2015)---in the following called
 For each of the given mutational signatures, **decompTumor2Sig** determines
 their contribution to the load of somatic mutations observed in a tumor.
 
-*Note*: for all functions provided by **decompTumor2Sig**, please see the
-manual or the inline R help page for further details and explanations.
+**Please read the following important notes first**:
 
 *Note*: here and in the following, when referring to "mutations", we intend
 single nucleotide variants (SNVs).
 
+*Note*: given the number of parameters to be estimated, **decompTumor2Sig** 
+should best be applied only to tumor samples with a sufficient number of somatic
+mutations. From our experience, using tumor samples with 100+ somatic mutations
+was reasonable when using version 2 of the COSMIC Mutational Signatures
+(30 signatures). Tumor samples with fewer somatic mutations should be avoided
+unless a tumor-type specific subset of signatures is used.
+
+*Note*: be aware that publicly available signature sets have often been defined
+with respect to genome wide mutation frequencies, so they should best be applied
+to somatic mutation data from whole genome sequencing. Background frequencies
+may be different for subsets of the genome, i.e., current signature sets might
+yield incorrect results when applied to, for example, mutation data from
+targetted sequencing of only a subset of genes!
+
+*Note*: for all functions provided by **decompTumor2Sig**, please see the
+manual or the inline R help page for further details and explanations.
+
+
 ## Papers / how to cite
 
-> Krüger S, Piro RM (2018) decompTumor2Sig: Identification of mutational
-signatures active in individual tumors. BMC Bioinformatics (accepted for
-publication).
+> Krüger S, Piro RM (2019) decompTumor2Sig: Identification of mutational
+signatures active in individual tumors. *BMC Bioinformatics*
+**20**(Suppl 4):152.
 
 > Krüger S, Piro RM (2017) Identification of mutational signatures active in
 individual tumors. *PeerJ Preprints* **5**:e3257v1 (Proceedings of the NETTAB
@@ -61,8 +79,10 @@ BibTeX:
    author = "Kr{\"u}ger, Sandra and Piro, Rosario Michael",
    title = "decompTumor2Sig: Identification of mutational signatures active in individual tumors",
    journal = "BMC Bioinformatics",
-   note = "(accepted for publication)",
-   year = 2018
+   volume = "20",
+   number = "Suppl 4",
+   pages = "152",
+   year = 2019
 );
 
 @ARTICLE(krueger-decompTumor2Sig-nettab,
@@ -70,7 +90,7 @@ BibTeX:
    title = "Identification of mutational signatures active in individual tumors",
    journal = "PeerJ Preprints",
    volume = "5",
-   number = "e3257v1",
+   pages = "e3257v1",
    year = 2017
 );
 ```
@@ -101,13 +121,14 @@ installed:
 
 CRAN packages:
 
-`r CRANpkg("Matrix")`, `r CRANpkg("quadprog")`, `r CRANpkg("vcfR")`,
+`r CRANpkg("Matrix")`, `r CRANpkg("quadprog")`, 
 `r CRANpkg("plyr")`, `r CRANpkg("ggplot2")`, `r CRANpkg("ggseqlogo")`,
 `r CRANpkg("gridExtra")`
 
 Bioconductor packages:
 
 `r Biocpkg("GenomicRanges")`, `r Biocpkg("GenomicFeatures")`,
+`r Biocpkg("GenomeInfoDb")`, 
 `r Biocpkg("Biostrings")`, `r Biocpkg("BiocGenerics")`,
 `r Biocpkg("S4Vectors")`, `r Biocpkg("BSgenome.Hsapiens.UCSC.hg19")`,
 `r Biocpkg("TxDb.Hsapiens.UCSC.hg19.knownGene")`,
@@ -733,7 +754,7 @@ $$\mathrm{evar}=1-\frac{\sum_i{(g_i-\hat{g}_i)^2}}{\sum_i({g_i}-{g}^{*}_i)^2}$$
 where $g^{*}$ is a uniform tumor model that uses mutation frequencies of 1/6
 for the six possible base changes, 1/4 for each of the possible flanking bases,
 and 1/2 for each of the two possible transcription-strand directions. For more
-details, please see Krüger and Piro (2018).
+details, please see Krüger and Piro (2019).
 
 The function **plotExplainedVariance()** allows to visually analyze how many
 signatures are necessary to explain certain fractions of the variance of a

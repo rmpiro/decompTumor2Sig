@@ -44,16 +44,12 @@
 #' @return A list containing the genomes in terms of frequencies of the mutated
 #' sequence patterns. This list of genomes can be used for
 #' \code{decomposeTumorGenomes}. 
-#' @author Rosario M. Piro\cr Freie Universitaet Berlin\cr Maintainer: Rosario
-#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <r.piro@@fu-berlin.de>
+#' @author Rosario M. Piro\cr Politecnico di Milano\cr Maintainer: Rosario
+#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <rosariomichael.piro@@polimi.it>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
-#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
-#' signatures active in individual tumors. BMC Bioinformatics (accepted for
-#' publication).\cr
-#' Krueger, Piro (2017) Identification of Mutational Signatures Active in
-#' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
-#' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
-#' Italy. PeerJ Preprints 5:e3257v1, 2017.
+#' Krueger, Piro (2019) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics
+#' 20(Suppl 4):152.\cr
 #' @seealso \code{\link{decompTumor2Sig}}\cr
 #' \code{\link{decomposeTumorGenomes}}\cr
 #' \code{\link{readGenomesFromMPF}}\cr
@@ -73,7 +69,8 @@
 #'          trDir=TRUE, enforceUniqueTrDir=TRUE, refGenome=refGenome,
 #'          transcriptAnno=transcriptAnno, verbose=FALSE)
 #' 
-#' @importFrom vcfR read.vcfR extract.gt getFIX
+#' @importFrom VariantAnnotation readVcf expand alt ref geno
+#' @importFrom GenomicRanges seqnames start
 #' @importFrom BSgenome.Hsapiens.UCSC.hg19 BSgenome.Hsapiens.UCSC.hg19
 #' @importFrom TxDb.Hsapiens.UCSC.hg19.knownGene
 #' TxDb.Hsapiens.UCSC.hg19.knownGene
@@ -89,25 +86,51 @@ readGenomesFromVCF <- function(file, numBases=5, type="Shiraishi", trDir=TRUE,
     if(verbose) {
         cat("Reading mutations and genotype information from VCF file:\n")
     }
-    vcf <- read.vcfR(file, verbose=verbose, checkFile=TRUE, convertNA=TRUE)
+
+    # read VCF file (using VariantAnnotation)
+    vcf <- tryCatch(readVcf(file),
+                    error=function(e) {
+                        stop(paste0(e, "Cannot read VCF file; is this a VCF ",
+                                    "file containing one or more individual ",
+                                    "samples?"))
+                    })
+
+    if (is(vcf, "CollapsedVCF")) {
+        vcf <- expand(vcf)  # split multiallelic entries!
+    }
+
 
     # get only SNVs (one REF base and one ALT base)
     # (indels can be specified as, e.g. deletion, "AG > A" or as "G > -")
     snvRows <-
-        (nchar(getFIX(vcf)[,"REF"]) == 1) & (nchar(getFIX(vcf)[,"ALT"]) == 1) &
-            (getFIX(vcf)[,"REF"] != "-") & (getFIX(vcf)[,"ALT"] != "-")
-
+        (nchar(as.character(ref(vcf))) == 1) &
+            (nchar(as.character(alt(vcf))) == 1) &
+            (as.character(ref(vcf)) != "-") & (as.character(alt(vcf)) != "-") &
+            (as.character(ref(vcf)) != "N") & (as.character(alt(vcf)) != "N")
+    
     # basic variant information (chr, pos, ref, alt)
-    snvs <- getFIX(vcf)[snvRows, c("CHROM","POS","REF","ALT")]
+
+    snvs <- cbind(as.character(seqnames(vcf)),
+                  as.character(start(vcf)),
+                  as.character(ref(vcf)),
+                  as.character(alt(vcf)))
+    snvs <- snvs[snvRows,]
+    colnames(snvs) <- c("CHROM","POS","REF","ALT")
 
     # get genotypes (if FORMAT and genotypes are present in the VCF)
-    gtypes <- tryCatch(extract.gt(vcf)[snvRows,],
-                       error=function(e) { return(NULL) })
 
-    # if this was only one sample: have a vector, need keep sample name
-    gtypes <- as.matrix(gtypes)
-    colnames(gtypes) <- colnames(extract.gt(vcf))
- 
+    gtypes <- tryCatch(geno(vcf)$GT[snvRows,],
+                       error=function(e) { return(NULL) })
+    gtypes[gtypes == "."] <- NA
+
+    # if this was only one sample: have a vector, need a matrix
+    if (!is.matrix(gtypes)) {
+        gtypes <- as.matrix(gtypes)
+    }
+
+    # make sure we keep the correct sample names
+    colnames(gtypes) <- colnames(geno(vcf)$GT)
+    
     # genotype information
     if (!is.null(gtypes)) {
         # if we do have genotype information, add it!
@@ -140,7 +163,7 @@ readGenomesFromVCF <- function(file, numBases=5, type="Shiraishi", trDir=TRUE,
                                             transcriptAnno=transcriptAnno,
                                             verbose=verbose)
 
-    if(verbose) {
+    if(verbose && !is.null(genomes)) {
         cat("Done reading genomes.\n")
     }
 

@@ -37,17 +37,13 @@
 #' or a list of file names.
 #' @return A list of Shiraishi signatures that can be used for
 #' \code{decomposeTumorGenomes}.
-#' @author Rosario M. Piro and Sandra Krueger\cr Freie Universitaet Berlin\cr
-#' Maintainer: Rosario M. Piro\cr E-Mail: <rmpiro@@gmail.com> or
-#' <r.piro@@fu-berlin.de>
+#' @author Rosario M. Piro, Politecnico di Milano\cr
+#' Sandra Krueger, Freie Universitaet Berlin\cr Maintainer: Rosario
+#' M. Piro\cr E-Mail: <rmpiro@@gmail.com> or <rosariomichael.piro@@polimi.it>
 #' @references \url{http://rmpiro.net/decompTumor2Sig/}\cr
-#' Krueger, Piro (2018) decompTumor2Sig: Identification of mutational
-#' signatures active in individual tumors. BMC Bioinformatics (accepted for
-#' publication).\cr
-#' Krueger, Piro (2017) Identification of Mutational Signatures Active in
-#' Individual Tumors. NETTAB 2017 - Methods, Tools & Platforms for
-#' Personalized Medicine in the Big Data Era, October 16-18, 2017, Palermo,
-#' Italy. PeerJ Preprints 5:e3257v1, 2017.
+#' Krueger, Piro (2019) decompTumor2Sig: Identification of mutational
+#' signatures active in individual tumors. BMC Bioinformatics
+#' 20(Suppl 4):152.\cr
 #' @seealso \code{\link{decompTumor2Sig}}\cr
 #' \code{\link{readAlexandrovSignatures}}\cr
 #' \code{\link{getSignaturesFromEstParam}}
