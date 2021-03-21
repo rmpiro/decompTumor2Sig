@@ -8,8 +8,9 @@ readAlexandrovSignatures(file)
 }
 \arguments{
 \item{file}{(Mandatory) Can be a file name or an URL for download.
-Default (COSMIC):
-"https://cancer.sanger.ac.uk/cancergenome/assets/signatures_probabilities.txt"}
+Default:
+"https://cancer.sanger.ac.uk/cancergenome/assets/signatures_probabilities.txt"
+(COSMIC signatures v2).}
 }
 \value{
 A list of Alexandrov signatures that can be used for
@@ -19,15 +20,21 @@ A list of Alexandrov signatures that can be used for
 `readAlexandrovSignatures()` reads a set of Alexandrov-type signatures
 (COSMIC format) from a flat file or URL. Signatures must be specified in the
 tab-separated format used by the COSMIC website for signatures version 2
-(March 2015) or the comma-separated format used for signatures version 3
-(May 2019); see details below or\cr
-\url{http://cancer.sanger.ac.uk/cosmic/signatures_v2} ->
-"Download signatures" for version 2, or\cr
-\url{https://cancer.sanger.ac.uk/cosmic/signatures/SBS/} and
-\url{https://www.synapse.org/#!Synapse:syn12009743} for version 3.
+(March 2015), the comma-separated format used for signatures version 3
+(May 2019) or the Microsoft Excel 2007+ sheet used for version 3.1 (see
+Details below). Excel sheets cannot be read from an URL and must be
+downloaded first.
 }
 \details{
-For version 3, only Single Base Substitution (SBS) signatures can be used.
+For details on the accepted signature formats, see below or\cr
+\url{http://cancer.sanger.ac.uk/cosmic/signatures_v2} ->
+"Download signatures" for version 2,\cr
+\url{https://cancer.sanger.ac.uk/cosmic/signatures/SBS/} and\cr
+\url{https://www.synapse.org/#!Synapse:syn12009743} for version 3,\cr
+or \url{https://cancer.sanger.ac.uk/cosmic/signatures/SBS/index.tt} and\cr
+\url{https://cancer.sanger.ac.uk/sigs-assets-20/COSMIC_Mutational_Signatures_v3.1.xlsx}
+for version 3.1. For versions 3 and 3.1, only Single Base Substitution (SBS)
+signatures can be used.
 
 COSMIC format for Alexandrov signatures, version 2:
 
@@ -55,6 +62,9 @@ C>A,ACT,1.28E-03,9.78E-05,1.22E-02,2.95E-02,6.61E-03,1.80E-04, ...\cr
 T>G,TTG,5.83E-04,9.54E-05,8.05E-03,2.32E-03,6.94E-03,3.24E-04, ...\cr
 T>G,TTT,2.23E-16,2.23E-16,1.05E-02,5.68E-04,1.35E-02,1.01E-03, ...\cr
 }
+
+Version 3.1 has assentially the same format as version 3, but is distributed
+as an Excel spread sheet.
 }
 \examples{
 

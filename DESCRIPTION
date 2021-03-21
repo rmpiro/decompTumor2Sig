@@ -2,15 +2,15 @@ Package: decompTumor2Sig
 Type: Package
 Title: Decomposition of individual tumors into mutational signatures
     by signature refitting
-Depends: R(>= 3.6), ggplot2
+Depends: R(>= 4.0), ggplot2
 Imports: methods, Matrix, quadprog(>= 1.5-5), GenomicRanges, stats,
     GenomicFeatures, Biostrings, BiocGenerics, S4Vectors, plyr, utils, graphics,
     BSgenome.Hsapiens.UCSC.hg19, TxDb.Hsapiens.UCSC.hg19.knownGene,
     VariantAnnotation, SummarizedExperiment, ggseqlogo, gridExtra, data.table,
-    GenomeInfoDb
+    GenomeInfoDb, readxl
 Suggests: knitr, rmarkdown, BiocStyle
-Version: 2.5.1
-Date: 2020-07-27
+Version: 2.7.1
+Date: 2021-03-21
 Encoding: UTF-8
 Authors@R: c(
     person("Rosario M.", "Piro", email = "rmpiro@gmail.com",

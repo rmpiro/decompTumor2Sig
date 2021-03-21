@@ -76,3 +76,14 @@ Changes in version 2.4.1 (2020-07-27)
 + Updated citation and affiliation information
 + Added consistency check for reference genome and genome annotation
 + Improved error messages
+
+Changes in version 2.7.1 (2021-03-21)
++ Updated readAlexandrovSignatures() to add the possibility to read COSMIC
+  signatures of version 3.1 directly from an Excel file (as provided on the
+  COSMIC website).
++ Added possibility to adjust/normalize mutational signatures to specific
+  subsets of the human genome (defined by means of GRanges objects). The
+  adjustment/normalization is performed accoring to the nucleotide frequencies
+  in the specified regions (with respect to nucleotide frequncies in
+  the reference sequences, e.g., the whole genome, for which the signatures
+  were derived in the first place).

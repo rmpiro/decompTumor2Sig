@@ -3,14 +3,20 @@
 #' `readAlexandrovSignatures()` reads a set of Alexandrov-type signatures
 #' (COSMIC format) from a flat file or URL. Signatures must be specified in the
 #' tab-separated format used by the COSMIC website for signatures version 2
-#' (March 2015) or the comma-separated format used for signatures version 3
-#' (May 2019); see details below or\cr
+#' (March 2015), the comma-separated format used for signatures version 3
+#' (May 2019) or the Microsoft Excel 2007+ sheet used for version 3.1 (see
+#' Details below). Excel sheets cannot be read from an URL and must be
+#' downloaded first.
+#' 
+#' For details on the accepted signature formats, see below or\cr
 #' \url{http://cancer.sanger.ac.uk/cosmic/signatures_v2} ->
-#' "Download signatures" for version 2, or\cr
-#' \url{https://cancer.sanger.ac.uk/cosmic/signatures/SBS/} and
-#' \url{https://www.synapse.org/#!Synapse:syn12009743} for version 3.
-#'
-#' For version 3, only Single Base Substitution (SBS) signatures can be used.
+#' "Download signatures" for version 2,\cr
+#' \url{https://cancer.sanger.ac.uk/cosmic/signatures/SBS/} and\cr
+#' \url{https://www.synapse.org/#!Synapse:syn12009743} for version 3,\cr
+#' or \url{https://cancer.sanger.ac.uk/cosmic/signatures/SBS/index.tt} and\cr
+#' \url{https://cancer.sanger.ac.uk/sigs-assets-20/COSMIC_Mutational_Signatures_v3.1.xlsx}
+#' for version 3.1. For versions 3 and 3.1, only Single Base Substitution (SBS)
+#' signatures can be used.
 #'
 #' COSMIC format for Alexandrov signatures, version 2:
 #'
@@ -38,12 +44,16 @@
 #' T>G,TTG,5.83E-04,9.54E-05,8.05E-03,2.32E-03,6.94E-03,3.24E-04, ...\cr
 #' T>G,TTT,2.23E-16,2.23E-16,1.05E-02,5.68E-04,1.35E-02,1.01E-03, ...\cr
 #' }
+#'
+#' Version 3.1 has assentially the same format as version 3, but is distributed
+#' as an Excel spread sheet.
 #' 
 #' @usage
 #' readAlexandrovSignatures(file)
 #' @param file (Mandatory) Can be a file name or an URL for download.
-#' Default (COSMIC):
+#' Default:
 #' "https://cancer.sanger.ac.uk/cancergenome/assets/signatures_probabilities.txt"
+#' (COSMIC signatures v2).
 #' @return A list of Alexandrov signatures that can be used for
 #' \code{decomposeTumorGenomes}. 
 #' @author Rosario M. Piro\cr Politecnico di Milano\cr Maintainer: Rosario
@@ -60,6 +70,7 @@
 #' signatures <- readAlexandrovSignatures()
 #' 
 #' @importFrom utils read.table
+#' @importFrom readxl read_excel excel_format
 #' @export readAlexandrovSignatures
 readAlexandrovSignatures <-
     function(file=paste0("https://cancer.sanger.ac.uk/cancergenome/assets/",
@@ -80,31 +91,44 @@ readAlexandrovSignatures <-
 
     # read all data in one table
 
-    # first, try tab as column separator/delimiter (used for version 2):
-    sigmatrix <- as.matrix(read.table(file, header=TRUE,
-                                      row.names=NULL, sep="\t"))
+    # First, try to read this as an Excel sheet (version 3.1):
+    if (!is.na(readxl::excel_format(file))) {
+        sigmatrix <- readxl::read_excel(file, trim_ws=TRUE)
 
-    if (ncol(sigmatrix) < 3) {
-        # cannot contain signature data; at least 2 columns of annotation
-        # try comma as column separator/delimiter (used for version 3):
+        # convert to data frame
+        sigmatrix <- as.data.frame(sigmatrix)
+
+    } else {
+        # This is NOT an Excel file, so read it as TSV or CSV table!
+    
+        # try tab as column separator/delimiter (used for version 2):
         sigmatrix <- as.matrix(read.table(file, header=TRUE,
-                                          row.names=NULL, sep=","))
+                                          row.names=NULL, sep="\t"))
+
+        if (ncol(sigmatrix) < 3) {
+            # cannot contain signature data; at least 2 columns of annotation
+            # try comma as column separator/delimiter (used for version 3):
+            sigmatrix <- as.matrix(read.table(file, header=TRUE,
+                                              row.names=NULL, sep=","))
+        }
+
     }
 
+    # Check that we have the correct format!
+    
     # verify format of first column (e.g., "C>A")
     if (length(grep("^[CT]>[ACGT]$", sigmatrix[,1])) != nrow(sigmatrix)) {
         stop(paste("Wrong file format. Expected SNV annotation for",
                    "pyrimidines in first column, e.g. 'C>A'."))
     }
     
-    
     # verify format of second column (e.g., "ACA")
     if (length(grep("^[ACGT]{3}$", sigmatrix[,2])) != nrow(sigmatrix)) {
         stop(paste("Wrong file format. Expected mutated triplet",
                    "in second column, e.g. 'ACA'."))
     }
-    
-    
+
+
     # check whether we have the third annotation column (e.g., "A[C>A]A")
     if (length(grep("^[ACGT]\\[[CT]>[ACGT]\\][ACGT]$", sigmatrix[,3])) ==
         nrow(sigmatrix)) {
@@ -127,6 +151,8 @@ readAlexandrovSignatures <-
                    "mutation type in third column, e.g. 'A[C>A]A'."))
     }
 
+
+    # now extract the signatures from the table
     sigList <- list()
     sigNames <- c()
 
@@ -136,10 +162,12 @@ readAlexandrovSignatures <-
             sigVec <- as.numeric(sigmatrix[,colId])
             names(sigVec) <- sigVecNames
 
-            # make sure this is normalized (doesn't hold for version 3
+            # make sure this is normalized (doesn't hold for versions 3 and 3.1
             # where the sum of probabilities is somtimes minimally different
             # from 1 ...
-            sigVec <- sigVec/sum(sigVec)
+            while(sum(sigVec) != 1) {  # once wasn't always sufficient!
+                sigVec <- sigVec/sum(sigVec)
+            }
 
             # make sure we sort the vector correctly (the version 2 file has
             # another sorting): first check number of bases and presence of

@@ -204,8 +204,10 @@ COSMIC Mutational Signatures website for signatures version 2 (March 2015,
 see <http://cancer.sanger.ac.uk/cosmic/signatures_v2> -> "Download signatures"),
 or in the format used for signatures version 3 (May 2019; see
 <https://cancer.sanger.ac.uk/cosmic/signatures/SBS/> and
-<https://www.synapse.org/#!Synapse:syn12009743>). For version 3, only Single
-Base Substitution (SBS) signatures can be used.
+<https://www.synapse.org/#!Synapse:syn12009743>). Also the signatures of
+version 3.1 (distributed as an Excel spread sheet on the COSMIC Mutational
+Signatures website) can be read. For versions 3 and 3.1, only Single Base
+Substitution (SBS) signatures can be used.
 
 Example for version 2:
 
@@ -234,7 +236,8 @@ T>G,TTT,2.23E-16,2.23E-16,1.05E-02,5.68E-04,1.35E-02,1.01E-03, ...
 ```
 
 (Apart from the change of tab- to comma-separator, the main difference is
-the lack of the redundant 3rd annotation column in version 3.)
+the lack of the redundant 3rd annotation column in version 3. Version 3.1 has
+the same format as version 3, but is distributed as an Excel spread sheet.)
 
 The standard Alexandrov-type signatures report mutation frequencies for
 nucleotide triplets where the mutated base is at the center. Also, the basic
@@ -253,7 +256,7 @@ signatures[1]
 ```
 
 Alternatively, the signatures can be read from a file of the format shown
-above:
+above (TSV, CSV or Excel spread sheet):
 
 ```{r, eval=FALSE}
 signatures <- readAlexandrovSignatures(file="<signature_file>")
@@ -359,7 +362,132 @@ genomes (Alexandrov et al. Cell Rep. 3:246--259, 2013; Alexandrov et al. Nature
 500:415--421, 2013; Shiraishi et al. PLoS Genet. 11:e1005657, 2015). Therefore,
 the biological meaning of converting signatures is not well defined, and the
 approach should be taken with caution! As an example for the possible outcome,
-please see our paper (Krüger and Piro, 2018).
+please see our paper (Krüger and Piro, 2019).
+
+
+### Adjustment/normalization of mutational signatures for subsets of the genome
+
+The exact numeric features of mutational signatures (e.g., the 96 mutation
+probabilities of trinucleotide mutation types within an Alexandrov-type
+signature) depend not only on the mutational processes themselves, but also
+on the nucleotide frequencies within the reference sequences of the mutation
+data from which the signatures were derived.
+
+Consider, for example, a hypothetical biochemical mutational process which can
+potentially cause C[C>T]G and A[C>T]A mutations with equal probability.
+Even if both mutation types are potentially equiprobable, in CG-rich regions
+more C[C>T]G than A[C>T]A mutations will be observed, simply because these
+regions likely contain more CCG trinucleotides than ACA trinucleotides which
+can be mutated. This illustrates that the observed fractions of mutations do
+not only depend on the underlying mutational process alone, but also on the
+nucleotide frequencies within the reference sequences from which the mutational
+signatures were inferred in the first place (e.g., whole genome, whole exome,
+another subset of genomic regions?).
+
+Sometimes, however, it may be useful to apply signature refitting to
+mutation data from genomic regions whose nucelotide frequencies differ from
+those for which mutational signatures are available. For example, signature
+refitting might need to be applied to mutation data from whole exome
+sequencing, or targetted sequencing (only a specific set of genes) although
+mutational signatures were derived for data from the whole reference genome.
+
+For this purpose, the function **adjustSignaturesForRegionSet()** provides
+the possibility to (re-)adjust/normalize mutational signatures for a given
+reference sequence (e.g., whole genome) to the nucleotide frequencies present
+in another target set of genomic regions (e.g., whole exome) to which
+signature refitting has to be applied.
+
+
+**Adjustment/normalization of Alexandrov-type signatures:**
+
+For Alexandrov-type signatures, the important frequencies are those of
+multi-nucleotide sequence patterns (usually trinucleotides) whose central base
+can be mutated. Therefore, adjustment factors for individual multi-nucleotide
+mutation types (e.g., A[C>T]G) are computed by comparing the corresponding
+multi-nucleotide frequencies (e.g., ACG) between the original reference regions
+and the target regions.
+
+Mathematical approach: divide the mutation probabilities of individual mutation
+features (e.g., trinucleotide mutation types for Alexandrov signatures) by the
+original (genome-wide?) multi-nucleotide frequency, then multiply it by
+the corresponding frequency in the target region set. That is, if the target
+regions, for example, have a doubled frequency of a certain trinucleotide
+(e.g., ACG) with respect to the original reference sequence, the mutation
+probabilities of the corresponding mutation types (A[C>A]G, A[C>G]G, A[C>T]G)
+in an Alexandrov signature will be multiplied by 2. Reasoning: the mutational
+process has more opportunities to mutate that trinucleotide in the target
+regions than in the original reference sequence for which the signature was
+initially derived. After the appropriate adjustment of individual features,
+an Alexandrov signature is re-normalized such that overall probability over
+all mutation types sum up to 1.
+
+
+**Adjustment/normalization of Shiraishi-type signatures:**
+
+In the Shiraishi-type signature model, individual bases of the multi-nucleotide
+sequence patterns are considered as independent features. Therefore, the
+adjustment of such signatures should be applied to individual bases while still
+reflecting the presence of absence (hence, the frequencies) of the full sequence
+patterns in the genomic regions. Thus, to compute single-nucleotide frequencies
+for the adjustment, first the frequencies of the multi-nucleotide sequence
+patterns are determined (as for Alexandrov-type signatures) and then broken
+down to single-nucleotide frequencies for the individual positions of the
+patterns. That is, for each position in the sequence patterns a set of
+single-nucleotide frequencies is determined to describe, for example, how
+frequent a specific nucleotide occurs at a specific position in the pattern
+(very much like in position-frequency matrices used for transcription factor
+binding motives).
+
+Mathematical approach: for signature adjustment, the position-specific
+nucleotide frequencies are applied to the position-specific mutation
+probabilities of a Shiraishi signature much in the same way as described above
+for the adjustment of multi-nucleotide frequencies in Alexandrov signatures.
+After the appropriate adjustment of individual position-specific features,
+a Shirishi signature is re-normalized such that for each individual position
+in the pattern the overall base change probability (for the central base) or
+nucleotide probabilities (for flanking bases) sum up to 1.
+
+**Usage example:**
+
+Example for adjusting Alexandrov signatures (derived from mutation data from
+the whole genome) to the nucleotide frequencies present in promoter regions:
+
+```{r, message=FALSE, warning=FALSE}
+# get Alexandrov signatures from COSMIC
+signatures <- readAlexandrovSignatures()
+
+signatures$Signature.1[1:5]
+
+
+# get gene annotation for the default reference genome (hg19)
+txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
+
+# get a GRanges object for gene promoters (-2000 to +200 bases from TSS)
+library(GenomicRanges)
+regionsTarget <- promoters(txdb, upstream=2000, downstream=200)
+
+# adjust signatures according to nucleotide frequencies in this subset of
+# the genome
+sign_adj <-
+   adjustSignaturesForRegionSet(signatures,
+            regionsTarget, regionsOriginal=NULL,
+            refGenome=BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19)
+
+sign_adj$Signature.1[1:5]
+```
+
+**adjustSignaturesForRegionSet()** accepts both types of signatures with the
+following arguments:
+
+* *signatures*: The signature set (list) to be adjusted/normalized.
+* *regionsTarget*: A **GRanges** object (package `r Biocpkg("GenomicRanges")`)
+containing the target regions for which to adjust the signatures. This can
+also be NULL if the new target regions correspond to the whole genome.
+* *regionsOriginal*: Optional **GRanges** object containing the genomic regions
+for which the signatures were originally derived. By default (NULL) this is the whole genome.
+* *refGenome*: Optional **BSgenome** object with the reference genome from
+which to extract sequences for both the original and the target regions. By
+default, the human refernce genome hg19 is taken.
 
 
 ### Verifying the signature format
@@ -568,7 +696,7 @@ multiple overlapping genes with opposing transcription directions,
 `r Rpackage("pmsignature")` assigns the transcript direction of the gene
 encountered first in the transcript database (see also Section 3.2.1). This
 was also the behavior of **decompTumor2Sig** until version 1.3.5 (used for
-our papers; Krüger and Piro, 2017, 2018). In newer versions,
+our papers; Krüger and Piro, 2017, 2019). In newer versions,
 **decompTumor2Sig** excludes these mutations
 by default from the count because from mutation data alone it cannot be
 inferred which of the two genes has the higher transcriptional activity which
@@ -617,7 +745,7 @@ for **readGenomesFromVCF()**.
 
 Since the mutation data of genomes is specified as mutation probabilities
 and has exactly the same format as signatures, the format can be verified with
-the very same functions described in Section 3.1.5 (see above).
+the very same functions described in Section 3.1.6 (see above).
 
 
 
@@ -704,8 +832,8 @@ for comparison, showing the same signature as above.)
 
 
 To show that genome mutation frequencies can be represented in the same manner,
-the following example reads the tumor genomes provided with this package using
-the Alexandrov model (see Section 3.2.1) and plots the mutation frequencies of
+the following example reads the tumor genomes provided with this package (see
+Section 3.2.1) using the Alexandrov model and plots the mutation frequencies of
 the first genome:
 
 ```{r}
@@ -854,7 +982,7 @@ mutational processes like UV light, smoking, etc; see  Alexandrov and Stratton,
 Curr Opin Genet Dev 24:52-60, 2014), we would like to estimate how strongly the
 different signatures (processes) contributed to the overall mutational load
 observed in the tumor. To this end **decompTumor2Sig** relies on quadratic
-programming. For details, see our paper (Krüger and Piro, 2018).
+programming. For details, see our paper (Krüger and Piro, 2019).
 
 The result will be a vector of weights/contributions (or "exposures") which
 indicate the fractions or percentages of somatic mutations which can likely be
@@ -1193,7 +1321,7 @@ sign_a2s <- convertAlexandrov2Shiraishi(sign_a)
 ```
 
 *Note*: Of course, there is some information loss here (better: a loss of
-specificity), as we discuss in our paper (Krüger and Piro, 2018).
+specificity), as we discuss in our paper (Krüger and Piro, 2019).
 
 Additionally, the function **downgradeShiraishiSignatures()** can be used to
 reduce the number of flanking bases and/or discard the information on

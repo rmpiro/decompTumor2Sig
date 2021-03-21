@@ -19,14 +19,19 @@ the contributions of the signatures to the mutation load of the tumor.
 \tabular{ll}{
 Package: \tab decompTumor2Sig\cr
 Type: \tab Package\cr
-Version: \tab 2.5.1\cr
-Date: \tab 2020-07-27\cr
+Version: \tab 2.7.1\cr
+Date: \tab 2021-03-21\cr
 License: \tab GPL (>=2)\cr
 }
 
 The package provides the following functions:
 
 \tabular{ll}{
+
+adjustSignaturesForRegionSet():\tab adjust (normalize) mutational\cr
+                        \tab signatures for use with mutation data from a\cr
+                        \tab specific, limited subset of genomic regions\cr
+                        \tab (e.g., for targetted sequencing).\cr 
 
 composeGenomesFromExposures():\tab (re-)construct tumor genome mutation\cr
                         \tab frequencies from the signatures and\cr
