@@ -68,8 +68,9 @@ signatures <- readAlexandrovSignatures()
 txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
 
 ### get a GRanges object for gene promoters (-2000 to +200 bases from TSS)
+### (take only first 1000 for testing)
 library(GenomicRanges)
-regionsTarget <- promoters(txdb, upstream=2000, downstream=200)
+regionsTarget <- promoters(txdb, upstream=2000, downstream=200)[seq(1000)]
 
 ### adjust signatures according to nucleotide frequencies in this subset
 ### of the genome

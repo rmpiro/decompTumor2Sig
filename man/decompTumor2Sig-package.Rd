@@ -19,8 +19,8 @@ the contributions of the signatures to the mutation load of the tumor.
 \tabular{ll}{
 Package: \tab decompTumor2Sig\cr
 Type: \tab Package\cr
-Version: \tab 2.7.1\cr
-Date: \tab 2021-03-21\cr
+Version: \tab 2.7.2\cr
+Date: \tab 2021-03-26\cr
 License: \tab GPL (>=2)\cr
 }
 

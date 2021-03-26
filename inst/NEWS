@@ -87,3 +87,9 @@ Changes in version 2.7.1 (2021-03-21)
   in the specified regions (with respect to nucleotide frequncies in
   the reference sequences, e.g., the whole genome, for which the signatures
   were derived in the first place).
+
+Changes in version 2.7.2 (2021-03-26)
++ Updated readAlexandrovSignatures() to read the COMSIC signature format v3.2
+  (published in March 2021).
++ Fix: changed example for adjustSignaturesForRegionSet() to limit memory usage
+  (previous example produced error during check on Windows for arch 'i386').

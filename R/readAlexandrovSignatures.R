@@ -4,18 +4,18 @@
 #' (COSMIC format) from a flat file or URL. Signatures must be specified in the
 #' tab-separated format used by the COSMIC website for signatures version 2
 #' (March 2015), the comma-separated format used for signatures version 3
-#' (May 2019) or the Microsoft Excel 2007+ sheet used for version 3.1 (see
-#' Details below). Excel sheets cannot be read from an URL and must be
-#' downloaded first.
+#' (May 2019), the Microsoft Excel 2007+ sheet used for version 3.1, or the
+#' tab-sperated format used for version 3.2 (see Details below). Excel sheets
+#' cannot be read from an URL and must be downloaded first.
 #' 
 #' For details on the accepted signature formats, see below or\cr
 #' \url{http://cancer.sanger.ac.uk/cosmic/signatures_v2} ->
 #' "Download signatures" for version 2,\cr
-#' \url{https://cancer.sanger.ac.uk/cosmic/signatures/SBS/} and\cr
 #' \url{https://www.synapse.org/#!Synapse:syn12009743} for version 3,\cr
-#' or \url{https://cancer.sanger.ac.uk/cosmic/signatures/SBS/index.tt} and\cr
 #' \url{https://cancer.sanger.ac.uk/sigs-assets-20/COSMIC_Mutational_Signatures_v3.1.xlsx}
-#' for version 3.1. For versions 3 and 3.1, only Single Base Substitution (SBS)
+#' for version 3.1, \cr
+#' and \url{https://cancer.sanger.ac.uk/signatures/} for version 3.2. 
+#' For versions 3, 3.1 and 3.2, only Single Base Substitution (SBS)
 #' signatures can be used.
 #'
 #' COSMIC format for Alexandrov signatures, version 2:
@@ -32,7 +32,7 @@
 #' T>G \tab TTT \tab T[T>G]T \tab 0.0040301281 \tab 0.0000235982 \tab...\cr
 #' }
 #' 
-#' COSMIC/Synapse format for Alexandrov signatures, version 3:
+#' COSMIC/Synapse format for Alexandrov signatures, version 3 and 3.1:
 #'
 #' \tabular{llllll}{
 #' Type,SubType,SBS1,SBS2,SBS3,SBS4,SBS5,SBS6, ...\cr
@@ -48,10 +48,23 @@
 #' Version 3.1 has assentially the same format as version 3, but is distributed
 #' as an Excel spread sheet.
 #' 
+#' COSMIC/Synapse format for Alexandrov signatures, version 3.2:
+#'
+#' \tabular{llll}{
+#' Type \tab SBS1 \tab SBS2 \tab...\cr
+#' A[C>A]A \tab 0.0110983262 \tab 0.0006827082 \tab...\cr
+#' A[C>A]C \tab 0.0091493407 \tab 0.0006191072 \tab...\cr
+#' A[C>A]G \tab 0.0014900705 \tab 0.0000992790 \tab...\cr
+#' A[C>A]T \tab 0.0062338852 \tab 0.0003238914 \tab...\cr
+#' [...]\cr
+#' T[T>G]G \tab 0.0020310769 \tab 0.0002066152 \tab...\cr
+#' T[T>G]T \tab 0.0040301281 \tab 0.0000235982 \tab...\cr
+#' }
+#'
 #' @usage
 #' readAlexandrovSignatures(file)
 #' @param file (Mandatory) Can be a file name or an URL for download.
-#' Default:
+#' Default:\cr
 #' "https://cancer.sanger.ac.uk/cancergenome/assets/signatures_probabilities.txt"
 #' (COSMIC signatures v2).
 #' @return A list of Alexandrov signatures that can be used for
@@ -76,20 +89,15 @@ readAlexandrovSignatures <-
     function(file=paste0("https://cancer.sanger.ac.uk/cancergenome/assets/",
                          "signatures_probabilities.txt")) {
 
-    # read a set of Alexandrov signatures from a tab-separated flat file in the
-    # format provided by COSMIC Mutational Signatures.
-    # Version 2 signatures (March 2015) are available at: 
-    #   http://cancer.sanger.ac.uk/cancergenome/assets/
-    #                   signatures_probabilities.txt (this is taken by DEFAULT)
-    # Version 3 signatures (May 2019) are available at:
-    #   https://www.synapse.org/#!Synapse:syn12009743
-    #   (only SBS signatures, i.e., for single base substitution)
-        
+    # read a set of Alexandrov signatures from a tab-separated flat file in one
+    # of the formats that are (or were) provided by COSMIC Mutational Signatures
+
     if (!is.character(file)) {
         stop("Parameter 'file' must be a filename or URL!")
     }
 
     # read all data in one table
+    sigmatrix <- NULL
 
     # First, try to read this as an Excel sheet (version 3.1):
     if (!is.na(readxl::excel_format(file))) {
@@ -100,55 +108,86 @@ readAlexandrovSignatures <-
 
     } else {
         # This is NOT an Excel file, so read it as TSV or CSV table!
-    
-        # try tab as column separator/delimiter (used for version 2):
-        sigmatrix <- as.matrix(read.table(file, header=TRUE,
-                                          row.names=NULL, sep="\t"))
 
-        if (ncol(sigmatrix) < 3) {
-            # cannot contain signature data; at least 2 columns of annotation
+        sigmatrix <- tryCatch(
+            # try tab as column separator/delimiter (version 2 and 3.2):
+            as.matrix(read.table(file, header=TRUE,
+                                 row.names=NULL, sep="\t")),
+            warning = function(cond) {
+                return(NULL)
+            },
+            error = function(cond) {
+                return(NULL)
+            }
+        )
+
+        if (is.null(sigmatrix) || ncol(sigmatrix) < 2) {
+            # cannot contain signature data (at least 1 column of annotation)
             # try comma as column separator/delimiter (used for version 3):
-            sigmatrix <- as.matrix(read.table(file, header=TRUE,
-                                              row.names=NULL, sep=","))
+            sigmatrix <- tryCatch(
+                as.matrix(read.table(file, header=TRUE,
+                                     row.names=NULL, sep=",")),
+                warning = function(cond) {
+                    return(NULL)
+                },
+                error = function(cond) {
+                    return(NULL)
+                }
+            )
         }
-
     }
-
-    # Check that we have the correct format!
-    
-    # verify format of first column (e.g., "C>A")
-    if (length(grep("^[CT]>[ACGT]$", sigmatrix[,1])) != nrow(sigmatrix)) {
-        stop(paste("Wrong file format. Expected SNV annotation for",
-                   "pyrimidines in first column, e.g. 'C>A'."))
-    }
-    
-    # verify format of second column (e.g., "ACA")
-    if (length(grep("^[ACGT]{3}$", sigmatrix[,2])) != nrow(sigmatrix)) {
-        stop(paste("Wrong file format. Expected mutated triplet",
-                   "in second column, e.g. 'ACA'."))
+        
+    if (is.null(sigmatrix) || ncol(sigmatrix) < 2) {
+        stop(paste("Couldn't read", file, "as tabular data file."))
     }
 
 
-    # check whether we have the third annotation column (e.g., "A[C>A]A")
-    if (length(grep("^[ACGT]\\[[CT]>[ACGT]\\][ACGT]$", sigmatrix[,3])) ==
+    # Check that we have one of the expected formats!
+
+    if (length(grep("^[ACGT]\\[[CT]>[ACGT]\\][ACGT]$", sigmatrix[,1])) ==
         nrow(sigmatrix)) {
+        # This is version 3.2, there is only one annotation column
+        
+        sigVecNames <- sigmatrix[,1]  # take first column as mutation types
+        firstSigCol <- 2              # data starts from the second column
 
+    } else if (ncol(sigmatrix) > 2
+               && length(grep("^[ACGT]\\[[CT]>[ACGT]\\][ACGT]$",
+                              sigmatrix[,3])) == nrow(sigmatrix)
+               ) {
+        # This is verion 2, the mutation type is in the third column
+        
         # we have the third column, use it as element names for the vector
         sigVecNames <- sigmatrix[,3]
         firstSigCol <- 4
-    } else if (!anyNA(suppressWarnings(as.numeric(sigmatrix[,3])))) {
-        # there are only numeric values in the third column; signature!
 
-        # need to construct the mutation types from the first two columns
-        sigVecNames <- apply(sigmatrix[,seq_len(2)], 1,
-                             function(x) {
-                                 y = unlist(strsplit(x[2], ""));
-                                 paste0(y[1],"[",x[1],"]",y[3])
-                             })
-        firstSigCol <- 3
     } else {
-        stop(paste("Wrong file format. Expected either a signature or",
-                   "mutation type in third column, e.g. 'A[C>A]A'."))
+        # This might be version 3 or 3.1; get mutation type from columns 1&2
+
+        # verify format of first column (e.g., "C>A")
+        # verify format of second column (e.g., "ACA")
+        if (length(grep("^[CT]>[ACGT]$", sigmatrix[,1])) != nrow(sigmatrix)
+            || length(grep("^[ACGT]{3}$", sigmatrix[,2])) != nrow(sigmatrix)) {
+            stop(paste("Wrong file format. Need mutation type in first",
+                       "or third column (e.g., 'A[C>A]A'); and/or SNV",
+                       "annotation for pyrimidines in first column (e.g.",
+                       "'C>A') and mutated triplet in second column (e.g.",
+                       "'ACA')."))
+        } else {
+            # need to construct the mutation types from the first two columns
+            sigVecNames <- apply(sigmatrix[,seq_len(2)], 1,
+                                 function(x) {
+                                     y = unlist(strsplit(x[2], ""));
+                                     paste0(y[1],"[",x[1],"]",y[3])
+                                 })
+            firstSigCol <- 3
+        }
+    }
+
+    # Final check: do we have numeric data in the next column?
+    if (anyNA(suppressWarnings(as.numeric(sigmatrix[,firstSigCol])))) {
+        stop(paste0("Wrong file format. Expected a signature in column ",
+                    firstSigCol,"."))
     }
 
 

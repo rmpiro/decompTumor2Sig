@@ -202,12 +202,18 @@ signatures and Shiraishi-type signatures.
 Alexandrov signatures are specified either in the format used at the
 COSMIC Mutational Signatures website for signatures version 2 (March 2015,
 see <http://cancer.sanger.ac.uk/cosmic/signatures_v2> -> "Download signatures"),
-or in the format used for signatures version 3 (May 2019; see
-<https://cancer.sanger.ac.uk/cosmic/signatures/SBS/> and
-<https://www.synapse.org/#!Synapse:syn12009743>). Also the signatures of
-version 3.1 (distributed as an Excel spread sheet on the COSMIC Mutational
-Signatures website) can be read. For versions 3 and 3.1, only Single Base
-Substitution (SBS) signatures can be used.
+in the format used for signatures version 3 (May 2019; see
+<https://www.synapse.org/#!Synapse:syn12009743>), or in the format used for
+singatures version 3.2 (March 2021; see
+<https://cancer.sanger.ac.uk/cosmic/signatures/SBS/>). Also the signatures of
+version 3.1 (same as version 3.0 but distributed as an Excel spread sheet
+on the COSMIC Mutational Signatures website) can be read. For versions 3, 3.1
+and 3.2, only Single Base Substitution (SBS) signatures can be used.
+
+The standard Alexandrov-type signatures report mutation frequencies for
+nucleotide triplets where the mutated base is at the center. Also, the basic
+Alexandrov signatures do not take transcription direction into account when
+computing mutation frequencies.
 
 Example for version 2:
 
@@ -239,10 +245,18 @@ T>G,TTT,2.23E-16,2.23E-16,1.05E-02,5.68E-04,1.35E-02,1.01E-03, ...
 the lack of the redundant 3rd annotation column in version 3. Version 3.1 has
 the same format as version 3, but is distributed as an Excel spread sheet.)
 
-The standard Alexandrov-type signatures report mutation frequencies for
-nucleotide triplets where the mutated base is at the center. Also, the basic
-Alexandrov signatures do not take transcription direction into account when
-computing mutation frequencies.
+Example for version 3.2:
+
+```
+Type       SBS1                    SBS2                    ...
+A[C>A]A    0.000876022860356065    5.79005909129116e-07    ...
+A[C>A]C    0.0022201195808427      0.000145504532003707    ...
+A[C>A]G    0.000179727205679816    5.36186073164881e-05    ...
+A[C>A]T    0.00126505263784183     9.75912243380865e-05    ...
+...
+T[T>G]G    0.000577613846957072    9.54312693870027e-05    ...
+T[T>G]T    2.20126302870092e-16    2.22251767921597e-16    ...
+```
 
 
 To read Alexandrov-type signatures, use the command

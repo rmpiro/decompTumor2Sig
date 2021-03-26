@@ -8,7 +8,7 @@ readAlexandrovSignatures(file)
 }
 \arguments{
 \item{file}{(Mandatory) Can be a file name or an URL for download.
-Default:
+Default:\cr
 "https://cancer.sanger.ac.uk/cancergenome/assets/signatures_probabilities.txt"
 (COSMIC signatures v2).}
 }
@@ -21,19 +21,19 @@ A list of Alexandrov signatures that can be used for
 (COSMIC format) from a flat file or URL. Signatures must be specified in the
 tab-separated format used by the COSMIC website for signatures version 2
 (March 2015), the comma-separated format used for signatures version 3
-(May 2019) or the Microsoft Excel 2007+ sheet used for version 3.1 (see
-Details below). Excel sheets cannot be read from an URL and must be
-downloaded first.
+(May 2019), the Microsoft Excel 2007+ sheet used for version 3.1, or the
+tab-sperated format used for version 3.2 (see Details below). Excel sheets
+cannot be read from an URL and must be downloaded first.
 }
 \details{
 For details on the accepted signature formats, see below or\cr
 \url{http://cancer.sanger.ac.uk/cosmic/signatures_v2} ->
 "Download signatures" for version 2,\cr
-\url{https://cancer.sanger.ac.uk/cosmic/signatures/SBS/} and\cr
 \url{https://www.synapse.org/#!Synapse:syn12009743} for version 3,\cr
-or \url{https://cancer.sanger.ac.uk/cosmic/signatures/SBS/index.tt} and\cr
 \url{https://cancer.sanger.ac.uk/sigs-assets-20/COSMIC_Mutational_Signatures_v3.1.xlsx}
-for version 3.1. For versions 3 and 3.1, only Single Base Substitution (SBS)
+for version 3.1, \cr
+and \url{https://cancer.sanger.ac.uk/signatures/} for version 3.2. 
+For versions 3, 3.1 and 3.2, only Single Base Substitution (SBS)
 signatures can be used.
 
 COSMIC format for Alexandrov signatures, version 2:
@@ -50,7 +50,7 @@ T>G \tab TTG \tab T[T>G]G \tab 0.0020310769 \tab 0.0002066152 \tab...\cr
 T>G \tab TTT \tab T[T>G]T \tab 0.0040301281 \tab 0.0000235982 \tab...\cr
 }
 
-COSMIC/Synapse format for Alexandrov signatures, version 3:
+COSMIC/Synapse format for Alexandrov signatures, version 3 and 3.1:
 
 \tabular{llllll}{
 Type,SubType,SBS1,SBS2,SBS3,SBS4,SBS5,SBS6, ...\cr
@@ -65,6 +65,19 @@ T>G,TTT,2.23E-16,2.23E-16,1.05E-02,5.68E-04,1.35E-02,1.01E-03, ...\cr
 
 Version 3.1 has assentially the same format as version 3, but is distributed
 as an Excel spread sheet.
+
+COSMIC/Synapse format for Alexandrov signatures, version 3.2:
+
+\tabular{llll}{
+Type \tab SBS1 \tab SBS2 \tab...\cr
+A[C>A]A \tab 0.0110983262 \tab 0.0006827082 \tab...\cr
+A[C>A]C \tab 0.0091493407 \tab 0.0006191072 \tab...\cr
+A[C>A]G \tab 0.0014900705 \tab 0.0000992790 \tab...\cr
+A[C>A]T \tab 0.0062338852 \tab 0.0003238914 \tab...\cr
+[...]\cr
+T[T>G]G \tab 0.0020310769 \tab 0.0002066152 \tab...\cr
+T[T>G]T \tab 0.0040301281 \tab 0.0000235982 \tab...\cr
+}
 }
 \examples{
 
