@@ -91,5 +91,10 @@ Changes in version 2.7.1 (2021-03-21)
 Changes in version 2.7.2 (2021-03-26)
 + Updated readAlexandrovSignatures() to read the COMSIC signature format v3.2
   (published in March 2021).
+
+Changes in version 2.7.3 (2021-04-01)
 + Fix: changed example for adjustSignaturesForRegionSet() to limit memory usage
   (previous example produced error during check on Windows for arch 'i386').
++ Fix: made sure that the extension of genomic regions by half the sequence
+  pattern (needed for the adjustSignaturesForRegionSet() function) does not
+  result in out-of-bounds regions.

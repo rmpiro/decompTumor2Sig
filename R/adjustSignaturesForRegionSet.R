@@ -41,7 +41,7 @@
 #' of the genome (i.e., set of genomic regions) from which the signatures
 #' where originally derived. Default: \code{NULL} (whole genome).
 #' @param refGenome (Optional) Reference genome sequence from which to
-#' compute the nucleotide frequencies. Default:
+#' compute the nucleotide frequencies. Default:\cr
 #' \code{BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19}.
 #' @return A set of adjusted mutational signatures in the same format as those
 #' specified for \code{signatures}.
@@ -59,18 +59,25 @@
 #' signatures <- readAlexandrovSignatures()
 #' 
 #' ### get gene annotation for the default reference genome (hg19)
+#' library(TxDb.Hsapiens.UCSC.hg19.knownGene)
 #' txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
 #'
 #' ### get a GRanges object for gene promoters (-2000 to +200 bases from TSS)
-#' ### (take only first 1000 for testing)
+#' ### [taking only the first 1000 for testing purpose]
 #' library(GenomicRanges)
 #' regionsTarget <- promoters(txdb, upstream=2000, downstream=200)[seq(1000)]
 #'
-#' ### adjust signatures according to nucleotide frequencies in this subset
-#' ### of the genome
-#' sign_adj <- adjustSignaturesForRegionSet(signatures, regionsTarget)
+#' ### assume these signatures were derived only from mutation data from
+#' ### exons on chromosome X [not true; just for illustrative purpose]
+#' filter <- list(tx_chrom = c("chrX"))
+#' regionsOriginal <- exons(txdb, filter=filter)
+#' 
+#' ### adjust signatures according to nucleotide frequencies in the target
+#' ### subset of the genome
+#' sign_adj <- adjustSignaturesForRegionSet(signatures, regionsTarget,
+#'                                                      regionsOriginal)
 #'
-#' @importFrom GenomicRanges start end
+#' @importFrom GenomicRanges start end trim
 #' @importFrom Biostrings getSeq
 #' @export adjustSignaturesForRegionSet
 adjustSignaturesForRegionSet <- function(signatures,
@@ -91,7 +98,8 @@ adjustSignaturesForRegionSet <- function(signatures,
 
     if ( (is.null(regionsTarget) && is.null(regionsOriginal) ) ||
          (!is.null(regionsTarget) && !is.null(regionsOriginal) &&
-          (regionsOriginal == regionsTarget)
+          length(regionsTarget) == length(regionsOriginal) &&
+          all(regionsOriginal == regionsTarget)
          )
         ) {
         stop("Parameters 'regionsOriginal' and 'regionsTarget' must differ!")
@@ -108,17 +116,26 @@ adjustSignaturesForRegionSet <- function(signatures,
         # so we need to extend each region by the number of flanking bases!
 
         if (!is.null(regionsTarget)) {
-            GenomicRanges::start(regionsTarget) <-
-                GenomicRanges::start(regionsTarget) - (numBases-1)/2
-            GenomicRanges::end(regionsTarget) <-
-                GenomicRanges::end(regionsTarget) + (numBases-1)/2
+            tryCatch( {
+                GenomicRanges::start(regionsTarget) <-
+                    GenomicRanges::start(regionsTarget) - (numBases-1)/2
+                GenomicRanges::end(regionsTarget) <-
+                    GenomicRanges::end(regionsTarget) + (numBases-1)/2
+                # Got a warning here? we're out of bounds and need to trim
+            }, warning=function(w) {regionsTarget <-
+                                        GenomicRanges::trim(regionsTarget)} )
+            
         }
 
         if (!is.null(regionsOriginal)) {
-            GenomicRanges::start(regionsOriginal) <-
-                GenomicRanges::start(regionsOriginal) - (numBases-1)/2
-            GenomicRanges::end(regionsOriginal) <-
-                GenomicRanges::end(regionsOriginal) + (numBases-1)/2
+            tryCatch( {
+                GenomicRanges::start(regionsOriginal) <-
+                    GenomicRanges::start(regionsOriginal) - (numBases-1)/2
+                GenomicRanges::end(regionsOriginal) <-
+                    GenomicRanges::end(regionsOriginal) + (numBases-1)/2
+                # Got a warning here? we're out of bounds and need to trim
+            }, warning=function(w) {regionsOriginal <-
+                                        GenomicRanges::trim(regionsOriginal)} )
         }
     }
 

@@ -12,8 +12,8 @@
 #' \tabular{ll}{
 #' Package: \tab decompTumor2Sig\cr
 #' Type: \tab Package\cr
-#' Version: \tab 2.7.2\cr
-#' Date: \tab 2021-03-26\cr
+#' Version: \tab 2.7.3\cr
+#' Date: \tab 2021-04-01\cr
 #' License: \tab GPL (>=2)\cr
 #' }
 #' 
