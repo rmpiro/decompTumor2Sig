@@ -360,8 +360,12 @@ isEstParamObject <- function(x) {
         return(FALSE)
     }
 
-    numSig <- getNumSignatures(x)
     hasBackGround <- isBackGround(x)
+
+    numSig <- getNumSignatures(x)
+    # if one of them was background, the true number of signatures is one less!
+    numSig <- numSig - as.numeric(hasBackGround)
+
     sigType <- getSigType(x)
     numFeatDistDim1 <- dim(getSigFeatDist(x))[1]
     numFeatDistDim2 <- dim(getSigFeatDist(x))[2]

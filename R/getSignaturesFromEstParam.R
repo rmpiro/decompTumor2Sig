@@ -43,7 +43,7 @@ getSignaturesFromEstParam <- function(Param) {
 
     if (!isEstParamObject(Param)) {
         stop(paste("Param must be compatible to an object of type",
-                   "EstimatedParameters (as produced by pmsignature's ",
+                   "EstimatedParameters (as produced by pmsignature's",
                    "function getPMSignature; version 0.3.0)"))
     }
 

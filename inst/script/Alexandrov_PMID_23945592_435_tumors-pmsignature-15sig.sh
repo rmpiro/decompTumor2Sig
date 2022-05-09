@@ -16,18 +16,18 @@ cat genomes-tumor-patientID-map.tsv | cut -f 2 > genomes-patientID.list
 
 # get all SNVs, but from genomes only:
 
-cat somatic_mutation_data/*/*_clean_somatic_mutations_for_signature_analysis.txt | grep -w subs | ./extractSpecColumns.pl -c 3,1,4,6,7 | sed -e "s/^/chr/" | ./extractSpecColumns.pl -c 2,1,3-5 | filterLines.pl -c 1 -f genomes-patientID.list | gzip > Somatic_SNVs_Alexandrov_genomes_only.tsv.gz
+cat somatic_mutation_data/*/*_clean_somatic_mutations_for_signature_analysis.txt | grep -w subs | ./extractSpecColumns.pl -c 3,1,4,6,7 | sed -e "s/^/chr/" | ./extractSpecColumns.pl -c 2,1,3-5 | ./filterLines.pl -c 1 -f genomes-patientID.list | gzip > Somatic_SNVs_Alexandrov_genomes_only.tsv.gz
 
 # exclude MT:
 
 zcat Somatic_SNVs_Alexandrov_genomes_only.tsv.gz | grep -w chrMT -v | gzip > Somatic_SNVs_Alexandrov_genomes_only-noMT.tsv.gz
 
 # which samples have min 100 SNVs?
-zcat Somatic_SNVs_Alexandrov_genomes_only-noMT.tsv.gz | cut -f 1 | sort | uniq -c | sed -e "s/^ *//; s/ /\t/" | sort -n | filterLinesNumeric.pl -c 1 -T GE -V 100 | cut -f 2 > genomes-patientID-min100snvs.list
+zcat Somatic_SNVs_Alexandrov_genomes_only-noMT.tsv.gz | cut -f 1 | sort | uniq -c | sed -e "s/^ *//; s/ /\t/" | sort -n | ./filterLinesNumeric.pl -c 1 -T GE -V 100 | cut -f 2 > genomes-patientID-min100snvs.list
 
 # get the corresponding SNVs:
 
-zcat Somatic_SNVs_Alexandrov_genomes_only-noMT.tsv.gz | filterLines.pl -c 1 -f genomes-patientID-min100snvs.list | gzip > Somatic_SNVs_Alexandrov_genomes_only-noMT-min100snvs.tsv.gz
+zcat Somatic_SNVs_Alexandrov_genomes_only-noMT.tsv.gz | ./filterLines.pl -c 1 -f genomes-patientID-min100snvs.list | gzip > Somatic_SNVs_Alexandrov_genomes_only-noMT-min100snvs.tsv.gz
 
 # remove intermediate files (if you want):
 

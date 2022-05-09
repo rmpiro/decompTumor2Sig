@@ -9,8 +9,8 @@ Imports: methods, Matrix, quadprog(>= 1.5-5), GenomicRanges, stats,
     VariantAnnotation, SummarizedExperiment, ggseqlogo, gridExtra, data.table,
     GenomeInfoDb, readxl
 Suggests: knitr, rmarkdown, BiocStyle
-Version: 2.13.0
-Date: 2021-04-01
+Version: 2.13.1
+Date: 2022-05-09
 Encoding: UTF-8
 Authors@R: c(
     person("Rosario M.", "Piro", email = "rmpiro@gmail.com",
@@ -30,4 +30,4 @@ biocViews: Software, SNP, Sequencing, DNASeq, GenomicVariation,
     SomaticMutation, BiomedicalInformatics, Genetics, BiologicalQuestion,
     StatisticalMethod
 VignetteBuilder: knitr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2

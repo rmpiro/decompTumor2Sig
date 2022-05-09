@@ -98,3 +98,8 @@ Changes in version 2.7.3 (2021-04-01)
 + Fix: made sure that the extension of genomic regions by half the sequence
   pattern (needed for the adjustSignaturesForRegionSet() function) does not
   result in out-of-bounds regions.
+
+Changes in version 2.13.1 (2022-05-09)
++ Fix: corrected recognition of EstimatedParameters (from package pmsignature)
+  objects obtained with the use of a background signature.
++ Fix: corrected internal scripts for production of external example data.
