@@ -16,7 +16,7 @@
 #' #[2,] "2"  "992" "G" "A" "GT:PL:GQ:AD:DP" "0/1:123,0,33:33:1,3:4" "0/0:..."
 #' 
 #' @usage buildGenomesFromMutationData(snvs, numBases, type, trDir,
-#' uniqueTrDir=TRUE, refGenome, transcriptAnno, verbose)
+#' uniqueTrDir=TRUE, refGenome, transcriptAnno, verbose, ignoreRefMismatches)
 #' @param snvs SNV matrix (see description above).
 #' @param numBases Number of bases for the sequence pattern (odd integer).
 #' @param type Type of signature to be used ("Alexandrov", "Shiraishi").
@@ -32,6 +32,10 @@
 #' @param refGenome Reference genome (\code{BSgenome} object).
 #' @param transcriptAnno Transcription information (\code{TxDb} object).
 #' @param verbose Logical. Print additional information?
+#' @param ignoreRefMismatches If \code{TRUE}, SNVs where the mutated REF base
+#' does not match the reference genome will be ignored. If \code{FALSE}
+#' (default!) an error will be thrown, because this often indicates a wrong
+#' reference genome.
 #' @return A list of genomes: each genome is represented by the observed
 #' frequencies of mutation patterns according to the selected signature type.
 #' @author Rosario M. Piro\cr Politecnico di Milano\cr Maintainer: Rosario
@@ -51,7 +55,8 @@
 #' @keywords internal
 buildGenomesFromMutationData <- function(snvs, numBases, type, trDir,
                                          uniqueTrDir = TRUE,
-                                         refGenome, transcriptAnno, verbose) {
+                                         refGenome, transcriptAnno, verbose,
+                                         ignoreRefMismatches=FALSE) {
 
     if (type == "independent") {
         type <- "Shiraishi"
@@ -151,7 +156,7 @@ buildGenomesFromMutationData <- function(snvs, numBases, type, trDir,
 
     # now check, which chromosomes we don't find in the reference
     # genome and exclude them
-    setF = unique(snvs[,"CHROM"])
+    setF <- unique(snvs[,"CHROM"])
     # setR has in any case remained the same
 
     excludeSeq <- setF[!(setF %in% setR)]
@@ -240,10 +245,19 @@ buildGenomesFromMutationData <- function(snvs, numBases, type, trDir,
                    "not match the specified reference genome!\n",
                    "First problematic entries:\n"))
         print.table(snvs[errIdx,])
-        stop(paste("Expected REF bases are:",
-                   paste(refExpected, collapse=","),
-                   "...; incorrect reference genome?")
-             )
+
+        if (!ignoreRefMismatches) {
+            stop(paste("Expected REF bases are:",
+                       paste(refExpected, collapse=","),
+                       "...; incorrect reference genome?")
+                 )
+        } else {
+            snvs <- snvs[-errIdx,]
+            seqs <- seqs[-errIdx]
+
+            cat(paste0("Ignoring SNVs with mismatching REF base! Keeping ",
+                       nrow(snvs), " SNVs with correct REF base ...\n"))
+        }
     }
 
     
@@ -456,13 +470,13 @@ buildGenomesFromMutationData <- function(snvs, numBases, type, trDir,
                     unlist(strsplit(snv["SEQ"], ""))[-((numBases %/% 2)+1)]
 
                 for (ii in seq_along(flanking)) {
-                    genome[1+ii, shColMapping[flanking[ii]]] =
+                    genome[1+ii, shColMapping[flanking[ii]]] <-
                         genome[1+ii, shColMapping[flanking[ii]]] + 1
                 }
 
                 # increment count for transcription direction, if required
                 if (trDir) {
-                    genome["tr", shColMapping[snv["STRAND"]]] =
+                    genome["tr", shColMapping[snv["STRAND"]]] <-
                         genome["tr", shColMapping[snv["STRAND"]]] + 1
                 }
 

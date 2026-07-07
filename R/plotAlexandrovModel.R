@@ -30,6 +30,7 @@
 #' 20(Suppl 4):152.\cr
 #' @importFrom ggplot2 ggplot geom_bar scale_fill_manual theme_bw theme rel
 #' element_text element_blank element_rect guides facet_grid scale_x_continuous
+#' @importFrom rlang .data
 #' @keywords internal
 plotAlexandrovModel <- function(mutData, numBases, trDir,
                                 colors = NULL, strip = NULL) {
@@ -44,12 +45,12 @@ plotAlexandrovModel <- function(mutData, numBases, trDir,
 
     if (is.null(colors)) {
         # default colors are those used by the COSMIC website!
-        colors = c("#1ebff0", "#050708", "#e62725", "#cbcacb",
+        colors <- c("#1ebff0", "#050708", "#e62725", "#cbcacb",
             "#a1cf64", "#edc8c5")
     }
 
     if (is.null(strip)) {
-        strip = "papayawhip"
+        strip <- "papayawhip"
     }
     
     # number of blocks (one per base change)
@@ -97,8 +98,8 @@ plotAlexandrovModel <- function(mutData, numBases, trDir,
                                 size=rel(0.8), angle=90)
     }
     
-    ggp <- ggplot(dat, aes_string(x = "pos", y = "probability",
-                                  fill = "change")) +
+    ggp <- ggplot(dat, aes(x = .data$pos, y = .data$probability,
+                           fill = .data$change)) +
             geom_bar(stat = "identity", position = "identity", width = 0.8) + 
             scale_fill_manual(values = colors) +
             scale_x_continuous(breaks = seq(probsPerBlock),
@@ -113,10 +114,10 @@ plotAlexandrovModel <- function(mutData, numBases, trDir,
                   panel.grid.minor.x = element_blank(),
                   strip.text = element_text(face = "bold", size = rel(1.2)),
                   strip.background = element_rect(fill = strip)) +
-            guides(fill = FALSE) +
+            guides(fill = "none") +
             facet_grid(strand ~ change)
 
-    ggp$labels$y = "Mutation type frequency or probability"
+    ggp$labels$y <- "Mutation type frequency or probability"
     
     ggp
 

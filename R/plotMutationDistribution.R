@@ -32,7 +32,14 @@
 #' 
 #' 
 #' ### get Alexandrov signatures from COSMIC
-#' signatures <- readAlexandrovSignatures()
+#' library(cosmicsig)
+#' sigm <- COSMIC_v3.5$signature$GRCh38$SBS9
+#' 
+#' # exclude possible artifacts
+#' sigm <- sigm[, !(colnames(sigm) %in% possible_artifacts())]
+#' 
+#' # read/import signatures from the cosmicsig format
+#' signatures <- readAlexandrovSignatures(sigmatrix=sigm)
 #' 
 #' ### plot the first Alexandrov signature
 #' plotMutationDistribution(signatures[[1]])

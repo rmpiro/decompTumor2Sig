@@ -5,14 +5,17 @@
 #' determines the mutation frequencies according to a specific model of
 #' mutational signatures (Alexandrov or Shiraishi).
 #'
-#' @usage readGenomesFromVCF(file, numBases=5, type="Shiraishi", trDir=TRUE,
-#' enforceUniqueTrDir=TRUE,
-#' refGenome=BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19,
+#' @usage readGenomesFromVCF(file, vcf, numBases=5, type="Shiraishi", 
+#' trDir=TRUE, enforceUniqueTrDir=TRUE,
+#' refGenome=BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38,
 #' transcriptAnno=
-#' TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene,
-#' verbose=TRUE)
-#' @param file (Mandatory) The name of the VCF file (can be compressed with
-#' \code{gzip}).
+#' TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene,
+#' verbose=TRUE, ignoreRefMismatches)
+#' @param file (Mandatory if \code{vcf} not specified) The name of the VCF
+#' file (can be compressed with \code{gzip}).
+#' @param vcf (Mandatory if \code{file} not specified) An object of type
+#' \code{VCF} (either \code{CollapsedVCF} or \code{ExpandedVCF}) as defined 
+#' in the package \code{VariantAnnotation}.
 #' @param numBases (Mandatory) Total number of bases (mutated base and
 #' flanking bases) to be used for sequence patterns. Must be odd. Default: 5
 #' @param type (Mandatory) Signature model or type (\code{"Alexandrov"} or
@@ -35,12 +38,15 @@
 #' (If you are unsure, use the default setting; this option exists mostly for
 #' backward compatibility with older versions.)
 #' @param refGenome (Mandatory) The reference genome (\code{BSgenome}) needed
-#' to extract sequence patterns. Default: \code{BSgenome} object for hg19.
+#' to extract sequence patterns. Default: \code{BSgenome} object for hg38.
 #' @param transcriptAnno (Optional) Transcript annotation (\code{TxDb} object)
 #' used to determine the transcription direction. This is required only if
-#' \code{trDir} is \code{TRUE}. Default: \code{TxDb} object for hg19.
+#' \code{trDir} is \code{TRUE}. Default: \code{TxDb} object for hg38.
 #' @param verbose (Optional) Print information about reading and processing the
 #' mutation data. Default: \code{TRUE}
+#' @param ignoreRefMismatches If \code{TRUE}, SNVs where the mutated REF base does
+#' not match the reference genome will be ignored. If \code{FALSE} (default!) an
+#' error will be thrown, because this often indicates a wrong reference genome.
 #' @return A list containing the genomes in terms of frequencies of the mutated
 #' sequence patterns. This list of genomes can be used for
 #' \code{decomposeTumorGenomes}. 
@@ -57,13 +63,13 @@
 #' @examples
 #' 
 #' ### load reference genome and transcript annotation (if direction is needed)
-#' refGenome <- BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19
+#' refGenome <- BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
 #' transcriptAnno <-
-#'   TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
+#'   TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
 #' 
 #' ### read breast cancer genomes from Nik-Zainal et al (PMID: 22608084) 
 #' gfile <- system.file("extdata",
-#'          "Nik-Zainal_PMID_22608084-VCF-convertedfromMPF.vcf.gz", 
+#'          "Nik-Zainal_PMID_22608084-hg38.vcf.gz", 
 #'          package="decompTumor2Sig")
 #' genomes <- readGenomesFromVCF(gfile, numBases=5, type="Shiraishi",
 #'          trDir=TRUE, enforceUniqueTrDir=TRUE, refGenome=refGenome,
@@ -71,32 +77,43 @@
 #' 
 #' @importFrom VariantAnnotation readVcf expand alt ref geno
 #' @importFrom GenomicRanges seqnames start
-#' @importFrom BSgenome.Hsapiens.UCSC.hg19 BSgenome.Hsapiens.UCSC.hg19
-#' @importFrom TxDb.Hsapiens.UCSC.hg19.knownGene
-#' TxDb.Hsapiens.UCSC.hg19.knownGene
+#' @importFrom BSgenome.Hsapiens.UCSC.hg38 BSgenome.Hsapiens.UCSC.hg38
+#' @importFrom TxDb.Hsapiens.UCSC.hg38.knownGene
+#' TxDb.Hsapiens.UCSC.hg38.knownGene
 #' @export readGenomesFromVCF
-readGenomesFromVCF <- function(file, numBases=5, type="Shiraishi", trDir=TRUE,
-    enforceUniqueTrDir=TRUE,
-    refGenome=BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19,
+readGenomesFromVCF <- function(file=NULL, vcf=NULL, numBases=5, 
+    type="Shiraishi", trDir=TRUE, enforceUniqueTrDir=TRUE,
+    refGenome=BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38,
     transcriptAnno=
-        TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene,
-    verbose=TRUE) {
+        TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene,
+    verbose=TRUE, ignoreRefMismatches=FALSE) {
 
-    # read mutation data
-    if(verbose) {
-        cat("Reading mutations and genotype information from VCF file:\n")
+
+    if (is.null(file) && is.null(vcf)) {
+        stop("Either 'file' or 'vcf' must be specified.")
+    } else if (!is.null(file) && !is.null(vcf)) {
+        stop("Use either a file name or a VCF object, not both.")
+    }
+    
+    if (!is.null(file)) { # read VCF file (using VariantAnnotation)
+        if(verbose) {
+            cat("Reading mutations and genotype information from VCF file:\n")
+        }
+
+        vcf <- tryCatch(VariantAnnotation::readVcf(file),
+                        error=function(e) {
+                            stop(paste0(e, "Cannot read VCF file; is this a ",
+                                        "VCF file containing one or more ",
+                                        "individual samples?"))
+                        })
+    } else {
+        if(verbose) {
+            cat("Getting mutations and genotype information from VCF object:\n")
+        }
     }
 
-    # read VCF file (using VariantAnnotation)
-    vcf <- tryCatch(readVcf(file),
-                    error=function(e) {
-                        stop(paste0(e, "Cannot read VCF file; is this a VCF ",
-                                    "file containing one or more individual ",
-                                    "samples?"))
-                    })
-
     if (is(vcf, "CollapsedVCF")) {
-        vcf <- expand(vcf)  # split multiallelic entries!
+        vcf <- VariantAnnotation::expand(vcf)  # split multiallelic entries!
     }
 
 
@@ -146,7 +163,7 @@ readGenomesFromVCF <- function(file, numBases=5, type="Shiraishi", trDir=TRUE,
                                    nrow=length(which(snvRows)),
                                    ncol=2, byrow=TRUE)
                       )
-        colnames(snvs)[seq((ncol(snvs)-1),ncol(snvs))] =
+        colnames(snvs)[seq((ncol(snvs)-1),ncol(snvs))] <-
             c("FORMAT", "variants_without_genotype_info")
     }
 
@@ -161,7 +178,8 @@ readGenomesFromVCF <- function(file, numBases=5, type="Shiraishi", trDir=TRUE,
                                             uniqueTrDir=enforceUniqueTrDir,
                                             refGenome=refGenome,
                                             transcriptAnno=transcriptAnno,
-                                            verbose=verbose)
+                                            verbose=verbose,
+                                            ignoreRefMismatches=ignoreRefMismatches)
 
     if(verbose && !is.null(genomes)) {
         cat("Done reading genomes.\n")

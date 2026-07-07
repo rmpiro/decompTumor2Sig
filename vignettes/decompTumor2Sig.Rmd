@@ -123,16 +123,20 @@ CRAN packages:
 
 `r CRANpkg("Matrix")`, `r CRANpkg("quadprog")`, 
 `r CRANpkg("plyr")`, `r CRANpkg("ggplot2")`, `r CRANpkg("ggseqlogo")`,
-`r CRANpkg("gridExtra")`
+`r CRANpkg("gridExtra")`, `r CRANpkg("readxl")`, `r CRANpkg("data.table")`
 
 Bioconductor packages:
 
 `r Biocpkg("GenomicRanges")`, `r Biocpkg("GenomicFeatures")`,
 `r Biocpkg("GenomeInfoDb")`, 
 `r Biocpkg("Biostrings")`, `r Biocpkg("BiocGenerics")`,
-`r Biocpkg("S4Vectors")`, `r Biocpkg("BSgenome.Hsapiens.UCSC.hg19")`,
-`r Biocpkg("TxDb.Hsapiens.UCSC.hg19.knownGene")`,
+`r Biocpkg("S4Vectors")`, `r Biocpkg("BSgenome.Hsapiens.UCSC.hg38")`,
+`r Biocpkg("TxDb.Hsapiens.UCSC.hg38.knownGene")`,
 `r Biocpkg("VariantAnnotation")`,  `r Biocpkg("SummarizedExperiment")`
+
+COMSIC (Alexandrov-type) signatures can be easily obtained from the CRAN
+package `r CRANpkg("cosmicsig")` (see code examples below) or downloaded from
+<https://cancer.sanger.ac.uk/signatures/>.
 
 If you intend to work with Shiraishi-type signatures, you may also want to
 install the R package `r Rpackage("pmsignature")` which is neither part of
@@ -199,16 +203,17 @@ signatures and Shiraishi-type signatures.
 
 ### Alexandrov signatures {#input-sign-alexandrov}
 
-Alexandrov signatures are specified either in the format used at the
+Alexandrov signatures are specified either in the format that was used at the
 COSMIC Mutational Signatures website for signatures version 2 (March 2015,
-see <http://cancer.sanger.ac.uk/cosmic/signatures_v2> -> "Download signatures"),
-in the format used for signatures version 3 (May 2019; see
-<https://www.synapse.org/#!Synapse:syn12009743>), or in the format used for
-singatures version 3.2 (March 2021; see
-<https://cancer.sanger.ac.uk/cosmic/signatures/SBS/>). Also the signatures of
-version 3.1 (same as version 3.0 but distributed as an Excel spread sheet
-on the COSMIC Mutational Signatures website) can be read. For versions 3, 3.1
-and 3.2, only Single Base Substitution (SBS) signatures can be used.
+<http://cancer.sanger.ac.uk/cosmic/signatures_v2>),
+in the format used for signatures version 3 (May 2019;
+<https://www.synapse.org/#!Synapse:syn12009743>), in the format used for
+signatures version 3.2 onwards (March 2021), or the format used by the
+CRAN `r CRANpkg("cosmicsig")` package.
+Also the signatures of version 3.1 (same as version 3.0 but distributed as an
+Excel spread sheet on the COSMIC Mutational Signatures website) can be read.
+For versions 3 and newer, only Single Base Substitution (SBS) signatures can
+be used (COSMIC signatures of type DBS, ID and others cannot be handled).
 
 The standard Alexandrov-type signatures report mutation frequencies for
 nucleotide triplets where the mutated base is at the center. Also, the basic
@@ -245,7 +250,7 @@ T>G,TTT,2.23E-16,2.23E-16,1.05E-02,5.68E-04,1.35E-02,1.01E-03, ...
 the lack of the redundant 3rd annotation column in version 3. Version 3.1 has
 the same format as version 3, but is distributed as an Excel spread sheet.)
 
-Example for version 3.2:
+Example for version 3.2 onwards:
 
 ```
 Type       SBS1                    SBS2                    ...
@@ -258,22 +263,51 @@ T[T>G]G    0.000577613846957072    9.54312693870027e-05    ...
 T[T>G]T    2.20126302870092e-16    2.22251767921597e-16    ...
 ```
 
+Example for the format used by the CRAN package `r CRANpkg("cosmicsig")`:
+
+```
+           SBS1              SBS2              SBS3          ...
+ACAA       0.0008760226      5.789892e-07      0.020919749   ...
+ACCA       0.0022201200      1.455043e-04      0.016343192   ...
+ACGA       0.0001797268      5.361706e-05      0.001807548   ...
+ACTA       0.0012650525      9.758841e-05      0.012265066   ...
+...
+TTGG       5.776134e-04      9.542851e-05      0.008112904   ...
+TTTG       2.200872e-16      2.222453e-16      0.010543087   ...
+```
+(Note: in this format, the first three nucleotides are the mutated triplet,
+the forth nucleotide is the alternate base, e.g. "ACGT" corresponds to
+"A[C>T]G"!)
 
 To read Alexandrov-type signatures, use the command
-**readAlexandrovSignatures()**. By default, the command reads the version 2 (!)
-signatures directly from COSMIC and stores them in a list object:
+**readAlexandrovSignatures()**.
 
-```{r, message=FALSE, warning=FALSE}
-signatures <- readAlexandrovSignatures()
-length(signatures)
-signatures[1]
-```
-
-Alternatively, the signatures can be read from a file of the format shown
-above (TSV, CSV or Excel spread sheet):
+Using the parameter *file*, the command reads signatures from a file of the
+format shown above (TSV, CSV or Excel spread sheet):
 
 ```{r, eval=FALSE}
 signatures <- readAlexandrovSignatures(file="<signature_file>")
+```
+
+Alternatively, instead of a file name **readAlexandrovSignatures()** can also
+accept a numeric matrix object with signatures in columns (signature names
+taken from column names) and mutation types in rows (row names must correspond
+to the mutation-type naming of signature version 3.2 or the format of
+`r CRANpkg("cosmicsig")`, see above). This is compatible with the S3-class
+*SBS96Catalog* signature matrices provided by the CRAN package
+`r CRANpkg("cosmicsig")`. When using a numeric matrix object, the parameter
+*sigmatrix* needs to be used instead of *file*:
+
+```{r}
+# get Alexandrov signatures v3.5 from cosmicsig
+library(cosmicsig)
+sigm <- COSMIC_v3.5$signature$GRCh38$SBS9
+
+# exclude possible artifacts
+sigm <- sigm[, !(colnames(sigm) %in% possible_artifacts())]
+
+# read/import signatures from the cosmicsig format
+signatures <- readAlexandrovSignatures(sigmatrix=sigm)
 ```
 
 
@@ -360,7 +394,17 @@ An Alexandrov-type signature can be converted into a Shiraishi-type signature
 example:
 
 ```{r, message=FALSE, warning=FALSE}
-sign_a <- readAlexandrovSignatures()
+# get Alexandrov signatures v 3.5 from cosmicsig
+library(cosmicsig)
+sigm <- COSMIC_v3.5$signature$GRCh38$SBS9
+
+# exclude possible artifacts
+sigm <- sigm[, !(colnames(sigm) %in% possible_artifacts())]
+
+# read/import signatures from the cosmicsig format
+sign_a <- readAlexandrovSignatures(sigmatrix=sigm)
+
+# convert to Shiraishi signatures
 sign_s <- convertAlexandrov2Shiraishi(sign_a)
 sign_s[1]
 ```
@@ -468,26 +512,32 @@ the whole genome) to the nucleotide frequencies present in promoter regions:
 
 ```{r, message=FALSE, warning=FALSE}
 # get Alexandrov signatures from COSMIC
-signatures <- readAlexandrovSignatures()
+library(cosmicsig)
+sigm <- COSMIC_v3.5$signature$GRCh38$SBS9
+sigm <- sigm[, !(colnames(sigm) %in% possible_artifacts())]
 
-signatures$Signature.1[1:5]
+signatures <- readAlexandrovSignatures(sigmatrix=sigm)
+
+signatures$SBS1[1:5]
 
 
-# get gene annotation for the default reference genome (hg19)
-txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
+# get gene annotation for the default reference genome (hg38)
+txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
 
 # get a GRanges object for gene promoters (-2000 to +200 bases from TSS)
 library(GenomicRanges)
 regionsTarget <- promoters(txdb, upstream=2000, downstream=200)
+# trim potential out of bounds regions
+regionsTarget <- trim(regionsTarget)
 
 # adjust signatures according to nucleotide frequencies in this subset of
 # the genome
 sign_adj <-
    adjustSignaturesForRegionSet(signatures,
             regionsTarget, regionsOriginal=NULL,
-            refGenome=BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19)
+            refGenome=BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38)
 
-sign_adj$Signature.1[1:5]
+sign_adj$SBS1[1:5]
 ```
 
 **adjustSignaturesForRegionSet()** accepts both types of signatures with the
@@ -498,10 +548,11 @@ following arguments:
 containing the target regions for which to adjust the signatures. This can
 also be NULL if the new target regions correspond to the whole genome.
 * *regionsOriginal*: Optional **GRanges** object containing the genomic regions
-for which the signatures were originally derived. By default (NULL) this is the whole genome.
+for which the signatures were originally derived. By default (NULL) this is
+the whole genome.
 * *refGenome*: Optional **BSgenome** object with the reference genome from
 which to extract sequences for both the original and the target regions. By
-default, the human refernce genome hg19 is taken.
+default, the human refernce genome hg38 is taken.
 
 
 ### Verifying the signature format
@@ -553,7 +604,7 @@ Mutations from multiple tumor genomes can also be read from a multi-sample VCF
 file.
 
 As an example, the **decompTumor2Sig** package provides the somatic mutations
-for a subset of six of the 21 breast cancer genomes originally published by
+for a subset of three of the 21 breast cancer genomes originally published by
 Nik-Zainal et al (Cell 149:979--993, 2012). The dataset has been converted
 from MPF (see below) to VCF.
 
@@ -561,13 +612,13 @@ Example workflow:
 
 ```{r}
 # load the reference genome and the transcript annotation database
-refGenome <- BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19
+refGenome <- BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
 transcriptAnno <-
-           TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
+           TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
 
-# take the six breast cancer genomes from Nik-Zainal et al (PMID: 22608084) 
+# take the three breast cancer genomes from Nik-Zainal et al (PMID: 22608084) 
 gfile <- system.file("extdata",
-                     "Nik-Zainal_PMID_22608084-VCF-convertedfromMPF.vcf.gz",
+                     "Nik-Zainal_PMID_22608084-hg38.vcf.gz",
                      package="decompTumor2Sig")
 
 # read the cancer genomes in VCF format
@@ -610,6 +661,26 @@ recommended to entirely exclude mutations without ambiguous transcription
 strands. Note: this option is ignored when *trDir*=FALSE, where all mutations
 can be used.
 
+Instead of reading the mutation information from a VCF file, it may also be 
+passed to **readGenomesFromVCF** as an object of type *VCF*
+(either *CollapsedVCF* or *ExpandedVCF*; as defined in the Bioconductor package
+`r Biocpkg("VariantAnnotation")`):
+
+```{r}
+# Load VCF object
+library(VariantAnnotation)
+gfile <- system.file("extdata",
+                     "Nik-Zainal_PMID_22608084-hg38.vcf.gz", 
+      		     package="decompTumor2Sig")
+vcf_obj <- readVcf(gfile)
+
+# Get mutation frequencies for genomes from VCF object
+genomes <- readGenomesFromVCF(vcf=vcf_obj, numBases=5, type="Shiraishi",
+                              trDir=TRUE, refGenome=refGenome,
+                              transcriptAnno=transcriptAnno, verbose=FALSE)
+genomes[1]
+```
+
 
 ### Mutation Position Format (MPF) {#input-mut-mpf}
 
@@ -637,25 +708,34 @@ The five columns contain
 Hence, with an MPF file, too, multiple tumors can be described.
 
 As an example, the **decompTumor2Sig** package provides the somatic mutations
-for six of the 21 breast cancer genomes originally published by Nik-Zainal et
+for three of the 21 breast cancer genomes originally published by Nik-Zainal et
 al (Cell 149:979--993, 2012).
 
 Example workflow:
 
 ```{r}
 # load the reference genome and the transcript annotation database
-refGenome <- BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19
+refGenome <- BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
 transcriptAnno <-
-           TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
+           TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
 
-# take the six breast cancer genomes from Nik-Zainal et al (PMID: 22608084) 
-gfile <- system.file("extdata", "Nik-Zainal_PMID_22608084-MPF.txt.gz", 
+# take the three breast cancer genomes from Nik-Zainal et al (PMID: 22608084) 
+gfile <- system.file("extdata", "Nik-Zainal_PMID_22608084-MPF-hg38.txt.gz", 
                      package="decompTumor2Sig")
 
 # read the cancer genomes in MPF format
 genomes <- readGenomesFromMPF(gfile, numBases=5, type="Shiraishi",
                               trDir=TRUE, refGenome=refGenome,
                               transcriptAnno=transcriptAnno, verbose=FALSE)
+```
+
+Instead of reading the mutation information from an MPF file, it may also be 
+passed to **readGenomesFromMPF** as a string matrix composed of five columns
+(sample ID, chromosome, position, reference base, alternate base; see format
+above):
+
+```{r, eval=FALSE}
+genomes <- readGenomesFromMPF(mpf=my_mpf_matrix, ...)
 ```
 
 Note: the preprocessing of the somatic mutations into mutation frequencies can
@@ -729,18 +809,18 @@ convert them into the tumor genomes' mutation frequencies using the function
 
 ```{r, message=FALSE}
 # load the reference genome and the transcript annotation database
-refGenome <- BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19
+refGenome <- BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
 transcriptAnno <-
-           TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
+           TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
 
-# take six breast cancer genomes from Nik-Zainal et al (PMID: 22608084) 
+# take three breast cancer genomes from Nik-Zainal et al (PMID: 22608084) 
 gfile <- system.file("extdata",
-                     "Nik-Zainal_PMID_22608084-VCF-convertedfromMPF.vcf.gz", 
+                     "Nik-Zainal_PMID_22608084-hg38.vcf.gz", 
                      package="decompTumor2Sig")
 
 # get the corresponding VRanges object (using the VariantAnnotation package)
 library(VariantAnnotation)
-vr <- readVcfAsVRanges(gfile, genome="hg19")
+vr <- readVcfAsVRanges(gfile, genome="hg38")
 
 # convert the VRanges object to the decompTumor2Sig format
 genomes <- convertGenomesFromVRanges(vr, numBases=5, type="Shiraishi",
@@ -802,7 +882,13 @@ To plot, for example, Alexandrov/COSMIC signature 1 (obtained as described in
 Section 3.1.1):
 
 ```{r}
-signatures <- readAlexandrovSignatures()
+# get Alexandrov signatures from COSMIC
+library(cosmicsig)
+sigm <- COSMIC_v3.5$signature$GRCh38$SBS9
+sigm <- sigm[, !(colnames(sigm) %in% possible_artifacts())]
+
+signatures <- readAlexandrovSignatures(sigmatrix=sigm)
+
 plotMutationDistribution(signatures[[1]])
 ```
 
@@ -851,9 +937,9 @@ Section 3.2.1) using the Alexandrov model and plots the mutation frequencies of
 the first genome:
 
 ```{r}
-refGenome <- BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19
+refGenome <- BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
 gfile <- system.file("extdata",
-                     "Nik-Zainal_PMID_22608084-VCF-convertedfromMPF.vcf.gz", 
+                     "Nik-Zainal_PMID_22608084-hg38.vcf.gz", 
                      package="decompTumor2Sig")
 genomes <- readGenomesFromVCF(gfile, numBases=3, type="Alexandrov",
          trDir=FALSE, refGenome=refGenome, verbose=FALSE)
@@ -935,13 +1021,13 @@ Now read the tumor genomes (object *genomes*) provided with this package, as
 described in Section 3.2.1:
 ```{r}
 # load the reference genome and the transcript annotation database
-refGenome <- BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19
+refGenome <- BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
 transcriptAnno <-
-           TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
+           TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
 
-# take six breast cancer genomes from Nik-Zainal et al (PMID: 22608084) 
+# take three breast cancer genomes from Nik-Zainal et al (PMID: 22608084) 
 gfile <- system.file("extdata",
-                     "Nik-Zainal_PMID_22608084-VCF-convertedfromMPF.vcf.gz", 
+                     "Nik-Zainal_PMID_22608084-hg38.vcf.gz", 
                      package="decompTumor2Sig")
 
 # read the cancer genomes in VCF format
@@ -1053,7 +1139,7 @@ show this only for the first tumor):
 
 ```{r}
 exposures <- decomposeTumorGenomes(genomes[1], signatures,
-                                   minExplainedVariance=0.9,
+                                   minExplainedVariance=0.8,
                                    minNumSignatures=2, maxNumSignatures=NULL,
                                    greedySearch=FALSE, verbose=TRUE)
 ```
@@ -1152,9 +1238,9 @@ The following is an example taking the full set of tumors and signatures from
 Section 4.2.1:
 ```{r, echo=FALSE}
 # load the reference genome and the transcript annotation database
-refGenome <- BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19
+refGenome <- BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
 transcriptAnno <-
-           TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
+           TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
 
 # take the 15 Shiraishi signatures obtained from
 # 435 tumor genomes from Alexandrov et al.
@@ -1163,9 +1249,9 @@ sfile <- system.file("extdata",
               package="decompTumor2Sig")
 load(sfile)
 
-gfile <- system.file("extdata",
-              "Nik-Zainal_PMID_22608084-VCF-convertedfromMPF.vcf.gz", 
-              package="decompTumor2Sig")
+ggfile <- system.file("extdata",
+                     "Nik-Zainal_PMID_22608084-hg38.vcf.gz", 
+                     package="decompTumor2Sig")
 
 # read the cancer genomes in VCF format
 genomes <- readGenomesFromVCF(gfile, numBases=5, type="Shiraishi",
@@ -1330,7 +1416,13 @@ signatures to Shiraishi-type signatures with 3 bases (without
 transcription-strand direction):
 
 ```{r, message=FALSE, warning=FALSE}
-sign_a <- readAlexandrovSignatures()
+# get Alexandrov signatures from COSMIC
+library(cosmicsig)
+sigm <- COSMIC_v3.5$signature$GRCh38$SBS9
+sigm <- sigm[, !(colnames(sigm) %in% possible_artifacts())]
+
+sign_a <- readAlexandrovSignatures(sigmatrix=sigm)
+
 sign_a2s <- convertAlexandrov2Shiraishi(sign_a)
 ```
 
@@ -1354,4 +1446,10 @@ no transcription-strand direction), we can now map one set to the other:
 ```{r}
 mapSignatureSets(fromSignatures=sign_sdown, toSignatures=sign_a2s,
                  method="frobenius", unique=TRUE)
+```
+
+
+# Session information
+```{r}
+sessionInfo()
 ```

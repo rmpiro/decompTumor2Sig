@@ -20,14 +20,21 @@ numeric objects compatible with exposure output obtained from
 \examples{
 
 ### get Alexandrov signatures from COSMIC
-signatures <- readAlexandrovSignatures()
+library(cosmicsig)
+sigm <- COSMIC_v3.5$signature$GRCh38$SBS9
+
+# exclude possible artifacts
+sigm <- sigm[, !(colnames(sigm) \%in\% possible_artifacts())]
+
+# read/import signatures from the cosmicsig format
+signatures <- readAlexandrovSignatures(sigmatrix=sigm)
 
 ### load reference genome
-refGenome <- BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19
+refGenome <- BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
 
 ### read breast cancer genomes from Nik-Zainal et al (PMID: 22608084) 
 gfile <- system.file("extdata",
-         "Nik-Zainal_PMID_22608084-VCF-convertedfromMPF.vcf.gz", 
+         "Nik-Zainal_PMID_22608084-hg38.vcf.gz", 
          package="decompTumor2Sig")
 genomes <- readGenomesFromVCF(gfile, numBases=3, type="Alexandrov",
          trDir=FALSE, refGenome=refGenome, verbose=FALSE)

@@ -4,13 +4,17 @@
 \alias{readAlexandrovSignatures}
 \title{Read Alexandrov-type signatures (COSMIC format).}
 \usage{
-readAlexandrovSignatures(file)
+readAlexandrovSignatures(file, sigmatrix)
 }
 \arguments{
-\item{file}{(Mandatory) Can be a file name or an URL for download.
-Default:\cr
-"https://cancer.sanger.ac.uk/cancergenome/assets/signatures_probabilities.txt"
-(COSMIC signatures v2).}
+\item{file}{(Mandatory if \code{sigmatrix} not specified) Can be a file
+name or an URL for download.}
+
+\item{sigmatrix}{(Mandatory if \code{file} not specified) A numeric matrix
+(with named rows and columns) containing mutation types in rows and
+individual signatures in columns. Row names must use the version 3.2 or 3.5
+naming of mutation types (see above). \code{SBS96Catalog} matrices as
+provided by the CRAN package \code{cosmicsig} can be used.}
 }
 \value{
 A list of Alexandrov signatures that can be used for
@@ -21,19 +25,27 @@ A list of Alexandrov signatures that can be used for
 (COSMIC format) from a flat file or URL. Signatures must be specified in the
 tab-separated format used by the COSMIC website for signatures version 2
 (March 2015), the comma-separated format used for signatures version 3
-(May 2019), the Microsoft Excel 2007+ sheet used for version 3.1, or the
-tab-sperated format used for version 3.2 (see Details below). Excel sheets
-cannot be read from an URL and must be downloaded first.
+(May 2019), the Microsoft Excel 2007+ sheet used for version 3.1, the
+tab-sperated format used for version 3.2 onwards, or the format used
+by the CRAN package `cosmicsig` (see Details below).
+Excel sheets cannot be read from an URL and must be downloaded first.
 }
 \details{
+Alternatively, instead of a file name `readAlexandrovSignatures()` can also
+accept a numeric matrix object with signatures in columns (signature
+names taken from column names) and mutation types in rows (row names
+must correspond to the mutation-type naming of signature version 3.2
+or of package cosmicsig, see below). This is compatible with the S3-class
+`SBS96Catalog` format as provided by the CRAN package `cosmicsig`. 
+
 For details on the accepted signature formats, see below or\cr
 \url{http://cancer.sanger.ac.uk/cosmic/signatures_v2} ->
 "Download signatures" for version 2,\cr
 \url{https://www.synapse.org/#!Synapse:syn12009743} for version 3,\cr
 \url{https://cancer.sanger.ac.uk/sigs-assets-20/COSMIC_Mutational_Signatures_v3.1.xlsx}
 for version 3.1, \cr
-and \url{https://cancer.sanger.ac.uk/signatures/} for version 3.2. 
-For versions 3, 3.1 and 3.2, only Single Base Substitution (SBS)
+and \url{https://cancer.sanger.ac.uk/signatures/} for version 3.2 onwards. 
+For versions 3 and above, only Single Base Substitution (SBS)
 signatures can be used.
 
 COSMIC format for Alexandrov signatures, version 2:
@@ -66,7 +78,7 @@ T>G,TTT,2.23E-16,2.23E-16,1.05E-02,5.68E-04,1.35E-02,1.01E-03, ...\cr
 Version 3.1 has assentially the same format as version 3, but is distributed
 as an Excel spread sheet.
 
-COSMIC/Synapse format for Alexandrov signatures, version 3.2:
+COSMIC/Synapse format for Alexandrov signatures, version 3.2 onwards:
 
 \tabular{llll}{
 Type \tab SBS1 \tab SBS2 \tab...\cr
@@ -78,11 +90,33 @@ A[C>A]T \tab 0.0062338852 \tab 0.0003238914 \tab...\cr
 T[T>G]G \tab 0.0020310769 \tab 0.0002066152 \tab...\cr
 T[T>G]T \tab 0.0040301281 \tab 0.0000235982 \tab...\cr
 }
+
+COSMIC format for Alexandrov signatures as provided by `cosmicsig`:
+
+\tabular{llll}{
+Type \tab SBS1 \tab SBS2 \tab...\cr
+ACAA \tab 0.0110983262 \tab 0.0006827082 \tab...\cr
+ACCA \tab 0.0091493407 \tab 0.0006191072 \tab...\cr
+ACGA \tab 0.0014900705 \tab 0.0000992790 \tab...\cr
+ACTA \tab 0.0062338852 \tab 0.0003238914 \tab...\cr
+[...]\cr
+TTGG \tab 0.0020310769 \tab 0.0002066152 \tab...\cr
+TTTG \tab 0.0040301281 \tab 0.0000235982 \tab...\cr
+}
+(Note: the first three nucleotides are the mutated triplet, the forth
+nucleotide is the alternate base, e.g. "ACGT" corresponds to "A[C>T]G"!)
 }
 \examples{
 
-### get Alexandrov signatures from COSMIC
-signatures <- readAlexandrovSignatures()
+### get Alexandrov signatures v 3.5 from cosmicsig
+library(cosmicsig)
+sigm <- COSMIC_v3.5$signature$GRCh37$SBS9
+
+### exclude possible artifacts
+sigm <- sigm[, !(colnames(sigm) \%in\% possible_artifacts())]
+
+### read/import signatures from the cosmicsig format
+signatures <- readAlexandrovSignatures(sigmatrix=sigm)
 
 }
 \references{

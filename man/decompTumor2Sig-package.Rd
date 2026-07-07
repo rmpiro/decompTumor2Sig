@@ -19,8 +19,8 @@ the contributions of the signatures to the mutation load of the tumor.
 \tabular{ll}{
 Package: \tab decompTumor2Sig\cr
 Type: \tab Package\cr
-Version: \tab 2.13.1\cr
-Date: \tab 2022-05-09\cr
+Version: \tab 2.99.0\cr
+Date: \tab 2026-07-07\cr
 License: \tab GPL (>=2)\cr
 }
 
@@ -112,7 +112,7 @@ plotMutationDistribution():\tab plot a single signature or the\cr
                         \tab genome.\cr
 
 readAlexandrovSignatures():\tab read Alexandrov signatures in the\cr
-                        \tab COSMIC format from a flat file or URL.\cr
+                        \tab COSMIC format from a file, URL or matrix.\cr
 
 readGenomesFromMPF():   \tab read a genome or set of genomes from a \cr
                         \tab Mutation Position Format (MPF) file.\cr
@@ -133,6 +133,15 @@ sameSignatureFormat():  \tab checks whether two input lists are sets\cr
 Krueger, Piro (2019) decompTumor2Sig: Identification of mutational
 signatures active in individual tumors. BMC Bioinformatics 
 20(Suppl 4):152.\cr
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{http://rmpiro.net/decompTumor2Sig/}
+  \item \url{https://github.com/rmpiro/decompTumor2Sig}
+  \item Report bugs at \url{https://github.com/rmpiro/decompTumor2Sig/issues}
+}
+
 }
 \author{
 Rosario M. Piro, Politecnico di Milano [aut, cre]\cr

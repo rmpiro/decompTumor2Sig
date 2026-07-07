@@ -46,7 +46,14 @@ mutation frequencies are reconstructed using
 \examples{
 
 ### get Alexandrov signatures from COSMIC
-signatures <- readAlexandrovSignatures()
+library(cosmicsig)
+sigm <- COSMIC_v3.5$signature$GRCh38$SBS9
+
+# exclude possible artifacts
+sigm <- sigm[, !(colnames(sigm) \%in\% possible_artifacts())]
+
+# read/import signatures from the cosmicsig format
+signatures <- readAlexandrovSignatures(sigmatrix=sigm)
 
 ### load preprocessed breast cancer genomes (object 'genomes') from
 ### Nik-Zainal et al (PMID: 22608084) 

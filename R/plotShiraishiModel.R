@@ -29,6 +29,7 @@
 #' @importFrom ggplot2 ggplot geom_polygon theme_bw theme scale_y_continuous
 #' scale_fill_manual dup_axis labs  rel aes guides element_blank element_rect
 #' element_text
+#' @importFrom rlang .data
 #' @importFrom gridExtra grid.arrange
 #' @keywords internal
 plotShiraishiModel <- function(mutData, numBases, trDir, colors = NULL) {
@@ -43,7 +44,7 @@ plotShiraishiModel <- function(mutData, numBases, trDir, colors = NULL) {
 
     if (is.null(colors)) {
         # default colors are those used by ggseqlogo
-        colors = c("#109648", "#255c99", "#f7b32b", "#d62839")
+        colors <- c("#109648", "#255c99", "#f7b32b", "#d62839")
     }
 
     # other default colors
@@ -87,7 +88,7 @@ plotShiraishiModel <- function(mutData, numBases, trDir, colors = NULL) {
               plot.caption = element_text(hjust=0.5, size=rel(1.2))) +
         geom_text(data = data.frame(prob=paste(sprintf("%.1f",
                                         probMut*100),"%")),
-                  aes_string(x=seq_len(2), y=-0.1, label="prob"), size=rel(4),
+                  aes(x=seq_len(2), y=-0.1, label=.data$prob), size=rel(4),
                   color="black") +
         geom_vline(xintercept = 1.5, linetype="dotted")
         
@@ -178,9 +179,9 @@ plotShiraishiModel <- function(mutData, numBases, trDir, colors = NULL) {
         trPlot <- ggplot(data=data.frame(x=factor(c("+", "-"),
                                                   levels=c("+", "-")),
                              probability=mutData[nrow(mutData), seq_len(2)]),
-                  aes_string(x="x", y="probability")) +
+                  aes(x=.data$x, y=.data$probability)) +
                   geom_bar(stat="identity", fill=trColors) +
-                  geom_text(aes_string(label="x"), vjust=-0.2, size=rel(6)) +
+                  geom_text(aes(label=.data$x), vjust=-0.2, size=rel(6)) +
                   scale_y_continuous(sec.axis = dup_axis(), limits=c(0,1)) +
                   labs(caption="transcription\nstrand", size=(4)) +
                   theme_bw() +

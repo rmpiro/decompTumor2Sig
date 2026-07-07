@@ -6,7 +6,7 @@
 \usage{
 adjustSignaturesForRegionSet(signatures,
 regionsTarget, regionsOriginal=NULL, 
-refGenome=BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19)
+refGenome=BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38)
 }
 \arguments{
 \item{signatures}{(Mandatory) Signatures to be adjusted to the nucleotide
@@ -22,14 +22,14 @@ where originally derived. Default: \code{NULL} (whole genome).}
 
 \item{refGenome}{(Optional) Reference genome sequence from which to
 compute the nucleotide frequencies. Default:\cr
-\code{BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19}.}
+\code{BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38}.}
 }
 \value{
 A set of adjusted mutational signatures in the same format as those
 specified for \code{signatures}.
 }
 \description{
-`adjustSignaturesForRegionSet()` takes a set of signatures that have
+`adjustSignaturesForRegionSet()` takes a set of signatures hat have
 been orginally defined with respect to the nucleotide frequencies within
 a specific reference genome or region (e.g., by deriving them from whole
 genome mutation data) and adjusts or normalizes them to the often different
@@ -62,11 +62,18 @@ signatures are re-normalized such that overall probabilites sum up to 1.
 \examples{
 
 ### get Alexandrov signatures from COSMIC
-signatures <- readAlexandrovSignatures()
+library(cosmicsig)
+sigm <- COSMIC_v3.5$signature$GRCh38$SBS9
 
-### get gene annotation for the default reference genome (hg19)
-library(TxDb.Hsapiens.UCSC.hg19.knownGene)
-txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
+# exclude possible artifacts
+sigm <- sigm[, !(colnames(sigm) \%in\% possible_artifacts())]
+
+# read/import signatures from the cosmicsig format
+signatures <- readAlexandrovSignatures(sigmatrix=sigm)
+
+### get gene annotation for the default reference genome (hg38)
+library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
 
 ### get a GRanges object for gene promoters (-2000 to +200 bases from TSS)
 ### [taking only the first 1000 for testing purpose]

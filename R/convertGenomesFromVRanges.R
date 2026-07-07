@@ -9,10 +9,10 @@
 #'
 #' @usage convertGenomesFromVRanges(vranges, numBases=5, type="Shiraishi",
 #' trDir=TRUE, enforceUniqueTrDir=TRUE, 
-#' refGenome=BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19,
+#' refGenome=BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38,
 #' transcriptAnno=
-#' TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene,
-#' verbose=TRUE)
+#' TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene,
+#' verbose=TRUE, ignoreRefMismatches=FALSE)
 #' @param vranges (Mandatory) The \code{VRanges} object which specifies the
 #' mutations.
 #' @param numBases (Mandatory) Total number of bases (mutated base and
@@ -37,12 +37,16 @@
 #' (If you are unsure, use the default setting; this option exists mostly for
 #' backward compatibility with older versions.)
 #' @param refGenome (Mandatory) The reference genome (\code{BSgenome}) needed
-#' to extract sequence patterns. Default: \code{BSgenome} object for hg19.
+#' to extract sequence patterns. Default: \code{BSgenome} object for hg38.
 #' @param transcriptAnno (Optional) Transcript annotation (\code{TxDb} object)
 #' used to determine the transcription direction. This is required only if
-#' \code{trDir} is \code{TRUE}. Default: \code{TxDb} object for hg19.
+#' \code{trDir} is \code{TRUE}. Default: \code{TxDb} object for hg38.
 #' @param verbose (Optional) Print information about reading and processing
 #' the mutation data. Default: \code{TRUE}
+#' @param ignoreRefMismatches If \code{TRUE}, SNVs where the mutated REF base
+#' does not match the reference genome will be ignored. If \code{FALSE}
+#' (default!) an error will be thrown, because this often indicates a wrong
+#' reference genome.
 #' @return A list containing the genomes in terms of frequencies of the
 #' mutated sequence patterns. This list of genomes can be used for
 #' \code{decomposeTumorGenomes}. 
@@ -60,19 +64,19 @@
 #' @examples
 #' 
 #' ### load the reference genome and the transcript annotation database
-#' refGenome <- BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19
+#' refGenome <- BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
 #' transcriptAnno <-
-#'   TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
+#'   TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
 #' 
 #' ### take the breast cancer genomes from Nik-Zainal et al (PMID: 22608084) 
 #' gfile <- system.file("extdata",
-#'          "Nik-Zainal_PMID_22608084-VCF-convertedfromMPF.vcf.gz", 
+#'          "Nik-Zainal_PMID_22608084-hg38.vcf.gz", 
 #'          package="decompTumor2Sig")
 #' 
 #' ### get the corresponding VRanges object (using the VariantAnnotation
 #' ### package)
 #' library(VariantAnnotation)
-#' vr <- readVcfAsVRanges(gfile, genome="hg19")
+#' vr <- readVcfAsVRanges(gfile, genome="hg38")
 #' 
 #' ### convert the VRanges object to the decompTumor2Sig format
 #' genomes <- convertGenomesFromVRanges(vr, numBases=5, type="Shiraishi",
@@ -84,16 +88,16 @@
 #' @importFrom GenomicRanges ranges seqnames start
 #' @importFrom SummarizedExperiment rowRanges
 #' @importFrom methods is
-#' @importFrom BSgenome.Hsapiens.UCSC.hg19 BSgenome.Hsapiens.UCSC.hg19
-#' @importFrom TxDb.Hsapiens.UCSC.hg19.knownGene
-#' TxDb.Hsapiens.UCSC.hg19.knownGene
+#' @importFrom BSgenome.Hsapiens.UCSC.hg38 BSgenome.Hsapiens.UCSC.hg38
+#' @importFrom TxDb.Hsapiens.UCSC.hg38.knownGene
+#' TxDb.Hsapiens.UCSC.hg38.knownGene
 #' @export convertGenomesFromVRanges
 convertGenomesFromVRanges <- function(vranges,
     numBases=5, type="Shiraishi", trDir=TRUE, enforceUniqueTrDir=TRUE,
-    refGenome=BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19,
+    refGenome=BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38,
     transcriptAnno=
-        TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene,
-    verbose=TRUE) {
+        TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene,
+    verbose=TRUE, ignoreRefMismatches=FALSE) {
 
     if (!is(vranges, "VRanges")) {
         stop("vranges must be an object of type VRanges!")
@@ -138,7 +142,8 @@ convertGenomesFromVRanges <- function(vranges,
                                             uniqueTrDir=enforceUniqueTrDir,
                                             refGenome=refGenome,
                                             transcriptAnno=transcriptAnno,
-                                            verbose=verbose)
+                                            verbose=verbose,
+                                            ignoreRefMismatches=ignoreRefMismatches)
 
     if(verbose) {
         cat("Done converting genomes.\n")

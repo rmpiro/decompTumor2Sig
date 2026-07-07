@@ -103,3 +103,27 @@ Changes in version 2.13.1 (2022-05-09)
 + Fix: corrected recognition of EstimatedParameters (from package pmsignature)
   objects obtained with the use of a background signature.
 + Fix: corrected internal scripts for production of external example data.
+
+Changes in version 2.23.1 (2024-11-21)
++ added an optional parameter ignoreRefMismatches to simply skip SNVs whose
+  mutated REF base does not match the corresponding base from the reference
+  genome (default is FALSE; should be used with care!)
+
+Changes in version 2.99.0 (2026-07-07)
++ IMPORTANT: major version due to a change of the following default parameters:
+  1) The default input signatures for readAlexandrovSignatures() have been
+  removed. The previous default input (URL for COSMIC singatures v2) is not
+  available anymore (fix was needed). Moreover, version 2 is outdated and
+  it is preferable to not have any default input rather than another version
+  that will sooner or later be outdated, too.
+  2) The default reference genome and gene annotations, used for several
+  functions, have been updated from human genome hg19 to hg38.
++ Additional features: the functions readAlexandrovSignatures(),
+  readGenomesFromVCF() and readGenomesFromMPF() can now also take already
+  loaded objects as input (VariantAnnotation::VCF or matrix representations of
+  signatures or MPF data, respectively), rather than only file names or URLs
+  from which to read the input.
++ The provided example VCF and MPF file have been reduced from six example
+  genomes to three example genomes to reduce the package size and the
+  package compilation time. For the latter purpose, also a workflow example
+  in the vignette has been reworked to speed up its computation.

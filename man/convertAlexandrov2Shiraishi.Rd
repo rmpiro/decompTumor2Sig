@@ -29,7 +29,14 @@ signatures has not been extensively explored!]
 \examples{
 
 ### get Alexandrov signatures from COSMIC
-signAlexandrov <- readAlexandrovSignatures()
+library(cosmicsig)
+sigm <- COSMIC_v3.5$signature$GRCh38$SBS9
+
+# exclude possible artifacts
+sigm <- sigm[, !(colnames(sigm) \%in\% possible_artifacts())]
+
+# read/import signatures from the cosmicsig format
+signAlexandrov <- readAlexandrovSignatures(sigmatrix=sigm)
 
 ### convert them to the Shiraishi model
 signShiraishi <- convertAlexandrov2Shiraishi(signAlexandrov)

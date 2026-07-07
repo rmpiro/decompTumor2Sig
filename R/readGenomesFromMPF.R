@@ -10,14 +10,19 @@
 #'
 #' [sampleID]<tab>[chrom]<tab>[position]<tab>[ref_bases]<tab>[alt_bases]
 #'
-#' @usage readGenomesFromMPF(file, numBases=5, type="Shiraishi", trDir=TRUE,
-#' enforceUniqueTrDir=TRUE, 
-#' refGenome=BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19,
+#' Alternatively to a file name, the function can also directly take a
+#' matrix that respects the MPF format as an input.
+#'
+#' @usage readGenomesFromMPF(file, mpf, numBases=5, type="Shiraishi",
+#' trDir=TRUE, enforceUniqueTrDir=TRUE, 
+#' refGenome=BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38,
 #' transcriptAnno=
-#' TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene,
-#' verbose=TRUE)
-#' @param file (Mandatory) The name of the MPF file (can be compressed with
-#' \code{gzip}).
+#' TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene,
+#' verbose=TRUE, ignoreRefMismatches=FALSE)
+#' @param file (Mandatory if \code{mpf} not specified) The name of the MPF
+#' file (can be compressed with \code{gzip}).
+#' @param mpf (Mandatory if \code{file} not specified) A matrix that respects
+#' the 5-column MPF format (see above).
 #' @param numBases (Mandatory) Total number of bases (mutated base and
 #' flanking bases) to be used for sequence patterns. Must be odd. Default: 5
 #' @param type (Mandatory) Signature model or type (\code{"Alexandrov"} or
@@ -40,12 +45,15 @@
 #' (If you are unsure, use the default setting; this option exists mostly for
 #' backward compatibility with older versions.)
 #' @param refGenome (Mandatory) The reference genome (\code{BSgenome}) needed
-#' to extract sequence patterns. Default: \code{BSgenome} object for hg19.
+#' to extract sequence patterns. Default: \code{BSgenome} object for hg38.
 #' @param transcriptAnno (Optional) Transcript annotation (\code{TxDb} object)
 #' used to determine the transcription direction. This is required only if
-#' \code{trDir} is \code{TRUE}. Default: \code{TxDb} object for hg19.
+#' \code{trDir} is \code{TRUE}. Default: \code{TxDb} object for hg38.
 #' @param verbose (Optional) Print information about reading and processing the
 #' mutation data. Default: \code{TRUE}
+#' @param ignoreRefMismatches If \code{TRUE}, SNVs where the mutated REF base does
+#' not match the reference genome will be ignored. If \code{FALSE} (default!) an
+#' error will be thrown, because this often indicates a wrong reference genome.
 #' @return A list containing the genomes in terms of frequencies of the mutated
 #' sequence patterns. This list of genomes can be used for
 #' \code{decomposeTumorGenomes}. 
@@ -62,12 +70,12 @@
 #' @examples
 #' 
 #' ### load reference genome and transcript annotation (if direction is needed)
-#' refGenome <- BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19
+#' refGenome <- BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
 #' transcriptAnno <-
-#'   TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
+#'   TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
 #' 
 #' ### read breast cancer genomes from Nik-Zainal et al (PMID: 22608084) 
-#' gfile <- system.file("extdata", "Nik-Zainal_PMID_22608084-MPF.txt.gz", 
+#' gfile <- system.file("extdata", "Nik-Zainal_PMID_22608084-MPF-hg38.txt.gz", 
 #'          package="decompTumor2Sig")
 #' genomes <- readGenomesFromMPF(gfile, numBases=5, type="Shiraishi",
 #'          trDir=TRUE, enforceUniqueTrDir=TRUE, refGenome=refGenome,
@@ -76,23 +84,43 @@
 #' @importFrom plyr aaply
 #' @importFrom utils read.table
 #' @importFrom data.table as.data.table
-#' @importFrom BSgenome.Hsapiens.UCSC.hg19 BSgenome.Hsapiens.UCSC.hg19
-#' @importFrom TxDb.Hsapiens.UCSC.hg19.knownGene
-#' TxDb.Hsapiens.UCSC.hg19.knownGene
+#' @importFrom BSgenome.Hsapiens.UCSC.hg38 BSgenome.Hsapiens.UCSC.hg38
+#' @importFrom TxDb.Hsapiens.UCSC.hg38.knownGene
+#' TxDb.Hsapiens.UCSC.hg38.knownGene
 #' @export readGenomesFromMPF
-readGenomesFromMPF <- function(file, numBases=5, type="Shiraishi", trDir=TRUE,
-    enforceUniqueTrDir=TRUE,
-    refGenome=BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19,
+readGenomesFromMPF <- function(file=NULL, mpf=NULL, numBases=5, 
+    type="Shiraishi", trDir=TRUE, enforceUniqueTrDir=TRUE,
+    refGenome=BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38,
     transcriptAnno=
-        TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene,
-    verbose=TRUE) {
+        TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene,
+    verbose=TRUE, ignoreRefMismatches=FALSE) {
 
-    # read mutation data
-    if(verbose) {
-        cat("Reading mutations and patient/sample IDs from MPF file:\n")
+    if (is.null(file) && is.null(mpf)) {
+        stop("Either 'file' or 'mpf' must be specified.")
+    } else if (!is.null(file) && !is.null(mpf)) {
+        stop("Use either a file name or an MPF matrix, not both.")
+    }
+    
+    if (!is.null(file)) { # read MPF file
+        if(verbose) {
+            cat("Reading mutations and patient/sample IDs from MPF file:\n")
+        }
+
+        mpf <- as.matrix(read.table(file, header=FALSE, row.names=NULL,
+                                    sep="\t"))
+    } else {
+        if(verbose) {
+            cat("Getting mutations and genotype information from MPF matrix:\n")
+        }
     }
 
-    mpf <- as.matrix(read.table(file, header=FALSE, row.names=NULL, sep="\t"))
+    # check format
+    if (!is.matrix(mpf) || !is.character(mpf) || (ncol(mpf) != 5)) {
+        stop(paste("Wrong format of MPF data: must have five string columns ",
+                   "(sample ID, chromosome, position, reference base, ",
+                   "alternate base)!"))
+    }
+    
     colnames(mpf) <- c("SAMPLE", "CHROM", "POS", "REF", "ALT")
 
     # remove all spaces (some files contain them, e.g., in the POS field ...
@@ -171,7 +199,7 @@ readGenomesFromMPF <- function(file, numBases=5, type="Shiraishi", trDir=TRUE,
             mpfS[,sid] <- gt
         }
 
-        mpfS$SAMPLE = NULL
+        mpfS$SAMPLE <- NULL
 
         genomes <-
             c(genomes, 
@@ -181,7 +209,8 @@ readGenomesFromMPF <- function(file, numBases=5, type="Shiraishi", trDir=TRUE,
                                            uniqueTrDir=enforceUniqueTrDir,
                                            refGenome=refGenome,
                                            transcriptAnno=transcriptAnno,
-                                           verbose=verbose)
+                                           verbose=verbose,
+                                           ignoreRefMismatches=ignoreRefMismatches)
               )
 
         # remove this batch of samples from the list

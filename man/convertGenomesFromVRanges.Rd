@@ -6,10 +6,10 @@
 \usage{
 convertGenomesFromVRanges(vranges, numBases=5, type="Shiraishi",
 trDir=TRUE, enforceUniqueTrDir=TRUE, 
-refGenome=BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19,
+refGenome=BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38,
 transcriptAnno=
-TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene,
-verbose=TRUE)
+TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene,
+verbose=TRUE, ignoreRefMismatches=FALSE)
 }
 \arguments{
 \item{vranges}{(Mandatory) The \code{VRanges} object which specifies the
@@ -41,14 +41,19 @@ activity which might potentially be linked to the occurrence of the mutation.
 backward compatibility with older versions.)}
 
 \item{refGenome}{(Mandatory) The reference genome (\code{BSgenome}) needed
-to extract sequence patterns. Default: \code{BSgenome} object for hg19.}
+to extract sequence patterns. Default: \code{BSgenome} object for hg38.}
 
 \item{transcriptAnno}{(Optional) Transcript annotation (\code{TxDb} object)
 used to determine the transcription direction. This is required only if
-\code{trDir} is \code{TRUE}. Default: \code{TxDb} object for hg19.}
+\code{trDir} is \code{TRUE}. Default: \code{TxDb} object for hg38.}
 
 \item{verbose}{(Optional) Print information about reading and processing
 the mutation data. Default: \code{TRUE}}
+
+\item{ignoreRefMismatches}{If \code{TRUE}, SNVs where the mutated REF base
+does not match the reference genome will be ignored. If \code{FALSE}
+(default!) an error will be thrown, because this often indicates a wrong
+reference genome.}
 }
 \value{
 A list containing the genomes in terms of frequencies of the
@@ -66,19 +71,19 @@ such that the resulting format can be used as genomes input for
 \examples{
 
 ### load the reference genome and the transcript annotation database
-refGenome <- BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19
+refGenome <- BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
 transcriptAnno <-
-  TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
+  TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
 
 ### take the breast cancer genomes from Nik-Zainal et al (PMID: 22608084) 
 gfile <- system.file("extdata",
-         "Nik-Zainal_PMID_22608084-VCF-convertedfromMPF.vcf.gz", 
+         "Nik-Zainal_PMID_22608084-hg38.vcf.gz", 
          package="decompTumor2Sig")
 
 ### get the corresponding VRanges object (using the VariantAnnotation
 ### package)
 library(VariantAnnotation)
-vr <- readVcfAsVRanges(gfile, genome="hg19")
+vr <- readVcfAsVRanges(gfile, genome="hg38")
 
 ### convert the VRanges object to the decompTumor2Sig format
 genomes <- convertGenomesFromVRanges(vr, numBases=5, type="Shiraishi",

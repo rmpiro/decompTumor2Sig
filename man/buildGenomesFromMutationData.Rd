@@ -5,7 +5,7 @@
 \title{buildGenomesFromMutationData (internal function)}
 \usage{
 buildGenomesFromMutationData(snvs, numBases, type, trDir,
-uniqueTrDir=TRUE, refGenome, transcriptAnno, verbose)
+uniqueTrDir=TRUE, refGenome, transcriptAnno, verbose, ignoreRefMismatches)
 }
 \arguments{
 \item{snvs}{SNV matrix (see description above).}
@@ -30,6 +30,11 @@ and is also the behavior of \code{pmsignature}.}
 \item{transcriptAnno}{Transcription information (\code{TxDb} object).}
 
 \item{verbose}{Logical. Print additional information?}
+
+\item{ignoreRefMismatches}{If \code{TRUE}, SNVs where the mutated REF base
+does not match the reference genome will be ignored. If \code{FALSE}
+(default!) an error will be thrown, because this often indicates a wrong
+reference genome.}
 }
 \value{
 A list of genomes: each genome is represented by the observed

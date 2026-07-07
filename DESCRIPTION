@@ -2,19 +2,19 @@ Package: decompTumor2Sig
 Type: Package
 Title: Decomposition of individual tumors into mutational signatures
     by signature refitting
-Depends: R(>= 4.0), ggplot2
-Imports: methods, Matrix, quadprog(>= 1.5-5), GenomicRanges, stats,
+Depends: R(>= 4.6), ggplot2
+Imports: methods, Matrix, quadprog(>= 1.5-5), GenomicRanges, stats, rlang,
     GenomicFeatures, Biostrings, BiocGenerics, S4Vectors, plyr, utils, graphics,
-    BSgenome.Hsapiens.UCSC.hg19, TxDb.Hsapiens.UCSC.hg19.knownGene,
+    BSgenome.Hsapiens.UCSC.hg38, TxDb.Hsapiens.UCSC.hg38.knownGene,
     VariantAnnotation, SummarizedExperiment, ggseqlogo, gridExtra, data.table,
     GenomeInfoDb, readxl
-Suggests: knitr, rmarkdown, BiocStyle
-Version: 2.13.1
-Date: 2022-05-09
+Suggests: knitr, rmarkdown, cosmicsig, BiocStyle
+Version: 2.99.0
+Date: 2026-07-07
 Encoding: UTF-8
 Authors@R: c(
     person("Rosario M.", "Piro", email = "rmpiro@gmail.com",
-            role = c("aut", "cre")),
+            role = c("aut", "cre"), comment=c(ORCID="0000-0002-3066-7397")),
     person("Sandra", "Krueger", role = c("ctb"))
     )
 Description: Uses quadratic programming for signature refitting, i.e., to
@@ -30,4 +30,4 @@ biocViews: Software, SNP, Sequencing, DNASeq, GenomicVariation,
     SomaticMutation, BiomedicalInformatics, Genetics, BiologicalQuestion,
     StatisticalMethod
 VignetteBuilder: knitr
-RoxygenNote: 7.1.2
+Config/roxygen2/version: 8.0.0

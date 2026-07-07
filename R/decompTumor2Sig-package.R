@@ -12,8 +12,8 @@
 #' \tabular{ll}{
 #' Package: \tab decompTumor2Sig\cr
 #' Type: \tab Package\cr
-#' Version: \tab 2.13.1\cr
-#' Date: \tab 2022-05-09\cr
+#' Version: \tab 2.99.0\cr
+#' Date: \tab 2026-07-07\cr
 #' License: \tab GPL (>=2)\cr
 #' }
 #' 
@@ -105,7 +105,7 @@
 #'                         \tab genome.\cr
 #'
 #' readAlexandrovSignatures():\tab read Alexandrov signatures in the\cr
-#'                         \tab COSMIC format from a flat file or URL.\cr
+#'                         \tab COSMIC format from a file, URL or matrix.\cr
 #'
 #' readGenomesFromMPF():   \tab read a genome or set of genomes from a \cr
 #'                         \tab Mutation Position Format (MPF) file.\cr

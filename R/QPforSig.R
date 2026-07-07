@@ -71,7 +71,7 @@ QPforSig <- function(counts, signatures, constrainToMaxContribution=FALSE,
 
     ### needed to make sure that the matrix (sigMa %*% t(sigMa)) is
     ### positive definite!
-    sigMaSquared.nearPD =
+    sigMaSquared.nearPD <-
         nearPD((sigMa %*% t(sigMa)), corr=FALSE, keepDiag=TRUE,
                ensureSymmetry=TRUE)$mat
 
@@ -119,10 +119,10 @@ QPforSig <- function(counts, signatures, constrainToMaxContribution=FALSE,
     dvec <- (counts) %*% t(sigMa)
     resQP <- quadprog::solve.QP(Dmat=Rinverse, dvec=dvec, Amat=Amat,
                                 bvec=bvec, meq=1, factorized=TRUE)
-    resQP$solution[resQP$solution<0]=0  # there can be some values below 0
-                                        # which should actually be 0 (very 
-                                        # close to 0 in any case, e.g., -10^-15)
-    resQP$solution[resQP$solution>1]=1  # same for values beyond 1
+    resQP$solution[resQP$solution<0]<-0  # there can be some values below 0
+                                         # which should actually be 0 (very 
+                                         # close to 0 in any case, e.g., -10^-15)
+    resQP$solution[resQP$solution>1]<-1  # same for values beyond 1
     
     return(resQP$solution)
 }
